@@ -1,0 +1,77 @@
+precision mediump float;
+
+// texture variables
+uniform bool hasColorTexture;
+uniform sampler2D colorTexture; // color texture
+
+uniform bool hasShadowTexture;
+uniform sampler2D shadowTexture; // shadow map texture
+
+// light
+uniform vec3 sunPosition;
+uniform vec4 sunColor;
+uniform float sunIntensity;
+uniform float ambientLightIntensity;
+uniform bool fullBright;
+
+// material
+uniform vec4 color;
+uniform float fogDensity;
+
+// from the vertex shader
+varying float vFogDepth;
+varying vec2 vCoord;
+varying vec3 vNormal;
+varying vec4 shadowCoord;
+
+float getShadow(float x, float y, float z) {
+	vec4 packedZValue = texture2D(shadowTexture, vec2(x, y));
+	if (packedZValue.z > z) {
+		return 1.0;
+	} else {
+		return 0.0;
+	}
+}
+
+float getSoftShadow(float x, float y, float z) {
+	float offset = 0.002;
+	float shadow = getShadow(x, y, z);
+	float shadow1 = getShadow(x+offset, y, z);
+//	float shadow2 = getShadow(x-offset, y, z);
+//	float shadow3 = getShadow(x, y+offset, z);
+//	float shadow4 = getShadow(x, y-offset, z);
+//	return (shadow+shadow1+shadow2+shadow3+shadow4) / 5.0;
+	return (shadow+shadow1) / 2.0;
+}
+
+void main_original() {
+	vec4 materialColor;
+	if (hasColorTexture) {
+		vec4 textureColor = texture2D(colorTexture, vCoord);
+		materialColor = color * textureColor;
+	} else {
+		materialColor = color;
+	}
+	vec4 surfaceColor;
+	if (fullBright) {
+		surfaceColor = materialColor;
+	} else {
+		
+	   	// Shadow
+	   	float sValue = 1.0;
+	   	if (hasShadowTexture && shadowCoord.w > 0.0) {
+	   		vec4 lightZ = shadowCoord / shadowCoord.w;
+			lightZ = (lightZ + 1.0) /2.0;
+			sValue = getShadow(lightZ.x, lightZ.y, lightZ.z);
+		}
+	   	
+	    surfaceColor = sunColor * materialColor * (ambientLightIntensity + (sunIntensity * max(0.0,dot(sunPosition, -vNormal)) * sValue));
+	}
+	if (fogDensity > 0.0) {
+		float fog = fogDensity*fogDensity * abs(vFogDepth) / 25.0;
+		fog = clamp(exp(-fog), 0.0, 1.0);
+		gl_FragColor = mix(vec4(1.0), surfaceColor, fog);
+	} else {
+		gl_FragColor = surfaceColor;
+	}
+}

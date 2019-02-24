@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/LinearLayout2"
+	android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center"
+	android:orientation="vertical">
+	<TableLayout android:id="@+id/textureTable" android:layout_width="208dp" android:layout_height="208dp"
+		android:layout_gravity="center" android:background="@raw/textures" android:clickable="true">
+		<TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
+			<ImageButton android:id="@+id/ImageButton03" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:tag="bark" />
+			<ImageButton android:id="@+id/ImageButton02" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="brick" />
+			<ImageButton android:id="@+id/ImageButton01" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="concrete" />
+			<ImageButton android:id="@+id/imageButton1" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="drymud" />
+		</TableRow>
+		<TableRow android:id="@+id/tableRow2" android:layout_width="wrap_content" android:layout_height="wrap_content">
+			<ImageButton android:id="@+id/ImageButton06" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="earth" />
+			<ImageButton android:id="@+id/ImageButton07" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="grass" />
+			<ImageButton android:id="@+id/ImageButton05" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="ice" />
+			<ImageButton android:id="@+id/ImageButton04" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="ivy" />
+		</TableRow>
+		<TableRow android:id="@+id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content">
+			<ImageButton android:id="@+id/ImageButton10" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="land" />
+			<ImageButton android:id="@+id/ImageButton11" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="moss" />
+			<ImageButton android:id="@+id/ImageButton09" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="sky" />
+			<ImageButton android:id="@+id/ImageButton08" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="stucco" />
+		</TableRow>
+		<TableRow android:id="@+id/tableRow4" android:layout_width="wrap_content" android:layout_height="wrap_content">
+			<ImageButton android:id="@+id/ImageButton14" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="water" />
+			<ImageButton android:id="@+id/ImageButton15" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="wood" />
+			<ImageButton android:id="@+id/ImageButton13" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="aggregate" />
+			<ImageButton android:id="@+id/ImageButton12" android:layout_width="50dp" android:layout_height="50dp"
+				android:layout_marginBottom="1dp" android:layout_marginLeft="1dp" android:layout_marginRight="1dp"
+				android:layout_marginTop="1dp" android:background="#00000000" android:clickable="false" android:paddingBottom="1dp"
+				android:paddingLeft="1dp" android:paddingRight="1dp" android:paddingTop="1dp" android:tag="happy" />
+		</TableRow>
+	</TableLayout>
+	<AutoCompleteTextView android:id="@+id/textureURL" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:ems="10" android:imeOptions="actionDone" android:lines="1"
+		android:scrollHorizontally="true" android:visibility="gone">
+		<requestFocus />
+	</AutoCompleteTextView>
+	<Button android:id="@+id/selectImageButton" android:layout_width="208dp" android:layout_height="wrap_content"
+		android:layout_marginBottom="0dp" android:layout_marginTop="2dp" android:text="Open Image Chooser" />
+</LinearLayout>

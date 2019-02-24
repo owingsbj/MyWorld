@@ -1,0 +1,4 @@
+[
+	{"name": "World1", "icon": "World1.png", "description": "This is the first world."},
+	{"name": "World2", "icon": "World2.png", "description": "And this is the second world."}
+]

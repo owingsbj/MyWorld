@@ -12,6 +12,7 @@
 bin/
 gen/
 out/
+obj/
 
 # Gradle files
 .gradle/
@@ -31,6 +32,10 @@ proguard/
 
 # Android Studio captures folder
 captures/
+
+# Eclipse
+.externalToolBuilders/
+.settings/
 
 # IntelliJ
 *.iml
@@ -63,3 +68,6 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+
+# mac
+/**/.DS_Store

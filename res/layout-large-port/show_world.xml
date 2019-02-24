@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/mainLayout"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android" xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+	xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
+	tools:context=".ShowWorldActivity">
+	<android.opengl.GLSurfaceView
+		android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
+		android:id="@+id/worldView" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_weight="1" />
+	<TextView android:id="@+id/titleText" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_weight="1"
+		android:gravity="top|left" android:paddingLeft="5dp"
+		android:shadowColor="#202020" android:shadowDx="2" android:shadowDy="2"
+		android:shadowRadius="1" android:text="MyWorld"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:textSize="30dp" />
+	<TextView android:id="@+id/statusText" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_weight="1"
+		android:gravity="top|right" android:paddingRight="4px"
+		android:shadowColor="#202020" android:shadowDx="2" android:shadowDy="2"
+		android:shadowRadius="1" android:text="Level"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:textSize="30dp" />
+	<ImageButton android:id="@+id/joyButton"
+		android:layout_width="200dp" android:layout_height="200dp"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true" android:layout_marginBottom="40dp"
+		android:layout_marginLeft="40dp" android:layout_marginRight="40dp"
+		android:layout_marginTop="40dp" android:background="@drawable/joy_button" />
+	<LinearLayout android:id="@+id/worldActionsView"
+		android:layout_width="150dp" android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/worldView"
+		android:layout_alignParentTop="false" android:layout_below="@id/adFrame"
+		android:background="#01000000" android:clickable="true"
+		android:orientation="vertical">
+		<Button android:id="@+id/leftActionButton1"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/world_button1" android:paddingLeft="0px"
+			android:paddingRight="0px" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text="Pause"
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/leftActionButton2"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/world_button2" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text="View"
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/leftActionButton3"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/world_button3" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/leftActionButton4"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/world_button4" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/leftActionButton5"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/world_button5" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/leftActionButton6"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/world_button6" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/leftActionButton7"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/world_button7" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+	</LinearLayout>
+	<LinearLayout android:id="@+id/avatarActionsView"
+		android:layout_width="150dp" android:layout_height="wrap_content"
+		android:layout_alignParentRight="true" android:layout_alignTop="@+id/worldActionsView"
+		android:layout_below="@id/adFrame" android:background="#01000000"
+		android:clickable="true" android:orientation="vertical">
+		<Button android:id="@+id/rightActionButton1"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/avatar_button1" android:paddingLeft="0px"
+			android:paddingRight="0px" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text="Start"
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/rightActionButton2"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/avatar_button2" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text="Jump"
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/rightActionButton3"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/avatar_button3" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/rightActionButton4"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/avatar_button4" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/rightActionButton5"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/avatar_button5" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/rightActionButton6"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/avatar_button6" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+		<Button android:id="@+id/rightActionButton7"
+			android:layout_width="match_parent" android:layout_height="60dp"
+			android:background="@drawable/avatar_button7" android:shadowColor="#FFC0C0C0"
+			android:shadowDx="1" android:shadowDy="1" android:text=" "
+			android:textColor="#FF404040" android:textSize="30dp"
+			android:textStyle="bold" />
+	</LinearLayout>
+	<FrameLayout android:id="@+id/adFrame"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_below="@id/statusText" android:layout_centerHorizontal="true"
+		android:padding="2dp"></FrameLayout>
+	<TextView android:id="@+id/flashMessageText"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_below="@id/adFrame" android:layout_centerHorizontal="true"
+		android:shadowColor="#202020" android:shadowDx="1" android:shadowDy="1"
+		android:shadowRadius="1" android:text="Flash"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:textSize="60dp" android:textStyle="bold" android:typeface="normal" />
+</RelativeLayout>

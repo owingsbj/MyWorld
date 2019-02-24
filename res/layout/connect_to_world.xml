@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+	android:layout_height="match_parent" android:orientation="vertical">
+	<TextView android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:text="Enter the URL of the world you wish to connect to" android:textAppearance="?android:attr/textAppearanceMedium" />
+	<EditText android:id="@+id/urlText" android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:inputType="textUri" android:text="localhost:8880">
+
+		<requestFocus />
+	</EditText>
+	<Button android:id="@+id/connectButton" android:layout_width="94dp" android:layout_height="wrap_content"
+		android:text="Connect" />
+
+	<TextView android:id="@+id/messagesText" android:layout_width="match_parent" android:layout_height="match_parent"
+		android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>

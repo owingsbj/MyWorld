@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout android:id="@+id/colorGrid" android:layout_width="wrap_content" android:layout_height="wrap_content"
+	android:background="@drawable/dialog_background" xmlns:android="http://schemas.android.com/apk/res/android">
+	<TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:id="@+id/View42" android:layout_width="30dp" android:layout_height="30dp" android:background="#ccf"
+			android:tag="#ccccff" />
+		<Button android:id="@+id/View43" android:layout_width="30dp" android:layout_height="30dp" android:background="#cff"
+			android:tag="#ccffff" />
+		<Button android:id="@+id/View44" android:layout_width="30dp" android:layout_height="30dp" android:background="#cfc"
+			android:tag="#ccffcc" />
+		<Button android:id="@+id/View45" android:layout_width="30dp" android:layout_height="30dp" android:background="#ffc"
+			android:tag="#ffffcc" />
+		<Button android:id="@+id/View46" android:layout_width="30dp" android:layout_height="30dp" android:background="#fcc"
+			android:tag="#ffcccc" />
+		<Button android:id="@+id/View47" android:layout_width="30dp" android:layout_height="30dp" android:background="#fcf"
+			android:tag="#ffccff" />
+		<Button android:id="@+id/View48" android:layout_width="30dp" android:layout_height="30dp" android:background="#fff"
+			android:tag="#ffffff" />
+	</TableRow>
+	<TableRow android:id="@+id/tableRow2" android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:id="@+id/View21" android:layout_width="30dp" android:layout_height="30dp" android:background="#88f"
+			android:tag="#8888ff" />
+		<Button android:id="@+id/View22" android:layout_width="30dp" android:layout_height="30dp" android:background="#8ff"
+			android:tag="#88ffff" />
+		<Button android:id="@+id/View23" android:layout_width="30dp" android:layout_height="30dp" android:background="#8f8"
+			android:tag="#88ff88" />
+		<Button android:id="@+id/View24" android:layout_width="30dp" android:layout_height="30dp" android:background="#ff8"
+			android:tag="#ffff88" />
+		<Button android:id="@+id/View25" android:layout_width="30dp" android:layout_height="30dp" android:background="#f88"
+			android:tag="#ff8888" />
+		<Button android:id="@+id/View26" android:layout_width="30dp" android:layout_height="30dp" android:background="#f8f"
+			android:tag="#ff88ff" />
+		<Button android:id="@+id/View27" android:layout_width="30dp" android:layout_height="30dp" android:background="#ccc"
+			android:tag="#cccccc" />
+	</TableRow>
+	<TableRow android:id="@+id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:id="@+id/view1" android:layout_width="30dp" android:layout_height="30dp" android:background="#00f"
+			android:tag="#0000ff" />
+		<Button android:id="@+id/View01" android:layout_width="30dp" android:layout_height="30dp" android:background="#0ff"
+			android:tag="#00ffff" />
+		<Button android:id="@+id/View02" android:layout_width="30dp" android:layout_height="30dp" android:background="#0f0"
+			android:tag="#00ff00" />
+		<Button android:id="@+id/View03" android:layout_width="30dp" android:layout_height="30dp" android:background="#ff0"
+			android:tag="#ffff00" />
+		<Button android:id="@+id/View04" android:layout_width="30dp" android:layout_height="30dp" android:background="#f00"
+			android:tag="#ff0000" />
+		<Button android:id="@+id/View05" android:layout_width="30dp" android:layout_height="30dp" android:background="#f0f"
+			android:tag="#ff00ff" />
+		<Button android:id="@+id/View06" android:layout_width="30dp" android:layout_height="30dp" android:background="#888"
+			android:tag="#888888" />
+	</TableRow>
+	<TableRow android:id="@+id/tableRow4" android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:id="@+id/View09" android:layout_width="30dp" android:layout_height="30dp" android:background="#00c"
+			android:tag="#0000cc" />
+		<Button android:id="@+id/View10" android:layout_width="30dp" android:layout_height="30dp" android:background="#0cc"
+			android:tag="#00cccc" />
+		<Button android:id="@+id/View11" android:layout_width="30dp" android:layout_height="30dp" android:background="#0c0"
+			android:tag="#00cc00" />
+		<Button android:id="@+id/View12" android:layout_width="30dp" android:layout_height="30dp" android:background="#cc0"
+			android:tag="#cccc00" />
+		<Button android:id="@+id/View13" android:layout_width="30dp" android:layout_height="30dp" android:background="#c00"
+			android:tag="#cc0000" />
+		<Button android:id="@+id/View14" android:layout_width="30dp" android:layout_height="30dp" android:background="#c0c"
+			android:tag="#cc00cc" />
+		<Button android:id="@+id/View15" android:layout_width="30dp" android:layout_height="30dp" android:background="#666"
+			android:tag="#666666" />
+	</TableRow>
+	<TableRow android:id="@+id/tableRow6" android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:id="@+id/View07" android:layout_width="30dp" android:layout_height="30dp" android:background="#008"
+			android:tag="#000088" />
+		<Button android:id="@+id/View08" android:layout_width="30dp" android:layout_height="30dp" android:background="#088"
+			android:tag="#008888" />
+		<Button android:id="@+id/View16" android:layout_width="30dp" android:layout_height="30dp" android:background="#080"
+			android:tag="#008800" />
+		<Button android:id="@+id/View17" android:layout_width="30dp" android:layout_height="30dp" android:background="#880"
+			android:tag="#888800" />
+		<Button android:id="@+id/View18" android:layout_width="30dp" android:layout_height="30dp" android:background="#800"
+			android:tag="#880000" />
+		<Button android:id="@+id/View19" android:layout_width="30dp" android:layout_height="30dp" android:background="#808"
+			android:tag="#880088" />
+		<Button android:id="@+id/View20" android:layout_width="30dp" android:layout_height="30dp" android:background="#444"
+			android:tag="#444444" />
+	</TableRow>
+	<TableRow android:id="@+id/tableRow5" android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:id="@+id/View28" android:layout_width="30dp" android:layout_height="30dp" android:background="#448"
+			android:tag="#444488" />
+		<Button android:id="@+id/View29" android:layout_width="30dp" android:layout_height="30dp" android:background="#488"
+			android:tag="#448888" />
+		<Button android:id="@+id/View30" android:layout_width="30dp" android:layout_height="30dp" android:background="#484"
+			android:tag="#448844" />
+		<Button android:id="@+id/View31" android:layout_width="30dp" android:layout_height="30dp" android:background="#884"
+			android:tag="#888844" />
+		<Button android:id="@+id/View32" android:layout_width="30dp" android:layout_height="30dp" android:background="#844"
+			android:tag="#884444" />
+		<Button android:id="@+id/View33" android:layout_width="30dp" android:layout_height="30dp" android:background="#848"
+			android:tag="#884488" />
+		<Button android:id="@+id/View34" android:layout_width="30dp" android:layout_height="30dp" android:background="#222"
+			android:tag="#222222" />
+	</TableRow>
+	<TableRow android:id="@+id/tableRow7" android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:id="@+id/View35" android:layout_width="30dp" android:layout_height="30dp" android:background="#004"
+			android:tag="#000044" />
+		<Button android:id="@+id/View36" android:layout_width="30dp" android:layout_height="30dp" android:background="#044"
+			android:tag="#004444" />
+		<Button android:id="@+id/View37" android:layout_width="30dp" android:layout_height="30dp" android:background="#040"
+			android:tag="#004400" />
+		<Button android:id="@+id/View38" android:layout_width="30dp" android:layout_height="30dp" android:background="#440"
+			android:tag="#444400" />
+		<Button android:id="@+id/View39" android:layout_width="30dp" android:layout_height="30dp" android:background="#400"
+			android:tag="#440000" />
+		<Button android:id="@+id/View40" android:layout_width="30dp" android:layout_height="30dp" android:background="#404"
+			android:tag="#440044" />
+		<Button android:id="@+id/View41" android:layout_width="30dp" android:layout_height="30dp" android:background="#000"
+			android:tag="#000000" />
+	</TableRow>
+</TableLayout>
