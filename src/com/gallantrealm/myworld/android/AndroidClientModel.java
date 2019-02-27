@@ -408,8 +408,8 @@ public class AndroidClientModel extends ClientModel {
 		if (sensorManager == null) {
 			return false;
 		}
-		List<Sensor> accelSensors = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-		if (accelSensors != null && accelSensors.size() > 0) {
+		List<Sensor> gameSensors = sensorManager.getSensorList(Sensor.TYPE_GAME_ROTATION_VECTOR);
+		if (gameSensors != null && gameSensors.size() > 0) {
 			return true;
 		}
 		return false;
@@ -1217,5 +1217,5 @@ public class AndroidClientModel extends ClientModel {
 		}
 		return false;
 	}
-
+	
 }

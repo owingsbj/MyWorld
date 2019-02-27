@@ -76,7 +76,7 @@ public class SettingsActivity extends GallantActivity implements View.OnClickLis
 		// power saver no longer featured
 		powerSaverCheckBox.setVisibility(View.GONE);
 
-		if (clientModel.useMoga(this) || clientModel.useGamepad(this) ||  !getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
+		if (clientModel.useMoga(this) || clientModel.useGamepad(this) ||  !clientModel.canUseSensors()) {
 			controlTypeLabel.setVisibility(View.GONE);
 			controlType.setVisibility(View.GONE);
 		} else {
