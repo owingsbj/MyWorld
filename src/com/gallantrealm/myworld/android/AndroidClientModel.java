@@ -76,6 +76,7 @@ public class AndroidClientModel extends ClientModel {
 
 	private String categoryName;
 	private String worldName;
+	private String worldClassName;
 	private String worldParams;
 	private String avatarName;
 	private boolean playMusic;
@@ -120,6 +121,7 @@ public class AndroidClientModel extends ClientModel {
 		preferencesVersion = preferences.getInt("preferencesVersion", 1);
 		avatarName = preferences.getString("avatarName", context.getString(R.string.defaultAvatarName));
 		worldName = preferences.getString("worldName", context.getString(R.string.defaultWorldName));
+		worldClassName = preferences.getString("worldClassName", worldName);
 		playMusic = preferences.getBoolean("playMusic", true);
 		playSoundEffects = preferences.getBoolean("playSoundEffects", true);
 		vibration = preferences.getBoolean("vibration", true);
@@ -183,6 +185,7 @@ public class AndroidClientModel extends ClientModel {
 		editor.putInt("preferencesVersion", 1);
 		editor.putString("avatarName", avatarName);
 		editor.putString("worldName", worldName);
+		editor.putString("worldClassName", worldClassName);
 		editor.putBoolean("playMusic", playMusic);
 		editor.putBoolean("playSoundEffects", playSoundEffects);
 		editor.putBoolean("vibration", vibration);
@@ -354,7 +357,18 @@ public class AndroidClientModel extends ClientModel {
 
 	public void setWorldName(String worldName) {
 		this.worldName = worldName;
+		this.worldClassName = null;
 		fireClientModelChanged(ClientModelChangedEvent.EVENT_TYPE_SELECTED_GAME_CHANGED);
+	}
+
+	public void setWorldName(String worldName, String worldClassName) {
+		this.worldName = worldName;
+		this.worldClassName = worldClassName;
+		fireClientModelChanged(ClientModelChangedEvent.EVENT_TYPE_SELECTED_GAME_CHANGED);
+	}
+	
+	public String getWorldClassName() {
+		return this.worldClassName;
 	}
 
 	public String getWorldParams() {
@@ -963,6 +977,40 @@ public class AndroidClientModel extends ClientModel {
 
 	public Object loadObject(String fileName) {
 		return loadObject(fileName, false);
+	}
+	
+	public InputStream loadFile(String fileName, boolean external) {
+		InputStream inStream = null;
+		if (fileName.startsWith("file:")) { // via an external url
+			try {
+				File file = new File(fileName.substring(7));
+				inStream = new FileInputStream(file);
+			} catch (Exception e) {
+			}
+		} else { // within the application
+			if (external && getContext().getExternalFilesDir(null) != null) { // external file
+				try {
+					File file = new File(getContext().getExternalFilesDir(null), fileName);
+					inStream = new FileInputStream(file);
+				} catch (Exception e) {
+				}
+			}
+			if (inStream == null) { // internal file
+				try {
+					File file = new File(getContext().getFilesDir(), fileName);
+					inStream = new FileInputStream(file);
+				} catch (Exception e) {
+				}
+			}
+			// if file not found, it is a built-in. so try asset
+			if (inStream == null) {
+				try {
+					inStream = context.getAssets().open(fileName.trim());
+				} catch (Exception e) {
+				}
+			}
+		}
+		return inStream;
 	}
 
 	/**

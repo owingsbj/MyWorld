@@ -35,11 +35,13 @@ public class StartWorldActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start_world);
 
-		final String worldName;
+		final String worldClassName;
 		if (getIntent().getAction() != null) {
-			worldName = getIntent().getAction();
+			worldClassName = getIntent().getAction();
+		} else if (clientModel.getWorldClassName() != null) {
+			worldClassName = clientModel.getWorldClassName();
 		} else {
-			worldName = clientModel.getWorldName();
+			worldClassName = clientModel.getWorldName();
 		}
 
 		startMessage = (TextView) findViewById(R.id.startMessage);
@@ -74,25 +76,25 @@ public class StartWorldActivity extends Activity {
 					clientModel.setWorldAddressField("localhost:8880");
 
 					if (clientModel.getAlwaysStartAsNew()) {
-						newWorld(worldName);
+						newWorld(worldClassName);
 					} else if (clientModel.getAlwaysStartAsOld()) {
 						File tfile;
-						if (worldName.startsWith("file://")) {
-							tfile = new File(worldName.substring(7));
+						if (worldClassName.startsWith("file://")) {
+							tfile = new File(worldClassName.substring(7));
 						} else {
-							tfile = new File(getFilesDir(), worldName);
+							tfile = new File(getFilesDir(), worldClassName);
 						}
 						final File worldFile = tfile;
 						System.out.println(tfile.toString() + " length: " + tfile.length());
-						restoreWorld(worldName, worldFile);
+						restoreWorld(worldClassName, worldFile);
 					} else {
-						startupTheWorld(worldName, false);
+						startupTheWorld(worldClassName, false);
 					}
 
 					// Tell gallantrealm.com that the world was started
 					if (!BuildConfig.DEBUG) {
 						try {
-							String shortWorldName = worldName.substring(worldName.lastIndexOf('.') + 1);
+							String shortWorldName = worldClassName.substring(worldClassName.lastIndexOf('.') + 1);
 							String urlString = "http://gallantrealm.com/insights/recordEvent.jsp?app=" + URLEncoder.encode(getString(R.string.app_name)) + "&event=startWorld" + "&world=" + shortWorldName;
 							System.out.println(urlString);
 							URL grUrl = new URL(urlString);
