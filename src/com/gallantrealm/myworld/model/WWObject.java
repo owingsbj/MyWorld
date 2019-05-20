@@ -491,6 +491,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setRotation(float x, float y, float z) {
 		setOrientation(getPosition(getWorldTime()), new WWVector(x, y, z), null, null, getWorldTime());
 	}
+	
+	public final void setRotation(float[] rots) {
+		setRotation(rots[0], rots[1], rots[2]);
+	}
 
 	public final WWVector getAbsolutePosition(long worldTime) {
 		WWVector position = new WWVector();
@@ -637,6 +641,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final void setPosition(float x, float y, float z) {
 		setOrientation(new WWVector(x, y, z), getRotation(getWorldTime()), null, null, getWorldTime());
+	}
+	
+	public final void setPosition(float[] pos) {
+		setPosition(pos[0], pos[1], pos[2]);
 	}
 
 	public final void setStartPosition(WWVector v) {
@@ -1773,6 +1781,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		edgePoints = null;
 	}
 
+	public void setSize(float[] dims) {
+		setSize(dims[0], dims[1], dims[2]);
+	}
+
 	/**
 	 * Overridable is subclasses to make smarter extent calculations, avoiding more complicated math when determining
 	 * overlaps.
@@ -1849,6 +1861,14 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		getEditableSideAttributes(side).red = color.getRed();
 		getEditableSideAttributes(side).green = color.getGreen();
 		getEditableSideAttributes(side).blue = color.getBlue();
+	}
+	
+	public final void setColor(int color) {
+		setColor(SIDE_ALL, new WWColor(color));
+	}
+	
+	public final void setColorTop(int color) {
+		setColor(SIDE_TOP, new WWColor(color));
 	}
 
 	public final String getTextureURL(int side) {
@@ -1956,6 +1976,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final void setTransparency(int side, float transparency) {
 		getEditableSideAttributes(side).transparency = transparency;
+	}
+	
+	public final void setTransparency(float transparency) {
+		setTransparency(SIDE_ALL, transparency);
 	}
 
 	public final float getShininess(int side) {

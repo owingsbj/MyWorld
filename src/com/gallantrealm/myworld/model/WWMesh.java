@@ -87,6 +87,10 @@ public class WWMesh extends WWObject {
 		this.cellsX = cellsX;
 		this.cellsY = cellsY;
 	}
+	
+	public final void setMeshSize(int[] cells) {
+		setMeshSize(cells[0], cells[1]);
+	}
 
 	public final float getMeshPoint(int cx, int cy) {
 		return mesh[cx][cy];

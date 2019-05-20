@@ -1,6 +1,6 @@
 package com.gallantrealm.myworld.model;
 
-public final class WWColor {
+public class WWColor {
 
 	public int color;
 
