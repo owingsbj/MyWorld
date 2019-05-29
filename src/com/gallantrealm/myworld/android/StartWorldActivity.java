@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Constructor;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Timer;
 import java.util.TimerTask;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
@@ -53,10 +50,8 @@ public class StartWorldActivity extends Activity {
 			startMessage.setTypeface(typeface);
 		}
 
-		(new AsyncTask<String, Void, String>() {
-
-			@Override
-			protected String doInBackground(String... params) {
+		AsyncTask.execute(new Runnable() {
+			public void run() {
 				clientModel.paused = false;
 				clientModel.setLocalPhysicsThread(false); // TODO set to true when no local server
 				clientModel.addClientModelChangedListener(new ClientModelChangedListener() {
@@ -91,41 +86,11 @@ public class StartWorldActivity extends Activity {
 						startupTheWorld(worldClassName, false);
 					}
 
-					// Tell gallantrealm.com that the world was started
-					if (!BuildConfig.DEBUG) {
-						try {
-							String shortWorldName = worldClassName.substring(worldClassName.lastIndexOf('.') + 1);
-							String urlString = "http://gallantrealm.com/insights/recordEvent.jsp?app=" + URLEncoder.encode(getString(R.string.app_name)) + "&event=startWorld" + "&world=" + shortWorldName;
-							System.out.println(urlString);
-							URL grUrl = new URL(urlString);
-							HttpURLConnection connection = (HttpURLConnection) grUrl.openConnection();
-							connection.setConnectTimeout(2000);
-							System.out.println(connection.getResponseMessage());
-							connection.disconnect();
-						} catch (Throwable t) {
-							t.printStackTrace(); // otherwise ignore
-						}
-					}
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return "Executed";
 			}
-
-			@Override
-			protected void onPostExecute(String result) {
-			}
-
-			@Override
-			protected void onPreExecute() {
-			}
-
-			@Override
-			protected void onProgressUpdate(Void... values) {
-			}
-		}).execute();
-
+		});
 	}
 
 	public void startupTheWorld(final String worldName, boolean reset) {
@@ -145,12 +110,16 @@ public class StartWorldActivity extends Activity {
 						messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 							@Override
 							public void onDismiss(DialogInterface dialogInterface) {
-								int rc = messageDialog.getButtonPressed();
-								if (rc == 0) {
-									restoreWorld(worldName, worldFile);
-								} else {
-									newWorld(worldName);
-								}
+								AsyncTask.execute(new Runnable() {
+									public void run() {
+										int rc = messageDialog.getButtonPressed();
+										if (rc == 0) {
+											restoreWorld(worldName, worldFile);
+										} else {
+											newWorld(worldName);
+										}
+									}
+								});
 							}
 						});
 						messageDialog.show();
