@@ -75,6 +75,11 @@ public abstract class WWSimpleShape extends WWObject implements Serializable, Cl
 	public void setShearY(float shearY) {
 		this.shearY = shearY;
 	}
+	
+	public final void setShear(float[] dims) {
+		this.shearX = dims[0];
+		this.shearY = dims[1];
+	}
 
 	public final float getTaperX() {
 		return taperX;
@@ -124,6 +129,10 @@ public abstract class WWSimpleShape extends WWObject implements Serializable, Cl
 	public final void setCutout(float start, float end) {
 		setCutoutStart(start);
 		setCutoutEnd(end);
+	}
+	
+	public final void setCutout(float[] dims) {
+		setCutout(dims[0], dims[1]);
 	}
 
 	public final float getTwist() {

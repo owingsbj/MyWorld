@@ -1871,6 +1871,58 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		setColor(SIDE_TOP, new WWColor(color));
 	}
 
+	public final void setColorBottom(int color) {
+		setColor(SIDE_BOTTOM, new WWColor(color));
+	}
+
+	public final void setColorSide1(int color) {
+		setColor(SIDE_SIDE1, new WWColor(color));
+	}
+
+	public final void setColorSide2(int color) {
+		setColor(SIDE_SIDE2, new WWColor(color));
+	}
+
+	public final void setColorSide3(int color) {
+		setColor(SIDE_SIDE3, new WWColor(color));
+	}
+
+	public final void setColorSide4(int color) {
+		setColor(SIDE_SIDE4, new WWColor(color));
+	}
+
+	public final void setColorInsideTop(int color) {
+		setColor(SIDE_INSIDE_TOP, new WWColor(color));
+	}
+
+	public final void setColorInsideBottom(int color) {
+		setColor(SIDE_INSIDE_BOTTOM, new WWColor(color));
+	}
+
+	public final void setColorInside1(int color) {
+		setColor(SIDE_INSIDE1, new WWColor(color));
+	}
+
+	public final void setColorInside2(int color) {
+		setColor(SIDE_INSIDE2, new WWColor(color));
+	}
+
+	public final void setColorInside3(int color) {
+		setColor(SIDE_INSIDE3, new WWColor(color));
+	}
+
+	public final void setColorInside4(int color) {
+		setColor(SIDE_INSIDE4, new WWColor(color));
+	}
+
+	public final void setColorCutout1(int color) {
+		setColor(SIDE_CUTOUT1, new WWColor(color));
+	}
+
+	public final void setColorCutout2(int color) {
+		setColor(SIDE_CUTOUT2, new WWColor(color));
+	}
+
 	public final String getTextureURL(int side) {
 		return sideAttributes[side].textureURL;
 	}
