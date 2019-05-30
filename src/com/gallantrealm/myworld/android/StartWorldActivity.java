@@ -93,13 +93,13 @@ public class StartWorldActivity extends Activity {
 		});
 	}
 
-	public void startupTheWorld(final String worldName, boolean reset) {
+	public void startupTheWorld(final String worldClassName, boolean reset) {
 		try {
 
 			clientModel.initializeCameraPosition(); // doing it here so world can override initial camera position
 
 			// Create or restore the world
-			final File worldFile = new File(getFilesDir(), worldName);
+			final File worldFile = new File(getFilesDir(), worldClassName);
 			if (worldFile.exists() && !reset) {
 
 				this.runOnUiThread(new Runnable() {
@@ -114,9 +114,9 @@ public class StartWorldActivity extends Activity {
 									public void run() {
 										int rc = messageDialog.getButtonPressed();
 										if (rc == 0) {
-											restoreWorld(worldName, worldFile);
+											restoreWorld(worldClassName, worldFile);
 										} else {
-											newWorld(worldName);
+											newWorld(worldClassName);
 										}
 									}
 								});
@@ -127,7 +127,7 @@ public class StartWorldActivity extends Activity {
 				});
 
 			} else {
-				newWorld(worldName);
+				newWorld(worldClassName);
 			}
 
 		} catch (Exception e) {
@@ -136,7 +136,7 @@ public class StartWorldActivity extends Activity {
 
 	}
 
-	public void restoreWorld(final String worldName, File worldFile) {
+	public void restoreWorld(final String worldClassName, File worldFile) {
 		clientModel.initializeCameraPosition(); // doing it here so world can override initial camera position
 		try {
 			FileInputStream worldInputStream = new FileInputStream(worldFile);
@@ -170,7 +170,7 @@ public class StartWorldActivity extends Activity {
 			}, 2500l);
 		} catch (Exception e) {
 			e.printStackTrace();
-			if (worldName.startsWith("file:")) {
+			if (worldClassName.startsWith("file:")) {
 				final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Sorry, the world could not be opened.", new String[] { "OK" }, null);
 				messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 					@Override
@@ -184,7 +184,7 @@ public class StartWorldActivity extends Activity {
 				messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 					@Override
 					public void onDismiss(DialogInterface dialogInterface) {
-						newWorld(worldName);
+						newWorld(worldClassName);
 					}
 				});
 				messageDialog.show();
@@ -192,11 +192,11 @@ public class StartWorldActivity extends Activity {
 		}
 	}
 
-	public void newWorld(String worldName) {
+	public void newWorld(String worldClassName) {
 		clientModel.initializeCameraPosition(); // doing it here so world can override initial camera position
 		try {
-			String saveWorldFileName = (new File(getFilesDir(), worldName)).getAbsolutePath();
-			Class<WWWorld> worldClass = (Class<WWWorld>) this.getClass().getClassLoader().loadClass(worldName);
+			String saveWorldFileName = (new File(getFilesDir(), worldClassName)).getAbsolutePath();
+			Class<WWWorld> worldClass = (Class<WWWorld>) this.getClass().getClassLoader().loadClass(worldClassName);
 			Constructor<WWWorld> constructor = worldClass.getConstructor(String.class, String.class);
 			WWWorld world = constructor.newInstance(saveWorldFileName, clientModel.getAvatarName());
 			clientModel.setLocalWorld(world);
