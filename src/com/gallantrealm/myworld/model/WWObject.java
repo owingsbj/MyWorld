@@ -3,7 +3,6 @@ package com.gallantrealm.myworld.model;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.client.renderer.IRenderable;
 import com.gallantrealm.myworld.client.renderer.IRendering;
@@ -1997,6 +1996,78 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		setTextureScale(side, scaleX, scaleY);
 		setTextureRotation(side, rotation);
 	}
+	
+	public final void setTexture(int side, Object[] textureAttributes) {
+		if (textureAttributes.length == 1) {
+			setTexture(side, (String)textureAttributes[0], 1.0f, 1.0f, 0.0f);
+		} else if (textureAttributes.length == 2) {
+			setTexture(side, (String)textureAttributes[0], (float)textureAttributes[1], 1.0f, 0.0f);
+		} else if (textureAttributes.length == 3) {
+			setTexture(side, (String)textureAttributes[0], (float)textureAttributes[1], (float)textureAttributes[2], 0.0f);
+		} else if (textureAttributes.length == 4) {
+			setTexture(side, (String)textureAttributes[0], (float)textureAttributes[1], (float)textureAttributes[2], (float)textureAttributes[3]);
+		}
+	}
+	
+	public final void setTexture(Object[] textureAttributes) {
+		setTexture(SIDE_ALL, textureAttributes);
+	}
+
+	public final void setTextureTop(Object[] textureAttributes) {
+		setTexture(SIDE_TOP, textureAttributes);
+	}
+
+	public final void setTextureBottom(Object[] textureAttributes) {
+		setTexture(SIDE_BOTTOM, textureAttributes);
+	}
+
+	public final void setTextureSide1(Object[] textureAttributes) {
+		setTexture(SIDE_SIDE1, textureAttributes);
+	}
+
+	public final void setTextureSide2(Object[] textureAttributes) {
+		setTexture(SIDE_SIDE2, textureAttributes);
+	}
+
+	public final void setTextureSide3(Object[] textureAttributes) {
+		setTexture(SIDE_SIDE3, textureAttributes);
+	}
+
+	public final void setTextureSide4(Object[] textureAttributes) {
+		setTexture(SIDE_SIDE4, textureAttributes);
+	}
+
+	public final void setTextureInsideTop(Object[] textureAttributes) {
+		setTexture(SIDE_INSIDE_TOP, textureAttributes);
+	}
+
+	public final void setTextureInsideBottom(Object[] textureAttributes) {
+		setTexture(SIDE_INSIDE_BOTTOM, textureAttributes);
+	}
+
+	public final void setTextureInside1(Object[] textureAttributes) {
+		setTexture(SIDE_INSIDE1, textureAttributes);
+	}
+
+	public final void setTextureInside2(Object[] textureAttributes) {
+		setTexture(SIDE_INSIDE2, textureAttributes);
+	}
+
+	public final void setTextureInside3(Object[] textureAttributes) {
+		setTexture(SIDE_INSIDE3, textureAttributes);
+	}
+
+	public final void setTextureInside4(Object[] textureAttributes) {
+		setTexture(SIDE_INSIDE4, textureAttributes);
+	}
+
+	public final void setTextureCutout1(Object[] textureAttributes) {
+		setTexture(SIDE_CUTOUT1, textureAttributes);
+	}
+
+	public final void setTextureCutout2(Object[] textureAttributes) {
+		setTexture(SIDE_CUTOUT2, textureAttributes);
+	}
 
 	public final float getTextureVelocityX(int side) {
 		return sideAttributes[side].textureVelocityX;
@@ -2030,8 +2101,60 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		getEditableSideAttributes(side).transparency = transparency;
 	}
 	
-	public final void setTransparency(float transparency) {
-		setTransparency(SIDE_ALL, transparency);
+	public final void setTransparencyTop(float transparency) {
+		setTransparency(SIDE_TOP, transparency);
+	}
+
+	public final void setTransparencyBottom(float transparency) {
+		setTransparency(SIDE_BOTTOM, transparency);
+	}
+
+	public final void setTransparencySide1(float transparency) {
+		setTransparency(SIDE_SIDE1, transparency);
+	}
+
+	public final void setTransparencySide2(float transparency) {
+		setTransparency(SIDE_SIDE2, transparency);
+	}
+
+	public final void setTransparencySide3(float transparency) {
+		setTransparency(SIDE_SIDE3, transparency);
+	}
+
+	public final void setTransparencySide4(float transparency) {
+		setTransparency(SIDE_SIDE4, transparency);
+	}
+
+	public final void setTransparencyInsideTop(float transparency) {
+		setTransparency(SIDE_INSIDE_TOP, transparency);
+	}
+
+	public final void setTransparencyInsideBottom(float transparency) {
+		setTransparency(SIDE_INSIDE_BOTTOM, transparency);
+	}
+
+	public final void setTransparencyInside1(float transparency) {
+		setTransparency(SIDE_INSIDE1, transparency);
+	}
+
+	public final void setTransparencyInside2(float transparency) {
+		setTransparency(SIDE_INSIDE2, transparency);
+	}
+
+	public final void setTransparencyInside3(float transparency) {
+		setTransparency(SIDE_INSIDE3, transparency);
+	}
+
+	public final void setTransparencyInside4(float transparency) {
+		setTransparency(SIDE_INSIDE4, transparency);
+	}
+
+	public final void setTransparencyCutout1(float transparency) {
+		setTransparency(SIDE_CUTOUT1, transparency);
+	}
+
+	public final void setTransparencyCutout2(float transparency) {
+		setTransparency(SIDE_CUTOUT2, transparency);
 	}
 
 	public final float getShininess(int side) {
@@ -2042,12 +2165,132 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		getEditableSideAttributes(side).shininess = shininess;
 	}
 
+	public final void setShininess(float shininess) {
+		getEditableSideAttributes(SIDE_ALL).shininess = shininess;
+	}
+
+	public final void setShininessTop(float shininess) {
+		getEditableSideAttributes(SIDE_TOP).shininess = shininess;
+	}
+
+	public final void setShininessBottom(float shininess) {
+		getEditableSideAttributes(SIDE_BOTTOM).shininess = shininess;
+	}
+
+	public final void setShininessSide1(float shininess) {
+		getEditableSideAttributes(SIDE_SIDE1).shininess = shininess;
+	}
+
+	public final void setShininessSide2(float shininess) {
+		getEditableSideAttributes(SIDE_SIDE2).shininess = shininess;
+	}
+
+	public final void setShininessSide3(float shininess) {
+		getEditableSideAttributes(SIDE_SIDE3).shininess = shininess;
+	}
+
+	public final void setShininessSide4(float shininess) {
+		getEditableSideAttributes(SIDE_SIDE4).shininess = shininess;
+	}
+
+	public final void setShininessInsideTop(float shininess) {
+		getEditableSideAttributes(SIDE_INSIDE_TOP).shininess = shininess;
+	}
+
+	public final void setShininessInsideBottom(float shininess) {
+		getEditableSideAttributes(SIDE_INSIDE_BOTTOM).shininess = shininess;
+	}
+
+	public final void setShininessInside1(float shininess) {
+		getEditableSideAttributes(SIDE_INSIDE1).shininess = shininess;
+	}
+
+	public final void setShininessInside2(float shininess) {
+		getEditableSideAttributes(SIDE_INSIDE2).shininess = shininess;
+	}
+
+	public final void setShininessInside3(float shininess) {
+		getEditableSideAttributes(SIDE_INSIDE3).shininess = shininess;
+	}
+
+	public final void setShininessInside4(float shininess) {
+		getEditableSideAttributes(SIDE_INSIDE4).shininess = shininess;
+	}
+
+	public final void setShininessCutout1(float shininess) {
+		getEditableSideAttributes(SIDE_CUTOUT1).shininess = shininess;
+	}
+
+	public final void setShininessCutout2(float shininess) {
+		getEditableSideAttributes(SIDE_CUTOUT2).shininess = shininess;
+	}
+
 	public final boolean isFullBright(int side) {
 		return sideAttributes[side].fullBright;
 	}
 
 	public final void setFullBright(int side, boolean fullBright) {
 		getEditableSideAttributes(side).fullBright = fullBright;
+	}
+	
+	public final void setFullBright(boolean fullBright) {
+		setFullBright(SIDE_ALL, fullBright);
+	}
+
+	public final void setFullBrightTop(boolean fullBright) {
+		setFullBright(SIDE_TOP, fullBright);
+	}
+
+	public final void setFullBrightBottom(boolean fullBright) {
+		setFullBright(SIDE_BOTTOM, fullBright);
+	}
+
+	public final void setFullBrightSide1(boolean fullBright) {
+		setFullBright(SIDE_SIDE1, fullBright);
+	}
+
+	public final void setFullBrightSide2(boolean fullBright) {
+		setFullBright(SIDE_SIDE2, fullBright);
+	}
+
+	public final void setFullBrightSide3(boolean fullBright) {
+		setFullBright(SIDE_SIDE3, fullBright);
+	}
+
+	public final void setFullBrightSide4(boolean fullBright) {
+		setFullBright(SIDE_SIDE4, fullBright);
+	}
+
+	public final void setFullBrightInsideTop(boolean fullBright) {
+		setFullBright(SIDE_INSIDE_TOP, fullBright);
+	}
+
+	public final void setFullBrightInsideBottom(boolean fullBright) {
+		setFullBright(SIDE_INSIDE_BOTTOM, fullBright);
+	}
+
+	public final void setFullBrightInside1(boolean fullBright) {
+		setFullBright(SIDE_INSIDE1, fullBright);
+	}
+
+	public final void setFullBrightInside2(boolean fullBright) {
+		setFullBright(SIDE_INSIDE2, fullBright);
+	}
+
+	public final void setFullBrightInside3(boolean fullBright) {
+		setFullBright(SIDE_INSIDE3, fullBright);
+	}
+
+	public final void setFullBrightInside4(boolean fullBright) {
+		setFullBright(SIDE_INSIDE4, fullBright);
+	}
+
+	public final void setFullBrightCutout1(boolean fullBright) {
+		setFullBright(SIDE_CUTOUT1, fullBright);
+	}
+
+	public final void setFullBrightCutout2(boolean fullBright) {
+		setFullBright(SIDE_CUTOUT2, fullBright);
 	}
 
 	public final boolean getTextureAlphaTest(int side) {
