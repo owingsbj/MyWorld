@@ -237,6 +237,12 @@ public class StartWorldActivity extends Activity {
 			}, 2500l);
 		} catch (Exception e) {
 			e.printStackTrace();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't initialize the world.  Try choosing the world again and replaying.", new String[] { "OK" }, null);
+					messageDialog.show();
+				}
+			});
 		}
 	}
 
