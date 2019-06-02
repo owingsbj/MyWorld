@@ -2,15 +2,13 @@ package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
 import java.io.Serializable;
-
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
 
 /**
- * A simple shape is a primitive that forms the simpler shapes: box, cylinder, sphere, torus, and variants of these due
- * to tapering, shearing, twist, cutout, and hollowing.
+ * A simple shape is a primitive that forms the simpler shapes: box, cylinder, sphere, torus, and variants of these due to tapering, shearing, twist, cutout, and hollowing.
  */
 public abstract class WWSimpleShape extends WWObject implements Serializable, Cloneable, Sendable {
 	static final long serialVersionUID = 1L;
@@ -75,7 +73,7 @@ public abstract class WWSimpleShape extends WWObject implements Serializable, Cl
 	public void setShearY(float shearY) {
 		this.shearY = shearY;
 	}
-	
+
 	public final void setShear(float[] dims) {
 		this.shearX = dims[0];
 		this.shearY = dims[1];
@@ -100,6 +98,14 @@ public abstract class WWSimpleShape extends WWObject implements Serializable, Cl
 	public final void setTaper(float taperX, float taperY) {
 		this.taperX = taperX;
 		this.taperY = taperY;
+	}
+
+	public final void setTaper(float[] tapers) {
+		if (tapers.length == 1) {
+			setTaper(tapers[0], tapers[0]);
+		} else {
+			setTaper(tapers[0], tapers[1]);
+		}
 	}
 
 	public final float getHollow() {
@@ -130,7 +136,7 @@ public abstract class WWSimpleShape extends WWObject implements Serializable, Cl
 		setCutoutStart(start);
 		setCutoutEnd(end);
 	}
-	
+
 	public final void setCutout(float[] dims) {
 		setCutout(dims[0], dims[1]);
 	}
@@ -148,6 +154,14 @@ public abstract class WWSimpleShape extends WWObject implements Serializable, Cl
 	}
 
 	public final void setCircleVertices(int vertices) {
+		circleVertices = vertices;
+	}
+
+	public final int getVertices() {
+		return (circleVertices > 0) ? circleVertices : 16;
+	}
+
+	public final void setVertices(int vertices) {
 		circleVertices = vertices;
 	}
 

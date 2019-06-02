@@ -920,6 +920,12 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setFreedomMoveZ(boolean freedomMoveZ) {
 		this.freedomMoveZ = freedomMoveZ;
 	}
+	
+	public final void setFreedomMove(boolean[] freedoms) {
+		this.freedomMoveX = freedoms[0];
+		this.freedomMoveX = freedoms[1];
+		this.freedomMoveX = freedoms[2];
+	}
 
 	public final boolean isFreedomRotateX() {
 		return freedomRotateX;
@@ -943,6 +949,12 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final void setFreedomRotateZ(boolean freedomRotateZ) {
 		this.freedomRotateZ = freedomRotateZ;
+	}
+	
+	public final void setFreedomRotate(boolean[] freedoms) {
+		this.freedomRotateX = freedoms[0];
+		this.freedomRotateY = freedoms[1];
+		this.freedomRotateZ = freedoms[2];
 	}
 
 	/**
@@ -2001,11 +2013,11 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		if (textureAttributes.length == 1) {
 			setTexture(side, (String)textureAttributes[0], 1.0f, 1.0f, 0.0f);
 		} else if (textureAttributes.length == 2) {
-			setTexture(side, (String)textureAttributes[0], (float)textureAttributes[1], 1.0f, 0.0f);
+			setTexture(side, (String)textureAttributes[0], ((Double)textureAttributes[1]).floatValue(), 1.0f, 0.0f);
 		} else if (textureAttributes.length == 3) {
-			setTexture(side, (String)textureAttributes[0], (float)textureAttributes[1], (float)textureAttributes[2], 0.0f);
+			setTexture(side, (String)textureAttributes[0], ((Double)textureAttributes[1]).floatValue(), ((Double)textureAttributes[2]).floatValue(), 0.0f);
 		} else if (textureAttributes.length == 4) {
-			setTexture(side, (String)textureAttributes[0], (float)textureAttributes[1], (float)textureAttributes[2], (float)textureAttributes[3]);
+			setTexture(side, (String)textureAttributes[0], ((Double)textureAttributes[1]).floatValue(), ((Double)textureAttributes[2]).floatValue(), ((Double)textureAttributes[3]).floatValue());
 		}
 	}
 	
@@ -2101,6 +2113,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		getEditableSideAttributes(side).transparency = transparency;
 	}
 	
+	public final void setTransparency(float transparency) {
+		setTransparency(SIDE_ALL, transparency);
+	}
+
 	public final void setTransparencyTop(float transparency) {
 		setTransparency(SIDE_TOP, transparency);
 	}
