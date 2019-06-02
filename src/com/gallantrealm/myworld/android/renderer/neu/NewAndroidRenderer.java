@@ -312,9 +312,10 @@ public final class NewAndroidRenderer extends AndroidRenderer implements IRender
 			} catch (InterruptedException e) {
 			}
 
-			if (drawFrameCount++ % 90 == 0) {
-				System.out.println(1000 / (drawFrameTime - lastDrawFrameTime));
-			}
+			// Enable the code below to print frame rate
+//			if (drawFrameCount++ % 90 == 0) {
+//				System.out.println(1000 / (drawFrameTime - lastDrawFrameTime));
+//			}
 			lastDrawFrameTime = drawFrameTime;
 
 			GLWorld worldRendering = (GLWorld) world.getRendering();
