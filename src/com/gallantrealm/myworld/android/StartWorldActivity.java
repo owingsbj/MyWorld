@@ -243,11 +243,22 @@ public class StartWorldActivity extends Activity {
 					}
 				}
 			}, 2500l);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			runOnUiThread(new Runnable() {
 				public void run() {
-					final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't initialize the world.  Try choosing the world again and replaying.", new String[] { "OK" }, null);
+					String message;
+					if (e.getCause() != null) {
+						message = e.getCause().getMessage();
+					} else {
+						message = e.getMessage();
+					}
+					final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't initialize the world.  "+message, new String[] { "OK" }, null);
+					messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+						public void onDismiss(DialogInterface d) {
+							clientModel.getContext().finish();
+						}
+					});
 					messageDialog.show();
 				}
 			});
