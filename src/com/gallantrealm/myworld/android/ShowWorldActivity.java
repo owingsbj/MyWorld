@@ -111,7 +111,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		System.out.println("ShowWorldActivity.onCreate");
+		System.out.println(">ShowWorldActivity.onCreate");
 		super.onCreate(savedInstanceState);
 		clientModel.setContext(this);
 		setContentView(R.layout.show_world);
@@ -210,11 +210,12 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		avatarActionsView.setOnTouchListener(this);
 		worldActionsView.setOnTouchListener(this);
 
+		System.out.println("<ShowWorldActivity.onCreate");
 	}
 
 	@Override
 	protected void onStart() {
-		System.out.println("ShowWorldActivity.onStart");
+		System.out.println(">ShowWorldActivity.onStart");
 		super.onStart();
 		try {
 			mogaController = com.bda.controller.Controller.getInstance(this);
@@ -269,6 +270,8 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		if (clientModel.world != null) {
 			clientModel.world.displayed();
 		}
+
+		System.out.println("<ShowWorldActivity.onStart");
 	}
 
 	private void updateWorldActions(final boolean restoring) {
@@ -489,7 +492,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 
 	@Override
 	protected void onResume() {
-		System.out.println("ShowWorldActivity.onResume");
+		System.out.println(">ShowWorldActivity.onResume");
 		clientModel.setContext(this);
 
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -515,11 +518,12 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		}
 		super.onResume();
 		mogaController.onResume();
+		System.out.println("<ShowWorldActivity.onResume");
 	}
 
 	@Override
 	protected void onPause() {
-		System.out.println("ShowWorldActivity.onPause");
+		System.out.println(">ShowWorldActivity.onPause");
 		super.onPause();
 		if (sensorManager != null && clientModel.useSensors()) {
 			sensorManager.unregisterListener(this);
@@ -533,11 +537,12 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		mogaController.onPause();
 
 		worldRenderer.getSoundGenerator().pause();
+		System.out.println("<ShowWorldActivity.onPause");
 	}
 
 	@Override
 	protected void onStop() {
-		System.out.println("ShowWorldActivity.onStop");
+		System.out.println(">ShowWorldActivity.onStop");
 		super.onStop();
 		wakelock.release();
 		worldView.onPause();
@@ -567,13 +572,16 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		clientModel.savePreferences(this);
 
 		worldRenderer.getSoundGenerator().stop();
+
+		System.out.println("<ShowWorldActivity.onStop");
 	}
 
 	@Override
 	protected void onDestroy() {
-		System.out.println("ShowWorldActivity.onDestroy");
+		System.out.println(">ShowWorldActivity.onDestroy");
 		worldRenderer.getSoundGenerator().destroy();
 		super.onDestroy();
+		System.out.println("<ShowWorldActivity.onDestroy");
 	}
 
 	private boolean moving;

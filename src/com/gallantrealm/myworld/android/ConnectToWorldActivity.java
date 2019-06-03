@@ -42,6 +42,7 @@ public class ConnectToWorldActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		System.out.println(">ConnectToWorldActivity.onCreate");
 		super.onCreate(savedInstanceState);
 
 		// Set up main log handler
@@ -90,6 +91,7 @@ public class ConnectToWorldActivity extends Activity {
 			}
 		});
 
+		System.out.println("<ConnectToWorldActivity.onCreate");
 	}
 
 	public void onConnectButtonClicked() {
@@ -105,6 +107,7 @@ public class ConnectToWorldActivity extends Activity {
 	}
 
 	public WWWorld startupTheWorld() {
+		System.out.println(">ConnectToWorldActivity.startupWorld");
 		String worldFileName = getFileStreamPath("MyWorld.dat").getAbsolutePath();
 		int port = 8880;
 		int clientLimit = 10;
@@ -143,8 +146,8 @@ public class ConnectToWorldActivity extends Activity {
 			e.printStackTrace();
 			System.exit(1);
 		}
+		System.out.println("<ConnectToWorldActivity.startupWorld");
 		return world;
-
 	}
 
 	/**

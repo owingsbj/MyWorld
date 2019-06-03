@@ -29,9 +29,12 @@ public class StartWorldActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		System.out.println(">StartWorldActivity.onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start_world);
 
+		clientModel.setContext(this);
+		
 		final String worldClassName;
 		if (getIntent().getAction() != null) {
 			worldClassName = getIntent().getAction();
@@ -91,9 +94,11 @@ public class StartWorldActivity extends Activity {
 				}
 			}
 		});
+		System.out.println("<StartWorldActivity.onCreate");
 	}
 
 	public void startupTheWorld(final String worldClassName, boolean reset) {
+		System.out.println(">StartWorldActivity.startupTheWorld");
 		try {
 
 			clientModel.initializeCameraPosition(); // doing it here so world can override initial camera position
@@ -133,10 +138,11 @@ public class StartWorldActivity extends Activity {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		System.out.println("<StartWorldActivity.startupTheWorld");
 	}
 
 	public void restoreWorld(final String worldClassName, File worldFile) {
+		System.out.println(">StartWorldActivity.restoreWorld");
 		clientModel.initializeCameraPosition(); // doing it here so world can override initial camera position
 		try {
 			FileInputStream worldInputStream = new FileInputStream(worldFile);
@@ -190,9 +196,11 @@ public class StartWorldActivity extends Activity {
 				messageDialog.show();
 			}
 		}
+		System.out.println("<StartWorldActivity.restoreWorld");
 	}
 
 	public void newWorld(String worldClassName) {
+		System.out.println(">StartWorldActivity.newWorld");
 		clientModel.initializeCameraPosition(); // doing it here so world can override initial camera position
 		try {
 			String saveWorldFileName = (new File(getFilesDir(), worldClassName)).getAbsolutePath();
@@ -244,17 +252,36 @@ public class StartWorldActivity extends Activity {
 				}
 			});
 		}
+		System.out.println("<StartWorldActivity.newWorld");
+	}
+
+	@Override
+	protected void onStart() {
+		System.out.println(">StartWorldActivity.onStart");
+		super.onStart();
+		System.out.println("<StartWorldActivity.onStart");
 	}
 
 	@Override
 	protected void onStop() {
+		System.out.println(">StartWorldActivity.onStop");
 		if (clientModel.useZeemote()) {
 			clientModel.cancelZeemoteConnect();
 		}
 		super.onStop();
+		System.out.println("<StartWorldActivity.onStop");
+	}
+
+	@Override
+	protected void onDestroy() {
+		System.out.println(">StartWorldActivity.onDestroy");
+		super.onDestroy();
+		System.out.println("<StartWorldActivity.onDestroy");
 	}
 
 	public void servelocalWorld(WWWorld world, String worldFileName) {
+		System.out.println(">ConnectToWorldActivity.servelocalWorld");
+
 		final int port = 8880;
 		final int clientLimit = 10;
 
@@ -268,6 +295,7 @@ public class StartWorldActivity extends Activity {
 		clientModel.setLocalServer(server);
 		server.startServer(true);
 		// clientModel.connect();
+		System.out.println("<ConnectToWorldActivity.servelocalWorld");
 	}
 
 }
