@@ -1,5 +1,6 @@
 package com.gallantrealm.myworld.model;
 
+import java.io.Serializable;
 
 /**
  * An action is a client capability that can be performed for a user or upon an object in the world. Actions differ from
@@ -10,7 +11,7 @@ package com.gallantrealm.myworld.model;
  * By being part of the model, it is possible to create actions that are platform independent. However, some actions are
  * likely to be platform dependent (displaying dialogs or performing platform specific functions).
  */
-public abstract class WWAction {
+public abstract class WWAction implements Serializable {
 
 	boolean enabled = true;
 

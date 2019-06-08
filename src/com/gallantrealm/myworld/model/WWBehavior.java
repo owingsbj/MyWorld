@@ -118,9 +118,18 @@ public abstract class WWBehavior extends WWEntity {
 	/**
 	 * This event is invoked when the timer times down to zero. The timer can be reset within this event for repeated
 	 * timing, for tasks like sequencing animations or adjusting physics
+	 * @deprecated
 	 */
 	public boolean timerEvent() {
 		return false;
+	}
+	
+	/**
+	 * This event is invoked when the timer times down to zero. The timer can be reset within this event for repeated
+	 * timing, for tasks like sequencing animations or adjusting physics
+	 */
+	public boolean timerEvent(WWObject object) {
+		return timerEvent();
 	}
 
 	// TODO add other needed events:

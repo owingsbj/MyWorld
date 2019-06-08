@@ -34,15 +34,6 @@ public class StartWorldActivity extends Activity {
 		setContentView(R.layout.start_world);
 
 		clientModel.setContext(this);
-		
-		final String worldClassName;
-		if (getIntent().getAction() != null) {
-			worldClassName = getIntent().getAction();
-		} else if (clientModel.getWorldClassName() != null) {
-			worldClassName = clientModel.getWorldClassName();
-		} else {
-			worldClassName = clientModel.getWorldName();
-		}
 
 		startMessage = (TextView) findViewById(R.id.startMessage);
 		startupHintText = (TextView) findViewById(R.id.startupHintText);
@@ -51,6 +42,23 @@ public class StartWorldActivity extends Activity {
 		Typeface typeface = clientModel.getTypeface(this);
 		if (typeface != null) {
 			startMessage.setTypeface(typeface);
+		}
+		
+		System.out.println("<StartWorldActivity.onCreate");
+	}
+
+	@Override
+	protected void onStart() {
+		System.out.println(">StartWorldActivity.onStart");
+		super.onStart();
+
+		final String worldClassName;
+		if (getIntent().getAction() != null) {
+			worldClassName = getIntent().getAction();
+		} else if (clientModel.getWorldClassName() != null) {
+			worldClassName = clientModel.getWorldClassName();
+		} else {
+			worldClassName = clientModel.getWorldName();
 		}
 
 		AsyncTask.execute(new Runnable() {
@@ -94,9 +102,10 @@ public class StartWorldActivity extends Activity {
 				}
 			}
 		});
-		System.out.println("<StartWorldActivity.onCreate");
-	}
 
+		System.out.println("<StartWorldActivity.onStart");
+	}
+		
 	public void startupTheWorld(final String worldClassName, boolean reset) {
 		System.out.println(">StartWorldActivity.startupTheWorld");
 		try {
@@ -154,7 +163,6 @@ public class StartWorldActivity extends Activity {
 			world.restored();
 			if (world.usesAccelerometer() && clientModel.useSensors()) {
 				runOnUiThread(new Runnable() {
-					@Override
 					public void run() {
 						startupHintText.setText(getString(R.string.accelerometerHint));
 						startupHintText.setVisibility(View.VISIBLE);
@@ -164,7 +172,6 @@ public class StartWorldActivity extends Activity {
 			// serveLocalWorld(world);
 			Timer t = new Timer();
 			t.schedule(new TimerTask() {
-				@Override
 				public void run() {
 					if (clientModel.useZeemote()) {
 						clientModel.connectToZeemote(StartWorldActivity.this);
@@ -176,25 +183,31 @@ public class StartWorldActivity extends Activity {
 			}, 2500l);
 		} catch (Exception e) {
 			e.printStackTrace();
-			if (worldClassName.startsWith("file:")) {
-				final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Sorry, the world could not be opened.", new String[] { "OK" }, null);
-				messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-					@Override
-					public void onDismiss(DialogInterface dialogInterface) {
-						StartWorldActivity.this.finish();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					if (worldClassName.startsWith("file:")) {
+						final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Sorry, the world could not be opened.", new String[] { "OK" }, null);
+						messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+							public void onDismiss(DialogInterface dialogInterface) {
+								StartWorldActivity.this.finish();
+							}
+						});
+						messageDialog.show();
+					} else {
+						final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "The state could not be restored. Starting new.", new String[] { "OK" }, null);
+						messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+							public void onDismiss(DialogInterface dialogInterface) {
+								AsyncTask.execute(new Runnable() {
+									public void run() {
+										newWorld(worldClassName);
+									}
+								});
+							}
+						});
+						messageDialog.show();
 					}
-				});
-				messageDialog.show();
-			} else {
-				final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "The state could not be restored. Starting new.", new String[] { "OK" }, null);
-				messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-					@Override
-					public void onDismiss(DialogInterface dialogInterface) {
-						newWorld(worldClassName);
-					}
-				});
-				messageDialog.show();
-			}
+				}
+			});
 		}
 		System.out.println("<StartWorldActivity.restoreWorld");
 	}
@@ -253,7 +266,7 @@ public class StartWorldActivity extends Activity {
 					} else {
 						message = e.getMessage();
 					}
-					final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't initialize the world.  "+message, new String[] { "OK" }, null);
+					final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't initialize the world.  " + message, new String[] { "OK" }, null);
 					messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface d) {
 							clientModel.getContext().finish();
@@ -264,13 +277,6 @@ public class StartWorldActivity extends Activity {
 			});
 		}
 		System.out.println("<StartWorldActivity.newWorld");
-	}
-
-	@Override
-	protected void onStart() {
-		System.out.println(">StartWorldActivity.onStart");
-		super.onStart();
-		System.out.println("<StartWorldActivity.onStart");
 	}
 
 	@Override

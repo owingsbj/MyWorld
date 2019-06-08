@@ -1744,7 +1744,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				} else if (command.equals("timer")) {
 					for (int i = 0; i < behaviors.length; i++) {
 						behaviors[i].behavior.world = world;
-						overrideParent |= behaviors[i].behavior.timerEvent();
+						overrideParent |= behaviors[i].behavior.timerEvent(this);
 					}
 				}
 			}

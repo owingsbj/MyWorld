@@ -30,6 +30,7 @@ import com.zeemote.zc.IStreamConnector;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ConfigurationInfo;
@@ -45,6 +46,7 @@ import android.media.MediaPlayer;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -1264,6 +1266,48 @@ public class AndroidClientModel extends ClientModel {
 			return true;
 		}
 		return false;
+	}
+	
+	private class ReturnValue {
+		public int rc;
+	}
+
+	@Override
+	public int alert(final String title, final String message, final String[] options, final String checkinMessage) {
+		if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+			throw new IllegalThreadStateException("This can't be called on the looper thread");
+		}
+		final ReturnValue returnValue = new ReturnValue();
+		getContext().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				final MessageDialog messageDialog = new MessageDialog(getContext(), title, message, options, checkinMessage);
+//				currentDialog = messageDialog;
+				messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialogInterface) {
+						synchronized (returnValue) {
+							returnValue.rc = messageDialog.getButtonPressed();
+							returnValue.notify();
+						}
+//						currentDialog = null;
+					}
+				});
+				try {
+					messageDialog.show();
+				} catch (Exception e) {
+					System.err.println("Couldn't display alert: " + message);
+					e.printStackTrace();
+				}
+			}
+		});
+		try {
+			synchronized (returnValue) {
+				returnValue.wait();
+			}
+		} catch (InterruptedException e) {
+		}
+		return returnValue.rc;
 	}
 	
 }

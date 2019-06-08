@@ -1203,7 +1203,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 					messageDialog.show();
 				} catch (Exception e) {
 					System.err.println("Couldn't display alert: " + message);
-					System.err.println("Exception raised: "+e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		});
