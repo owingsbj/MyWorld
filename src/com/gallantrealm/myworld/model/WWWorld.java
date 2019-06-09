@@ -1047,7 +1047,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		return status;
 	}
 
-	public final void setStatus(String status) {
+	public void setStatus(String status) {
 		this.status = status;
 		this.setLastModifyTime(getWorldTime());
 	}
