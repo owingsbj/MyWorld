@@ -1079,6 +1079,13 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		return rendering;
 	}
 
+	@Override
+	public void updateRendering() {
+		if (rendering != null) {
+			rendering.updateRendering();
+		}
+	}
+	
 	public final WWVector getSize() {
 		return new WWVector(sizeX, sizeY, sizeZ);
 	}

@@ -17,6 +17,11 @@ public interface IRenderable {
 	void createRendering(IRenderer renderer, long worldTime);
 
 	IRendering getRendering();
+	
+	/**
+	 * Updates the rendering after changes to properties have been made that change the shape.
+	 */
+	void updateRendering();
 
 	void dropRendering();
 

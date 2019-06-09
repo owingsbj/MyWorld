@@ -437,6 +437,13 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	public IRendering getRendering() {
 		return rendering;
 	}
+	
+	@Override
+	public void updateRendering() {
+		if (rendering != null) {
+			rendering.updateRendering();
+		}
+	}
 
 	@Override
 	public void dropRendering() {
