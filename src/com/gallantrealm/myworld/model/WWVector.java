@@ -2,7 +2,6 @@ package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
 import java.io.Serializable;
-
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
@@ -11,7 +10,7 @@ import com.gallantrealm.myworld.communication.Sendable;
 /**
  * This class provides a simple fixed vector (starts at the origin). It is used for position and size information.
  */
-public final class WWVector implements Cloneable, Serializable, Sendable {
+public class WWVector implements Cloneable, Serializable, Sendable {
 	static final long serialVersionUID = 1L;
 
 	public static final WWVector ZERO_VECTOR = new WWVector(0, 0, 0);
