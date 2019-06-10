@@ -1,6 +1,9 @@
 package com.gallantrealm.myworld.model;
 
-public class WWColor {
+import java.io.Serializable;
+
+public class WWColor implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	public int color;
 

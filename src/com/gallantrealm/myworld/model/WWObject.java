@@ -1862,6 +1862,66 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final WWColor getColor(int side) {
 		return new WWColor(sideAttributes[side].red, sideAttributes[side].green, sideAttributes[side].blue);
 	}
+	
+	public final WWColor getColor() {
+		return getColor(SIDE_ALL);
+	}
+
+	public final WWColor getColorTop() {
+		return getColor(SIDE_TOP);
+	}
+
+	public final WWColor getColorBottom() {
+		return getColor(SIDE_BOTTOM);
+	}
+
+	public final WWColor getColorSide1() {
+		return getColor(SIDE_SIDE1);
+	}
+
+	public final WWColor getColorSide2() {
+		return getColor(SIDE_SIDE2);
+	}
+
+	public final WWColor getColorSide3() {
+		return getColor(SIDE_SIDE3);
+	}
+
+	public final WWColor getColorSide4() {
+		return getColor(SIDE_SIDE4);
+	}
+
+	public final WWColor getColorInsideTop() {
+		return getColor(SIDE_INSIDE_TOP);
+	}
+
+	public final WWColor getColorInsideBottom() {
+		return getColor(SIDE_INSIDE_BOTTOM);
+	}
+
+	public final WWColor getColorInside1() {
+		return getColor(SIDE_INSIDE1);
+	}
+
+	public final WWColor getColorInside2() {
+		return getColor(SIDE_INSIDE2);
+	}
+
+	public final WWColor getColorInside3() {
+		return getColor(SIDE_INSIDE3);
+	}
+
+	public final WWColor getColorInside4() {
+		return getColor(SIDE_INSIDE4);
+	}
+
+	public final WWColor getColorCutout1() {
+		return getColor(SIDE_CUTOUT1);
+	}
+
+	public final WWColor getColorCutout2() {
+		return getColor(SIDE_CUTOUT2);
+	}
 
 	public final float getRedColor(int side) {
 		return sideAttributes[side].red;
@@ -1881,64 +1941,64 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		getEditableSideAttributes(side).blue = color.getBlue();
 	}
 	
-	public final void setColor(int color) {
-		setColor(SIDE_ALL, new WWColor(color));
+	public final void setColor(WWColor color) {
+		setColor(SIDE_ALL, color);
 	}
 	
-	public final void setColorTop(int color) {
-		setColor(SIDE_TOP, new WWColor(color));
+	public final void setColorTop(WWColor color) {
+		setColor(SIDE_TOP, color);
 	}
 
-	public final void setColorBottom(int color) {
-		setColor(SIDE_BOTTOM, new WWColor(color));
+	public final void setColorBottom(WWColor color) {
+		setColor(SIDE_BOTTOM, color);
 	}
 
-	public final void setColorSide1(int color) {
-		setColor(SIDE_SIDE1, new WWColor(color));
+	public final void setColorSide1(WWColor color) {
+		setColor(SIDE_SIDE1, color);
 	}
 
-	public final void setColorSide2(int color) {
-		setColor(SIDE_SIDE2, new WWColor(color));
+	public final void setColorSide2(WWColor color) {
+		setColor(SIDE_SIDE2, color);
 	}
 
-	public final void setColorSide3(int color) {
-		setColor(SIDE_SIDE3, new WWColor(color));
+	public final void setColorSide3(WWColor color) {
+		setColor(SIDE_SIDE3, color);
 	}
 
-	public final void setColorSide4(int color) {
-		setColor(SIDE_SIDE4, new WWColor(color));
+	public final void setColorSide4(WWColor color) {
+		setColor(SIDE_SIDE4, color);
 	}
 
-	public final void setColorInsideTop(int color) {
-		setColor(SIDE_INSIDE_TOP, new WWColor(color));
+	public final void setColorInsideTop(WWColor color) {
+		setColor(SIDE_INSIDE_TOP, color);
 	}
 
-	public final void setColorInsideBottom(int color) {
-		setColor(SIDE_INSIDE_BOTTOM, new WWColor(color));
+	public final void setColorInsideBottom(WWColor color) {
+		setColor(SIDE_INSIDE_BOTTOM, color);
 	}
 
-	public final void setColorInside1(int color) {
-		setColor(SIDE_INSIDE1, new WWColor(color));
+	public final void setColorInside1(WWColor color) {
+		setColor(SIDE_INSIDE1, color);
 	}
 
-	public final void setColorInside2(int color) {
-		setColor(SIDE_INSIDE2, new WWColor(color));
+	public final void setColorInside2(WWColor color) {
+		setColor(SIDE_INSIDE2, color);
 	}
 
-	public final void setColorInside3(int color) {
-		setColor(SIDE_INSIDE3, new WWColor(color));
+	public final void setColorInside3(WWColor color) {
+		setColor(SIDE_INSIDE3, color);
 	}
 
-	public final void setColorInside4(int color) {
-		setColor(SIDE_INSIDE4, new WWColor(color));
+	public final void setColorInside4(WWColor color) {
+		setColor(SIDE_INSIDE4, color);
 	}
 
-	public final void setColorCutout1(int color) {
-		setColor(SIDE_CUTOUT1, new WWColor(color));
+	public final void setColorCutout1(WWColor color) {
+		setColor(SIDE_CUTOUT1, color);
 	}
 
-	public final void setColorCutout2(int color) {
-		setColor(SIDE_CUTOUT2, new WWColor(color));
+	public final void setColorCutout2(WWColor color) {
+		setColor(SIDE_CUTOUT2, color);
 	}
 
 	public final String getTextureURL(int side) {
@@ -2004,6 +2064,82 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		getEditableSideAttributes(side).textureScaleX = scaleX;
 		getEditableSideAttributes(side).textureScaleY = scaleY;
 	}
+	
+	public final WWTexture getTexture(int side) {
+		WWTexture texture = new WWTexture();
+		SideAttributes sideAttributes = getEditableSideAttributes(side);
+		texture.url = sideAttributes.textureURL;
+		texture.scaleX = sideAttributes.textureScaleX;
+		texture.scaleY = sideAttributes.textureScaleY;
+		texture.rotation = sideAttributes.textureRotation;
+		texture.offsetX = sideAttributes.textureOffsetX;
+		texture.offsetY = sideAttributes.textureOffsetY;
+		texture.velocityX = sideAttributes.textureVelocityX;
+		texture.velocityY = sideAttributes.textureVelocityY;
+		texture.aMomentum = sideAttributes.textureAMomentum;
+		texture.refreshInterval = sideAttributes.textureRefreshInterval;
+		return texture;
+	}
+	
+	public final WWTexture getTexture() {
+		return getTexture(SIDE_ALL);
+	}
+
+	public final WWTexture getTextureTop() {
+		return getTexture(SIDE_TOP);
+	}
+
+	public final WWTexture getTextureBottom() {
+		return getTexture(SIDE_BOTTOM);
+	}
+
+	public final WWTexture getTextureSide1() {
+		return getTexture(SIDE_SIDE1);
+	}
+
+	public final WWTexture getTextureSide2() {
+		return getTexture(SIDE_SIDE2);
+	}
+
+	public final WWTexture getTextureSide3() {
+		return getTexture(SIDE_SIDE3);
+	}
+
+	public final WWTexture getTextureSide4() {
+		return getTexture(SIDE_SIDE4);
+	}
+
+	public final WWTexture getTextureInsideTop() {
+		return getTexture(SIDE_INSIDE_TOP);
+	}
+
+	public final WWTexture getTextureInsideBottom() {
+		return getTexture(SIDE_INSIDE_BOTTOM);
+	}
+
+	public final WWTexture getTextureInside1() {
+		return getTexture(SIDE_INSIDE1);
+	}
+
+	public final WWTexture getTextureInside2() {
+		return getTexture(SIDE_INSIDE2);
+	}
+
+	public final WWTexture getTextureInside3() {
+		return getTexture(SIDE_INSIDE3);
+	}
+
+	public final WWTexture getTextureInside4() {
+		return getTexture(SIDE_INSIDE4);
+	}
+
+	public final WWTexture getTextureCutout1() {
+		return getTexture(SIDE_CUTOUT1);
+	}
+
+	public final WWTexture getTextureCutout2() {
+		return getTexture(SIDE_CUTOUT2);
+	}
 
 	public final void setTexture(int side, String textureUrl, float scaleX, float scaleY) {
 		setTextureURL(side, textureUrl);
@@ -2016,76 +2152,76 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		setTextureRotation(side, rotation);
 	}
 	
-	public final void setTexture(int side, Object[] textureAttributes) {
-		if (textureAttributes.length == 1) {
-			setTexture(side, (String)textureAttributes[0], 1.0f, 1.0f, 0.0f);
-		} else if (textureAttributes.length == 2) {
-			setTexture(side, (String)textureAttributes[0], ((Double)textureAttributes[1]).floatValue(), 1.0f, 0.0f);
-		} else if (textureAttributes.length == 3) {
-			setTexture(side, (String)textureAttributes[0], ((Double)textureAttributes[1]).floatValue(), ((Double)textureAttributes[2]).floatValue(), 0.0f);
-		} else if (textureAttributes.length == 4) {
-			setTexture(side, (String)textureAttributes[0], ((Double)textureAttributes[1]).floatValue(), ((Double)textureAttributes[2]).floatValue(), ((Double)textureAttributes[3]).floatValue());
-		}
+	public final void setTexture(int side, WWTexture texture) {
+		setTextureURL(side, texture.url);
+		setTextureScale(side, texture.scaleX, texture.scaleY);
+		setTextureRotation(side, texture.rotation);
+		setTextureOffsetX(side, texture.offsetX);
+		setTextureOffsetY(side, texture.offsetY);
+		setTextureVelocityX(side, texture.velocityX);
+		setTextureVelocityY(side, texture.velocityY);
+		setTextureAMomentum(side, texture.aMomentum);
+		setTextureRefreshInterval(side, texture.refreshInterval);
 	}
 	
-	public final void setTexture(Object[] textureAttributes) {
-		setTexture(SIDE_ALL, textureAttributes);
+	public final void setTexture(WWTexture texture) {
+		setTexture(SIDE_ALL, texture);
 	}
 
-	public final void setTextureTop(Object[] textureAttributes) {
-		setTexture(SIDE_TOP, textureAttributes);
+	public final void setTextureTop(WWTexture texture) {
+		setTexture(SIDE_TOP, texture);
 	}
 
-	public final void setTextureBottom(Object[] textureAttributes) {
-		setTexture(SIDE_BOTTOM, textureAttributes);
+	public final void setTextureBottom(WWTexture texture) {
+		setTexture(SIDE_BOTTOM, texture);
 	}
 
-	public final void setTextureSide1(Object[] textureAttributes) {
-		setTexture(SIDE_SIDE1, textureAttributes);
+	public final void setTextureSide1(WWTexture texture) {
+		setTexture(SIDE_SIDE1, texture);
 	}
 
-	public final void setTextureSide2(Object[] textureAttributes) {
-		setTexture(SIDE_SIDE2, textureAttributes);
+	public final void setTextureSide2(WWTexture texture) {
+		setTexture(SIDE_SIDE2, texture);
 	}
 
-	public final void setTextureSide3(Object[] textureAttributes) {
-		setTexture(SIDE_SIDE3, textureAttributes);
+	public final void setTextureSide3(WWTexture texture) {
+		setTexture(SIDE_SIDE3, texture);
 	}
 
-	public final void setTextureSide4(Object[] textureAttributes) {
-		setTexture(SIDE_SIDE4, textureAttributes);
+	public final void setTextureSide4(WWTexture texture) {
+		setTexture(SIDE_SIDE4, texture);
 	}
 
-	public final void setTextureInsideTop(Object[] textureAttributes) {
-		setTexture(SIDE_INSIDE_TOP, textureAttributes);
+	public final void setTextureInsideTop(WWTexture texture) {
+		setTexture(SIDE_INSIDE_TOP, texture);
 	}
 
-	public final void setTextureInsideBottom(Object[] textureAttributes) {
-		setTexture(SIDE_INSIDE_BOTTOM, textureAttributes);
+	public final void setTextureInsideBottom(WWTexture texture) {
+		setTexture(SIDE_INSIDE_BOTTOM, texture);
 	}
 
-	public final void setTextureInside1(Object[] textureAttributes) {
-		setTexture(SIDE_INSIDE1, textureAttributes);
+	public final void setTextureInside1(WWTexture texture) {
+		setTexture(SIDE_INSIDE1, texture);
 	}
 
-	public final void setTextureInside2(Object[] textureAttributes) {
-		setTexture(SIDE_INSIDE2, textureAttributes);
+	public final void setTextureInside2(WWTexture texture) {
+		setTexture(SIDE_INSIDE2, texture);
 	}
 
-	public final void setTextureInside3(Object[] textureAttributes) {
-		setTexture(SIDE_INSIDE3, textureAttributes);
+	public final void setTextureInside3(WWTexture texture) {
+		setTexture(SIDE_INSIDE3, texture);
 	}
 
-	public final void setTextureInside4(Object[] textureAttributes) {
-		setTexture(SIDE_INSIDE4, textureAttributes);
+	public final void setTextureInside4(WWTexture texture) {
+		setTexture(SIDE_INSIDE4, texture);
 	}
 
-	public final void setTextureCutout1(Object[] textureAttributes) {
-		setTexture(SIDE_CUTOUT1, textureAttributes);
+	public final void setTextureCutout1(WWTexture texture) {
+		setTexture(SIDE_CUTOUT1, texture);
 	}
 
-	public final void setTextureCutout2(Object[] textureAttributes) {
-		setTexture(SIDE_CUTOUT2, textureAttributes);
+	public final void setTextureCutout2(WWTexture texture) {
+		setTexture(SIDE_CUTOUT2, texture);
 	}
 
 	public final float getTextureVelocityX(int side) {
@@ -2114,6 +2250,66 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final float getTransparency(int side) {
 		return sideAttributes[side].transparency;
+	}
+	
+	public final float getTransparency() {
+		return getTransparency(SIDE_ALL);
+	}
+
+	public final float getTransparencyTop() {
+		return getTransparency(SIDE_TOP);
+	}
+
+	public final float getTransparencyBottom() {
+		return getTransparency(SIDE_BOTTOM);
+	}
+
+	public final float getTransparencySide1() {
+		return getTransparency(SIDE_SIDE1);
+	}
+
+	public final float getTransparencySide2() {
+		return getTransparency(SIDE_SIDE2);
+	}
+
+	public final float getTransparencySide3() {
+		return getTransparency(SIDE_SIDE3);
+	}
+
+	public final float getTransparencySide4() {
+		return getTransparency(SIDE_SIDE4);
+	}
+
+	public final float getTransparencyInsideTop() {
+		return getTransparency(SIDE_INSIDE_TOP);
+	}
+
+	public final float getTransparencyInsideBottom() {
+		return getTransparency(SIDE_INSIDE_BOTTOM);
+	}
+
+	public final float getTransparencyInside1() {
+		return getTransparency(SIDE_INSIDE1);
+	}
+
+	public final float getTransparencyInside2() {
+		return getTransparency(SIDE_INSIDE2);
+	}
+
+	public final float getTransparencyInside3() {
+		return getTransparency(SIDE_INSIDE3);
+	}
+
+	public final float getTransparencyInside4() {
+		return getTransparency(SIDE_INSIDE4);
+	}
+
+	public final float getTransparencyCutout1() {
+		return getTransparency(SIDE_CUTOUT1);
+	}
+
+	public final float getTransparencyCutout2() {
+		return getTransparency(SIDE_CUTOUT2);
 	}
 
 	public final void setTransparency(int side, float transparency) {
@@ -2183,6 +2379,66 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final float getShininess(int side) {
 		return sideAttributes[side].shininess;
 	}
+	
+	public final float getShininess() {
+		return getShininess(SIDE_ALL);
+	}
+
+	public final float getShininessTop() {
+		return getShininess(SIDE_TOP);
+	}
+
+	public final float getShininessBottom() {
+		return getShininess(SIDE_BOTTOM);
+	}
+
+	public final float getShininessSide1() {
+		return getShininess(SIDE_SIDE1);
+	}
+
+	public final float getShininessSide2() {
+		return getShininess(SIDE_SIDE2);
+	}
+
+	public final float getShininessSide3() {
+		return getShininess(SIDE_SIDE3);
+	}
+
+	public final float getShininessSide4() {
+		return getShininess(SIDE_SIDE4);
+	}
+
+	public final float getShininessInsideTop() {
+		return getShininess(SIDE_INSIDE_TOP);
+	}
+
+	public final float getShininessInsideBottom() {
+		return getShininess(SIDE_INSIDE_BOTTOM);
+	}
+
+	public final float getShininessInside1() {
+		return getShininess(SIDE_INSIDE1);
+	}
+
+	public final float getShininessInside2() {
+		return getShininess(SIDE_INSIDE2);
+	}
+
+	public final float getShininessInside3() {
+		return getShininess(SIDE_INSIDE3);
+	}
+
+	public final float getShininessInside4() {
+		return getShininess(SIDE_INSIDE4);
+	}
+
+	public final float getShininessCutout1() {
+		return getShininess(SIDE_CUTOUT1);
+	}
+
+	public final float getShininessCutout2() {
+		return getShininess(SIDE_CUTOUT2);
+	}
 
 	public final void setShininess(int side, float shininess) {
 		getEditableSideAttributes(side).shininess = shininess;
@@ -2250,6 +2506,66 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final boolean isFullBright(int side) {
 		return sideAttributes[side].fullBright;
+	}
+
+	public final boolean isFullBright() {
+		return isFullBright(SIDE_ALL);
+	}
+
+	public final boolean isFullBrightTop() {
+		return isFullBright(SIDE_TOP);
+	}
+
+	public final boolean isFullBrightBottom() {
+		return isFullBright(SIDE_BOTTOM);
+	}
+
+	public final boolean isFullBrightSide1() {
+		return isFullBright(SIDE_SIDE1);
+	}
+
+	public final boolean isFullBrightSide2() {
+		return isFullBright(SIDE_SIDE2);
+	}
+
+	public final boolean isFullBrightSide3() {
+		return isFullBright(SIDE_SIDE3);
+	}
+
+	public final boolean isFullBrightSide4() {
+		return isFullBright(SIDE_SIDE4);
+	}
+
+	public final boolean isFullBrightInsideTop() {
+		return isFullBright(SIDE_INSIDE_TOP);
+	}
+
+	public final boolean isFullBrightInsideBottom() {
+		return isFullBright(SIDE_INSIDE_BOTTOM);
+	}
+
+	public final boolean isFullBrightInside1() {
+		return isFullBright(SIDE_INSIDE1);
+	}
+
+	public final boolean isFullBrightInside2() {
+		return isFullBright(SIDE_INSIDE2);
+	}
+
+	public final boolean isFullBrightInside3() {
+		return isFullBright(SIDE_INSIDE3);
+	}
+
+	public final boolean isFullBrightInside4() {
+		return isFullBright(SIDE_INSIDE4);
+	}
+
+	public final boolean isFullBrightCutout1() {
+		return isFullBright(SIDE_CUTOUT1);
+	}
+
+	public final boolean isFullBrightCutout2() {
+		return isFullBright(SIDE_CUTOUT2);
 	}
 
 	public final void setFullBright(int side, boolean fullBright) {
