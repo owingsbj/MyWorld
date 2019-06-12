@@ -2,7 +2,6 @@ package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.client.renderer.IRenderable;
 import com.gallantrealm.myworld.client.renderer.IRendering;
@@ -106,6 +105,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public boolean alwaysRender;
 	
 	public boolean shadowless;
+	
+	public WWAction[] actions;
 
 	transient WWVector startPosition;
 	transient WWVector startRotation;
@@ -2068,7 +2069,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final WWTexture getTexture(int side) {
 		WWTexture texture = new WWTexture();
 		SideAttributes sideAttributes = getEditableSideAttributes(side);
-		texture.url = sideAttributes.textureURL;
+		texture.name = sideAttributes.textureURL;
 		texture.scaleX = sideAttributes.textureScaleX;
 		texture.scaleY = sideAttributes.textureScaleY;
 		texture.rotation = sideAttributes.textureRotation;
@@ -2153,7 +2154,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 	
 	public final void setTexture(int side, WWTexture texture) {
-		setTextureURL(side, texture.url);
+		setTextureURL(side, texture.name);
 		setTextureScale(side, texture.scaleX, texture.scaleY);
 		setTextureRotation(side, texture.rotation);
 		setTextureOffsetX(side, texture.offsetX);
@@ -2660,27 +2661,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		videoTextureRenderer.stop();
 	}
 
-	@Override
-	public ArrayList<String> getActions() {
-		ArrayList<String> actions = new ArrayList<String>();
-		actions.add("new");
-		actions.add("edit");
-		if (isVideoTexture()) {
-			if (isPlaying()) {
-				actions.add("pause");
-			} else {
-				actions.add("play");
-			}
-			actions.add("stop");
-		}
-		actions.add("copy");
-		actions.add("paste");
-		actions.add("import");
-		actions.add("export");
-		actions.add("delete");
-		return actions;
-	}
-
 	public final void setFixed(boolean fixed) {
 		this.fixed = fixed;
 		calculateExtents();
@@ -2698,4 +2678,20 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		return group;
 	}
 
+	public boolean isShadowless() {
+		return shadowless;
+	}
+
+	public void setShadowless(boolean shadowless) {
+		this.shadowless = shadowless;
+	}
+
+	public void setActions(WWAction[] actions) {
+		this.actions = actions;
+	}
+
+	public WWAction[] getActions() {
+		return actions;
+	}
+	
 }

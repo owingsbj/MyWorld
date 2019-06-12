@@ -2,8 +2,6 @@ package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
@@ -121,13 +119,6 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	/**
-	 * Returns a list of actions valid for this entity. Actions are placed in popup menus, toolbars, or other locations.
-	 */
-	public ArrayList<String> getActions() {
-		return new ArrayList<String>();
 	}
 
 	@Override

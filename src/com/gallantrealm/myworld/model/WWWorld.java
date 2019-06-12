@@ -44,6 +44,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	int sunColor = 0xFFFFFF; // pure white
 	public float renderingThreshold = 1000.0f; // Note: not currently working right on Android
 	int nextGroup;
+	public WWAction[] actions;
 
 	// Game related properties
 	int level;
@@ -894,8 +895,22 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		float y;
 	}
 
+	/**
+	 * @deprecated  Use get/setActions
+	 */
 	public WWAction[] getWorldActions() {
+		if (actions != null) {
+			return actions;
+		}
 		return new WWAction[0];
+	}
+
+	public WWAction[] getActions() {
+		return actions;
+	}
+
+	public void setActions(WWAction[] actions) {
+		this.actions = actions;
 	}
 
 	public void startWorldAction(int i, float x, float y) {
@@ -916,7 +931,15 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		}
 	}
 
+	/**
+	 * @deprecated   Use WWObject.getActions
+	 */
 	public WWAction[] getAvatarActions() {
+		if (AndroidClientModel.getClientModel().selectedObject != null) {
+			if (AndroidClientModel.getClientModel().selectedObject.getActions() != null) {
+				return AndroidClientModel.getClientModel().selectedObject.getActions();
+			}
+		}
 		return new WWAction[0];
 	}
 

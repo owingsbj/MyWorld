@@ -270,6 +270,8 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		if (clientModel.world != null) {
 			clientModel.world.displayed();
 		}
+		
+		updateAvatarActions(false);
 
 		System.out.println("<ShowWorldActivity.onStart");
 	}
@@ -1071,6 +1073,9 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			updateWorldActions(false);
 		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_WORLD_ACTIONS_RESTORED) {
 			updateWorldActions(true);
+		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_SELECTED_AVATAR_CHANGED || 
+				event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_OBJECT_SELECTED) {
+			updateAvatarActions(false);
 		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_USE_CONTROLLER_CHANGED) {
 			updateJoyButton();
 		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_CALIBRATE_SENSORS) {
