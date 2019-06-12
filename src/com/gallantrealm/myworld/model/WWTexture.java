@@ -8,12 +8,12 @@ import java.io.Serializable;
 public class WWTexture implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public String url;
+	public String name;
 	public float scaleX = 1.0f;
 	public float scaleY = 1.0f;
 	public float rotation;
-	public float offsetX;
-	public float offsetY;
+	public float offsetX = 0.5f;
+	public float offsetY = 0.5f;
 	public float velocityX;
 	public float velocityY;
 	public float aMomentum;
@@ -23,37 +23,36 @@ public class WWTexture implements Serializable {
 	}
 	
 	public WWTexture(String url) {
-		this.url = url;
+		this.name = url;
 	}
 	
 	public WWTexture(String url, float scaleX, float scaleY) {
-		this.url = url;
+		this.name = url;
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
 	}
 	
-	public WWTexture(String url, float scaleX, float scaleY, float offsetX, float offsetY) {
-		this.url = url;
+	public WWTexture(String url, float scaleX, float scaleY, float rotation) {
+		this.name = url;
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
-		this.offsetX = offsetX;
-		this.offsetY = offsetY;
-	}
-	
-	public WWTexture(String url, float scaleX, float scaleY, float offsetX, float offsetY, float rotation) {
-		this.url = url;
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
-		this.offsetX = offsetX;
-		this.offsetY = offsetY;
 		this.rotation = rotation;
 	}
 	
-	public String getUrl() {
-		return url;
+	public WWTexture(String url, float scaleX, float scaleY, float rotation, float offsetX, float offsetY) {
+		this.name = url;
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+		this.rotation = rotation;
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
 	}
-	public void setUrl(String url) {
-		this.url = url;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public float getScaleX() {
