@@ -438,7 +438,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	public IRendering getRendering() {
 		return rendering;
 	}
-	
+
 	@Override
 	public void updateRendering() {
 		if (rendering != null) {
@@ -896,7 +896,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	}
 
 	/**
-	 * @deprecated  Use get/setActions
+	 * @deprecated Use get/setActions
 	 */
 	public WWAction[] getWorldActions() {
 		if (actions != null) {
@@ -932,13 +932,16 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	}
 
 	/**
-	 * @deprecated   Use WWObject.getActions
+	 * @deprecated Use WWObject.getActions
 	 */
 	public WWAction[] getAvatarActions() {
 		if (AndroidClientModel.getClientModel().selectedObject != null) {
 			if (AndroidClientModel.getClientModel().selectedObject.getActions() != null) {
 				return AndroidClientModel.getClientModel().selectedObject.getActions();
 			}
+		}
+		if (AndroidClientModel.getClientModel().getAvatar() != null) {
+			return AndroidClientModel.getClientModel().getAvatar().getActions();
 		}
 		return new WWAction[0];
 	}

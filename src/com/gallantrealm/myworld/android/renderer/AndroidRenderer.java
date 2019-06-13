@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.Buffer;
 import java.util.HashMap;
 import com.gallantrealm.myworld.FastMath;
@@ -209,8 +211,10 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 						bitmap = BitmapFactory.decodeStream(is);
 					}
 				}
-				if (bitmap == null) {
-					return 0;
+				if (bitmap == null) {  // a failure
+					int textureId = getNormalTexture("white");  // use white
+					normalTextureCache.put(textureName, textureId);
+					return textureId;
 				}
 				int textureId = genTexture(bitmap, textureName);
 				normalTextureCache.put(textureName, textureId);
@@ -300,8 +304,10 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 						bitmap = BitmapFactory.decodeStream(is);
 					}
 				}
-				if (bitmap == null) {
-					return 0;
+				if (bitmap == null) { // problems
+					int textureId = getTexture("white");   // use white texture
+					textureCache.put(textureName, textureId);
+					return textureId;
 				}
 				int textureId = genTexture(bitmap, textureName);
 				textureCache.put(textureName, textureId);
@@ -438,56 +444,71 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 	 * @return
 	 */
 	public final Bitmap readImageTexture(Uri selectedImage) {
-		Bitmap bm = null;
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		AssetFileDescriptor fileDescriptor = null;
-		try {
-			fileDescriptor = context.getContentResolver().openAssetFileDescriptor(selectedImage, "r");
-
-			// first, get the bitmap size
-			options.inJustDecodeBounds = true;
-			bm = BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
-
-			// then, get a sampled-down bitmap large enough for the texture
-			options.inJustDecodeBounds = false;
-			options.inSampleSize = Math.min(options.outWidth, options.outHeight) / 512;
-			bm = BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
-		} catch (FileNotFoundException e) {
-			System.err.println("AndroidRenderer.readImageTexture: File not found -- " + selectedImage);
-		} finally {
+		if (selectedImage.getScheme() != null && selectedImage.getScheme().startsWith("http")) {
+			// from the web
+			Bitmap bm = null;
 			try {
-				if (fileDescriptor != null) {
-					fileDescriptor.close();
+				HttpURLConnection connection = (HttpURLConnection) (new URL(selectedImage.toString())).openConnection();
+				InputStream instream = connection.getInputStream();
+				bm = BitmapFactory.decodeStream(instream);
+				return bm;
+			} catch (Exception e) {
+				System.err.println("AndroidRenderer.readImageTexture: URL not found -- " + selectedImage);
+			}
+			return bm;
+		} else {
+			// from assets
+			Bitmap bm = null;
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			AssetFileDescriptor fileDescriptor = null;
+			try {
+				fileDescriptor = context.getContentResolver().openAssetFileDescriptor(selectedImage, "r");
+
+				// first, get the bitmap size
+				options.inJustDecodeBounds = true;
+				bm = BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
+
+				// then, get a sampled-down bitmap large enough for the texture
+				options.inJustDecodeBounds = false;
+				options.inSampleSize = Math.min(options.outWidth, options.outHeight) / 512;
+				bm = BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
+			} catch (FileNotFoundException e) {
+				System.err.println("AndroidRenderer.readImageTexture: File not found -- " + selectedImage);
+			} finally {
+				try {
+					if (fileDescriptor != null) {
+						fileDescriptor.close();
+					}
+				} catch (IOException e) {
 				}
-			} catch (IOException e) {
 			}
-		}
 
-		// Determine the image rotation and antirotate if necessary
-		try {
-			ExifInterface exif = new ExifInterface(selectedImage.getPath());
-			int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-			System.out.println("EXIF rotation = " + exifOrientation);
-			int rotation;
-			if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
-				rotation = 90;
-			} else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
-				rotation = 180;
-			} else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
-				rotation = 270;
-			} else {
-				rotation = 0;
+			// Determine the image rotation and antirotate if necessary
+			try {
+				ExifInterface exif = new ExifInterface(selectedImage.getPath());
+				int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+				System.out.println("EXIF rotation = " + exifOrientation);
+				int rotation;
+				if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+					rotation = 90;
+				} else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+					rotation = 180;
+				} else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+					rotation = 270;
+				} else {
+					rotation = 0;
+				}
+				if (rotation != 0) {
+					Matrix matrix = new Matrix();
+					matrix.preRotate(rotation);
+					bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			if (rotation != 0) {
-				Matrix matrix = new Matrix();
-				matrix.preRotate(rotation);
-				bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-		return bm;
+			return bm;
+		}
 	}
 
 	public final void clearTextureCache() {
@@ -563,10 +584,10 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 		}
 
 		// Adjust camera position based on camera slide
-		float slideCameraPointX = cameraPoint.x + (float) Math.cos(TORADIAN * cameraPan) * cameraSlideX - (float) Math.sin(TORADIAN * cameraPan)	* (float) Math.sin(TORADIAN * cameraTilt) * cameraSlideY - (float) Math.sin(TORADIAN * cameraPan)
-				* (float) Math.cos(TORADIAN * cameraTilt) * cameraSlideZ;
-		float slideCameraPointY = cameraPoint.y - (float) Math.sin(TORADIAN * cameraPan) * cameraSlideX - (float) Math.cos(TORADIAN * cameraPan) * (float) Math.sin(TORADIAN * cameraTilt) * cameraSlideY - (float) Math.cos(TORADIAN * cameraPan) 
-				* (float) Math.cos(TORADIAN * cameraTilt) * cameraSlideZ;
+		float slideCameraPointX = cameraPoint.x + (float) Math.cos(TORADIAN * cameraPan) * cameraSlideX - (float) Math.sin(TORADIAN * cameraPan) * (float) Math.sin(TORADIAN * cameraTilt) * cameraSlideY
+				- (float) Math.sin(TORADIAN * cameraPan) * (float) Math.cos(TORADIAN * cameraTilt) * cameraSlideZ;
+		float slideCameraPointY = cameraPoint.y - (float) Math.sin(TORADIAN * cameraPan) * cameraSlideX - (float) Math.cos(TORADIAN * cameraPan) * (float) Math.sin(TORADIAN * cameraTilt) * cameraSlideY
+				- (float) Math.cos(TORADIAN * cameraPan) * (float) Math.cos(TORADIAN * cameraTilt) * cameraSlideZ;
 		float slideCameraPointZ = cameraPoint.z + (float) Math.cos(TORADIAN * cameraTilt) * cameraSlideY - (float) Math.sin(TORADIAN * cameraTilt) * cameraSlideZ;
 
 		// limit camera according to unpenetratable objects
