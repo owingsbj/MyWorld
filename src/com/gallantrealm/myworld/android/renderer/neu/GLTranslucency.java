@@ -1,13 +1,12 @@
 package com.gallantrealm.myworld.android.renderer.neu;
 
-import android.opengl.GLES20;
-import android.opengl.Matrix;
-
 import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.model.WWColor;
 import com.gallantrealm.myworld.model.WWObject;
 import com.gallantrealm.myworld.model.WWTranslucency;
 import com.gallantrealm.myworld.model.WWVector;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 /**
  * Creates a primitive with evenly spaced layers in the x, y, and z dimensions. These layers, when given partial transparency, form the illusion of a translucent substance. This is useful for water or other nearly clear objects, to give the illusion of
@@ -478,7 +477,8 @@ public class GLTranslucency extends GLObject  {
 // super.draw(worldTime, picking, drawtrans);
 			return;
 		}
-		WWVector p = AndroidClientModel.getClientModel().getDampedCameraLocation();
+		WWVector cameraPosition = getRenderer().getAdjustedCameraPosition(); //AndroidClientModel.getClientModel().getDampedCameraLocation();
+		float cameraPan = AndroidClientModel.getClientModel().getDampedCameraRotation().z;
 		WWVector position = new WWVector();
 		object.getAnimatedPosition(position, worldTime);
 		modelMatrix = getModelMatrix(worldTime);
@@ -490,7 +490,8 @@ public class GLTranslucency extends GLObject  {
 
 					// GLES20.glTranslatef((p.x - position.x), 0.0f, (p.y - position.y));
 					float[] cutoutMatrix = new float[16];
-					Matrix.translateM(cutoutMatrix, 0, modelMatrix, 0, (p.x - position.x), 0.0f, (p.y - position.y));
+					Matrix.translateM(cutoutMatrix, 0, modelMatrix, 0, (cameraPosition.x - position.x), 0.0f, (cameraPosition.y - position.y));
+					Matrix.rotateM(cutoutMatrix, 0, cameraPan, 0.0f, 1.0f, 0.0f);
 					Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, cutoutMatrix, 0);
 					Matrix.multiplyMM(sunMvMatrix, 0, sunViewMatrix, 0, cutoutMatrix, 0);
 

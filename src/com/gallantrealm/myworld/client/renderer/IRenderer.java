@@ -9,6 +9,7 @@ import com.gallantrealm.myworld.model.WWPlant;
 import com.gallantrealm.myworld.model.WWSphere;
 import com.gallantrealm.myworld.model.WWTorus;
 import com.gallantrealm.myworld.model.WWTranslucency;
+import com.gallantrealm.myworld.model.WWVector;
 import com.gallantrealm.myworld.model.WWWorld;
 
 /**
@@ -42,5 +43,7 @@ public interface IRenderer {
 	IVideoTextureRenderer getVideoTextureRenderer();
 
 	ISoundGenerator getSoundGenerator();
+	
+	WWVector getAdjustedCameraPosition();
 
 }

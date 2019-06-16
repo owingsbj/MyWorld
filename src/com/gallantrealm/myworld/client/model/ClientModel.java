@@ -112,6 +112,9 @@ public abstract class ClientModel {
 	public float dampedCameraLocationX;
 	public float dampedCameraLocationY;
 	public float dampedCameraLocationZ;
+	public float dampedCameraTilt;
+	public float dampedCameraLean;
+	public float dampedCameraPan;
 
 	public float cameraDampRate = 0f; // higher moves camera slower
 
@@ -705,7 +708,7 @@ public abstract class ClientModel {
 	public float getCameraPan() {
 		return cameraPan;
 	}
-
+	
 	public void setCameraPan(float cameraPan) {
 		this.cameraPan = cameraPan;
 	}
@@ -825,6 +828,16 @@ public abstract class ClientModel {
 		dampedCameraLocationX = x;
 		dampedCameraLocationY = y;
 		dampedCameraLocationZ = z;
+	}
+
+	public void setDampedCameraRotation(float x, float y, float z) {
+		dampedCameraTilt = x;
+		dampedCameraLean = y;
+		dampedCameraPan = z;
+	}
+	
+	public WWVector getDampedCameraRotation() {
+		return new WWVector(dampedCameraTilt, dampedCameraLean, dampedCameraPan);
 	}
 
 	public float getCameraSlideXVelocity() {

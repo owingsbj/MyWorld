@@ -160,6 +160,13 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 		if (textureName == null) {
 			textureName = "white";
 		}
+		if (textureName.endsWith(".png")) {
+			textureName = textureName.substring(0, textureName.length()-4) + "_nrm.png";
+		} else if (textureName.endsWith(".jpg")) {
+			textureName = textureName.substring(0, textureName.length()-4) + "_nrm.jpg";
+		} else {
+			textureName = textureName + "_nrm.png";
+		}
 		Integer idInteger = normalTextureCache.get(textureName);
 		if (idInteger != null) {
 			return idInteger;
@@ -167,10 +174,10 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 			InputStream is = null;
 			boolean isPkm = false;
 			try {
-				System.out.println("loading bitmap " + textureName + "_nrm");
+				System.out.println("loading bitmap " + textureName);
 				Bitmap bitmap = null;
 				if (textureName.contains(":")) { // a url
-					Uri uri = Uri.parse(textureName + "_nrm");
+					Uri uri = Uri.parse(textureName);
 					Bitmap unscaledBitmap = readImageTexture(uri);
 					if (unscaledBitmap != null) {
 						bitmap = Bitmap.createScaledBitmap(unscaledBitmap, 256, 256, false);
@@ -180,25 +187,20 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 					}
 				} else {
 					int id = 0;
-					if (textureName.equals("white")) {
+					if (textureName.equals("white_nrm.png")) {
 						id = R.raw.white_nrm;
 					}
 					if (isPkm) {
-						return genCompressedTexture(textureName + "_nrm");
+						return genCompressedTexture(textureName);
 					} else {
 						if (id != 0) { // open a resource
 							is = context.getResources().openRawResource(id); // raw resource
 						} else { // open an asset or local file
 							try {
-								try {
-									is = context.getAssets().open(textureName + "_nrm.dds"); // dds is faster?
-									return genCompressedTexture(textureName + "_nrm");
-								} catch (Exception e) {
-									is = context.getAssets().open(textureName + "_nrm.png"); // asset
-								}
+								is = context.getAssets().open(textureName); // asset
 							} catch (Exception e) {
 								try {
-									File file = new File(context.getFilesDir(), textureName + "_nrm.png"); // local file
+									File file = new File(context.getFilesDir(), textureName); // local file
 									is = new BufferedInputStream(new FileInputStream(file), 65536);
 								} catch (Exception e2) {
 									// not there
@@ -692,6 +694,8 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 			dampCameraLean = (cameraLean + clientModel.cameraDampRate * dampCameraLean) / (clientModel.cameraDampRate + 1);
 		}
 		dampCameraDistance = (limitedCameraDistance + clientModel.cameraDampRate * dampCameraDistance) / (clientModel.cameraDampRate + 1);
+		clientModel.setDampedCameraLocation(dampXCamera, dampYCamera,  dampZCamera);
+		clientModel.setDampedCameraRotation(dampCameraTilt, dampCameraLean, dampCameraPan);
 	}
 
 	public void initializeCameraPosition() {
