@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * A collection of all properties related to a texture.  For ease in setting and manipuating textures.
  */
-public class WWTexture implements Serializable {
+public class WWTexture implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1L;
 
 	public String name;
@@ -116,5 +116,15 @@ public class WWTexture implements Serializable {
 	}
 	public void setRefreshInterval(long refreshInterval) {
 		this.refreshInterval = refreshInterval;
+	}
+	
+	@Override
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

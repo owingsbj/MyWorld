@@ -1427,6 +1427,15 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			clone.setPosition(getPosition(currenttime));
 			clone.setRotation(getRotation(currenttime));
 		}
+		sideAttributes = new SideAttributes[NSIDES];
+		for (int i = 0; i < NSIDES; i++) {
+			if (clone.sideAttributes[i] == SideAttributes.getDefaultSideAttributes()) {
+				sideAttributes[i] = SideAttributes.getDefaultSideAttributes();
+			} else {
+				sideAttributes[i] = (SideAttributes)clone.sideAttributes[i].clone();
+			}
+		}
+
 		if (behaviors != null) {
 			// Need to clone behaviors and set owner in cloned behaviors to the cloned owner
 			clone.behaviors = behaviors.clone();
@@ -1442,6 +1451,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Same as clone, but behaviors aren't cloned.
 	 * 
 	 * @return
+	 * @throws CloneNotSupportedException 
 	 */
 	public Object cloneNoBehavior() {
 		WWObject clone = (WWObject) super.clone();
@@ -1852,7 +1862,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			}
 		} else {
 			if (sideAttributes[side].isDefault || sideAttributes[side] == sideAttributes[SIDE_ALL]) {
-				sideAttributes[side] = sideAttributes[SIDE_ALL].copy();
+				sideAttributes[side] = (SideAttributes)sideAttributes[SIDE_ALL].clone();
 				sideAttributes[side].isDefault = false;
 				monolithic = false;
 			}

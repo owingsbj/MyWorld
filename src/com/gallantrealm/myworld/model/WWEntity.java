@@ -7,8 +7,7 @@ import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
 
 /**
- * An entity is an abstract class. Every object and user within the world, and even the world itself, is an entity. This
- * class provides some common attributes and methods for both objects and users.
+ * An entity is an abstract class. Every object and user within the world, and even the world itself, is an entity. This class provides some common attributes and methods for both objects and users.
  */
 public abstract class WWEntity extends WWConstant implements Serializable, Cloneable, Sendable {
 
@@ -35,29 +34,27 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 	 */
 	public long getWorldTime() {
 		if (world != null) {
-			return world.worldTime; //getWorldTime();
+			return world.worldTime; // getWorldTime();
 		} else {
 			return 0;
 		}
 	}
 
 	@Override
-	public Object clone() {
+	public Object clone()  {
+		WWEntity clone;
 		try {
-			WWEntity clone = (WWEntity) super.clone();
-			clone.setWorld(null); // since clone doesn't belong to a world, yet
-			return clone;
+			clone = (WWEntity) super.clone();
 		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
 			return null;
 		}
+		clone.setWorld(null); // since clone doesn't belong to a world, yet
+		return clone;
 	}
 
 	/**
-	 * Send the properties of this entity to a stream. This is used to stream the state of the entity from the server to
-	 * clients. (Note that Object serialization is not used so that the streamed data is in a reasonably compact form.)
-	 * Subclasses should override this method, but first send their properties before calling the superclass, as the
-	 * superclass will set timestamps used for update detection.
+	 * Send the properties of this entity to a stream. This is used to stream the state of the entity from the server to clients. (Note that Object serialization is not used so that the streamed data is in a reasonably compact form.)
+	 * Subclasses should override this method, but first send their properties before calling the superclass, as the superclass will set timestamps used for update detection.
 	 **/
 	public void send(DataOutputStreamX os) throws IOException {
 		os.writeString(name);
@@ -67,8 +64,7 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 	}
 
 	/**
-	 * Receive the streamed properties of the entity. Subclasses should override this method, receiving the properties
-	 * specific to this class, then calling the superclass.
+	 * Receive the streamed properties of the entity. Subclasses should override this method, receiving the properties specific to this class, then calling the superclass.
 	 **/
 	public void receive(DataInputStreamX is) throws IOException {
 		// Note: assumed id already received (in order to determine object to update

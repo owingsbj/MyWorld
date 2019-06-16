@@ -2,7 +2,6 @@ package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
 import java.io.Serializable;
-
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
@@ -43,10 +42,12 @@ public final class SideAttributes implements Serializable, Cloneable, Sendable {
 	public SideAttributes() {
 	}
 
-	public final SideAttributes copy() {
+	@Override
+	protected Object clone() {
 		try {
-			return (SideAttributes) super.clone();
+			return super.clone();
 		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
