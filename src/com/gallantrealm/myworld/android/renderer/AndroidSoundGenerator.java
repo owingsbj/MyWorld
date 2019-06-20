@@ -1,19 +1,17 @@
 package com.gallantrealm.myworld.android.renderer;
 
 import java.util.HashMap;
-
-import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
-
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.android.R;
 import com.gallantrealm.myworld.client.renderer.ISoundGenerator;
 import com.gallantrealm.myworld.model.WWObject;
 import com.gallantrealm.myworld.model.WWVector;
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 
 public final class AndroidSoundGenerator implements ISoundGenerator {
 
@@ -52,6 +50,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 
 		// load all the predefined sounds
 		loadSound("water", R.raw.sound_water);
+		loadSound("splash", R.raw.sound_water);
 		loadSound("movingWater", R.raw.sound_moving_water);
 		loadSound("grass", R.raw.sound_grass);
 		loadSound("movingGrass", R.raw.sound_moving_grass);

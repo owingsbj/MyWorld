@@ -60,7 +60,16 @@ public class GLTranslucency extends GLObject  {
 		}
 		this.setSide(WWObject.SIDE_INSIDE_TOP, insideTopGeometry);
 
-		// Create the inside sides (inside1-inside4), no normals
+		// Create the inside bottom, again no normals
+		GLSurface insideBottomGeometry = new GLSurface(11, 11, false);
+		for (int y = 0; y < 11; y++) {
+			for (int x = 0; x < 11; x++) {
+				insideBottomGeometry.setVertex(x, y, x * sizeX / 10 - sizeX / 2, -sizeZ / 2, y * sizeY / 10 - sizeY / 2);
+			}
+		}
+		this.setSide(WWObject.SIDE_INSIDE_BOTTOM, insideBottomGeometry);
+
+		// Create the inside sides (inside1-inside4), no normals.  These are drawn "far away" as if fully hollow
 		GLSurface inside1Geometry = new GLSurface(2, 2, false);
 		inside1Geometry.setVertex(0, 0, -sizeX / 2, -sizeZ / 2, sizeY / 2);
 		inside1Geometry.setVertex(1, 0, sizeX / 2, -sizeZ / 2, sizeY / 2);
@@ -88,18 +97,15 @@ public class GLTranslucency extends GLObject  {
 
 		// Create an inside shape to box the camera. This shape is only shown when the object is clipped by the camera frustrum.
 		// It provides a (crude) illusion of the translucency even when the translucency is penetrated. Mapped to CUTOUT1
-		GLSurface insideXGeometry = new GLSurface(5, 2, false);
-		float space = 1.5f * NewAndroidRenderer.CLOSENESS;
-		insideXGeometry.setVertex(0, 0, -space, -sizeZ / 2, -space);
-		insideXGeometry.setVertex(1, 0, -space, -sizeZ / 2, space);
-		insideXGeometry.setVertex(2, 0, space, -sizeZ / 2, space);
-		insideXGeometry.setVertex(3, 0, space, -sizeZ / 2, -space);
-		insideXGeometry.setVertex(4, 0, -space, -sizeZ / 2, -space);
-		insideXGeometry.setVertex(0, 1, -space, sizeZ / 2, -space);
-		insideXGeometry.setVertex(1, 1, -space, sizeZ / 2, space);
-		insideXGeometry.setVertex(2, 1, space, sizeZ / 2, space);
-		insideXGeometry.setVertex(3, 1, space, sizeZ / 2, -space);
-		insideXGeometry.setVertex(4, 1, -space, sizeZ / 2, -space);
+		GLSurface insideXGeometry = new GLSurface(2, 3, false);
+		float maskWidth = 3.0f * NewAndroidRenderer.CLOSENESS;
+		float maskDistance = 1.5f * NewAndroidRenderer.CLOSENESS;
+		insideXGeometry.setVertex(0, 0, maskWidth, -sizeZ / 2, -maskDistance * 1.2f);
+		insideXGeometry.setVertex(1, 0, -maskWidth, -sizeZ / 2, -maskDistance * 1.2f);
+		insideXGeometry.setVertex(0, 1, maskWidth, sizeZ / 2, -maskDistance);
+		insideXGeometry.setVertex(1, 1, -maskWidth, sizeZ / 2, -maskDistance);
+		insideXGeometry.setVertex(0, 2, maskWidth, sizeZ / 2, 0);
+		insideXGeometry.setVertex(1, 2, -maskWidth, sizeZ / 2, 0);
 		this.setSide(WWObject.SIDE_CUTOUT1, insideXGeometry);
 
 		//
@@ -473,12 +479,13 @@ public class GLTranslucency extends GLObject  {
 
 	@Override
 	public void draw(Shader shader, float[] viewMatrix, float[] sunViewMatrix, long worldTime, int drawType, boolean drawtrans) {
-		if (drawType == DRAW_TYPE_PICKING || !drawtrans) {
-// super.draw(worldTime, picking, drawtrans);
+		if (drawType == DRAW_TYPE_PICKING  || drawType == DRAW_TYPE_SHADOW ) {
+			// can't pick or shadow translucencies
 			return;
 		}
 		WWVector cameraPosition = getRenderer().getAdjustedCameraPosition(); //AndroidClientModel.getClientModel().getDampedCameraLocation();
 		float cameraPan = AndroidClientModel.getClientModel().getDampedCameraRotation().z;
+//		float cameraTilt = AndroidClientModel.getClientModel().getDampedCameraRotation().x;
 		WWVector position = new WWVector();
 		object.getAnimatedPosition(position, worldTime);
 		modelMatrix = getModelMatrix(worldTime);
