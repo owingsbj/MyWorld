@@ -15,7 +15,6 @@
 	<string name="usedSounds"></string>
 	<string name="swarmAppId">0</string>
 	<string name="swarmAppKey">0</string>
-	<string name="enableHeyzap">false</string>
 	<string name="fullVersion">false</string>
 	<string name="navatars">6</string>
 	<string name="avatar1name">Avatar1</string>

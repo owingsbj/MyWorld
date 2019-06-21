@@ -2,12 +2,10 @@ package com.gallantrealm.myworld.android;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
+import com.gallantrealm.android.Translator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
-import com.gallantrealm.android.Translator;
 
 public class GallantSplashActivity extends GallantActivity {
 
@@ -29,8 +27,6 @@ public class GallantSplashActivity extends GallantActivity {
 				}
 			});
 		}
-
-// HeyzapLib.setFlags(1 << 23); // turn off Heyzap notification
 
 		clientModel.initAds(); // prepare ads (if any)
 

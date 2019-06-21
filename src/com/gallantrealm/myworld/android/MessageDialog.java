@@ -1,5 +1,8 @@
 package com.gallantrealm.myworld.android;
 
+import com.gallantrealm.android.Translator;
+import com.zeemote.zc.event.ButtonEvent;
+import com.zeemote.zc.event.IButtonListener;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -7,10 +10,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.gallantrealm.android.Translator;
-import com.zeemote.zc.event.ButtonEvent;
-import com.zeemote.zc.event.IButtonListener;
 
 public class MessageDialog extends GallantDialog implements IButtonListener {
 	AndroidClientModel clientModel = AndroidClientModel.getClientModel();
@@ -20,8 +19,6 @@ public class MessageDialog extends GallantDialog implements IButtonListener {
 	Button option1Button;
 	Button option2Button;
 	Button option3Button;
-	TextView heyzapPrompt;
-	Button heyzapButton;
 	int buttonPressed = -1;
 	String title;
 	String message;
@@ -73,8 +70,6 @@ public class MessageDialog extends GallantDialog implements IButtonListener {
 		option1Button = (Button) findViewById(R.id.option1Button);
 		option2Button = (Button) findViewById(R.id.option2Button);
 		option3Button = (Button) findViewById(R.id.option3Button);
-		heyzapPrompt = (TextView) findViewById(R.id.heyzapPrompt);
-		heyzapButton = (Button) findViewById(R.id.heyzapButton);
 
 		Typeface typeface = clientModel.getTypeface(getContext());
 		if (typeface != null) {
@@ -100,35 +95,6 @@ public class MessageDialog extends GallantDialog implements IButtonListener {
 
 		messageText.setText(message);
 		
-// Heyzap no longer has these services
-//		if (clientModel.canUseHeyzap()) {
-//			if (checkinMessage != null) {
-//				heyzapPrompt.setText("Tell your friends >>");
-//				heyzapPrompt.setVisibility(View.VISIBLE);
-//				heyzapButton.setVisibility(View.VISIBLE);
-//			} else if (score != 0) {
-//				heyzapPrompt.setText("Post your score to the leaderboard >>");
-//				heyzapPrompt.setVisibility(View.VISIBLE);
-//				heyzapButton.setVisibility(View.VISIBLE);
-//			} else {
-//				heyzapPrompt.setVisibility(View.GONE);
-//				heyzapButton.setVisibility(View.GONE);
-//			}
-//		} else {
-			heyzapPrompt.setVisibility(View.GONE);
-			heyzapButton.setVisibility(View.GONE);
-//		}
-		heyzapButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (checkinMessage != null) {
-//					HeyzapLib.checkin((Activity)context, checkinMessage);
-				} else {
-//					HeyzapLib.submitScore((Activity)context, Float.toString(score), scoreMsg, leaderboardId);
-				}
-			}
-		});
-
 		option1Button.setVisibility(View.GONE);
 		option2Button.setVisibility(View.GONE);
 		option3Button.setVisibility(View.GONE);

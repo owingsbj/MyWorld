@@ -160,9 +160,6 @@ public class AndroidClientModel extends ClientModel {
 		// purchaseObserver = null;
 		// }
 		this.context = context;
-		if (canUseHeyzap() && !isFullVersion()) {
-			// HeyzapAds.start("12e68d51b0f35aa6c49d54d92e6102b1", context);
-		}
 		if (purchaseHelper == null) {
 			try {
 				purchaseHelper = new IabHelper(context, context.getString(R.string.googleappkey));
@@ -219,11 +216,9 @@ public class AndroidClientModel extends ClientModel {
 	boolean testedOpenGL;
 	boolean supportsOpenGLES20;
 
-	
-	
 	@Override
 	public void setWorld(WWWorld localWorld) {
-		testedOpenGL = false;  // need to retest if world is changed
+		testedOpenGL = false; // need to retest if world is changed
 		super.setWorld(localWorld);
 	}
 
@@ -368,7 +363,7 @@ public class AndroidClientModel extends ClientModel {
 		this.worldClassName = worldClassName;
 		fireClientModelChanged(ClientModelChangedEvent.EVENT_TYPE_SELECTED_GAME_CHANGED);
 	}
-	
+
 	public String getWorldClassName() {
 		return this.worldClassName;
 	}
@@ -657,7 +652,7 @@ public class AndroidClientModel extends ClientModel {
 		try {
 			return fullVersion // actually marked a full version
 					|| (!isGoogle() && !isAmazon()) // is not a market that supports in-app purchase
-					;
+			;
 		} catch (Exception e) { // a problem figuring out above
 			return true; // free!
 		}
@@ -711,10 +706,6 @@ public class AndroidClientModel extends ClientModel {
 		goggleDogPass = pass;
 	}
 
-	public boolean canUseHeyzap() {
-		return isGoogle() & context.getString(R.string.enableHeyzap).equals("true");
-	}
-
 	public boolean canShowAds() {
 		if (isChromebook()) {
 			return false;
@@ -726,9 +717,6 @@ public class AndroidClientModel extends ClientModel {
 	public void initAds() {
 		if (!isFullVersion()) {
 			try {
-				if (canUseHeyzap()) {
-					// HeyzapLib.load(context, false); // prepare for Heyzap ad use
-				}
 				if (context.getString(R.string.amazonappkey).length() > 0) { // prepare for amazon ads
 					System.out.println("Registering for Amazon ads.");
 					if (BuildConfig.DEBUG) {
@@ -755,7 +743,7 @@ public class AndroidClientModel extends ClientModel {
 	public boolean isFree() {
 		return market == FREEVERSION;
 	}
-	
+
 	public boolean isChromebook() {
 		return context.getPackageManager().hasSystemFeature("org.chromium.arc.device_management");
 	}
@@ -825,13 +813,9 @@ public class AndroidClientModel extends ClientModel {
 	}
 
 	public void showPopupAd() {
-		if (context.getString(R.string.showPopupAds).equals("true")) {
-			if (canUseHeyzap() && !isFullVersion() && !useMoga(context)) {
-				System.out.println("POPUP AD!!!!!");
-				// InterstitialAd.display(context);
-			} else {
-				new AdDialog(context).show();
-			}
+		if (context.getString(R.string.showPopupAds).equals("true") && !isFullVersion() && !useMoga(context)) {
+			System.out.println("POPUP AD!!!!!");
+			new AdDialog(context).show();
 		}
 	}
 
@@ -980,7 +964,7 @@ public class AndroidClientModel extends ClientModel {
 	public Object loadObject(String fileName) {
 		return loadObject(fileName, false);
 	}
-	
+
 	public InputStream loadFile(String fileName, boolean external) {
 		InputStream inStream = null;
 		if (fileName.startsWith("file:")) { // via an external url
@@ -1267,7 +1251,7 @@ public class AndroidClientModel extends ClientModel {
 		}
 		return false;
 	}
-	
+
 	private class ReturnValue {
 		public int rc;
 	}
@@ -1309,5 +1293,5 @@ public class AndroidClientModel extends ClientModel {
 		}
 		return returnValue.rc;
 	}
-	
+
 }
