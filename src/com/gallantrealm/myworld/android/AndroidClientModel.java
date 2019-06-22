@@ -113,6 +113,8 @@ public class AndroidClientModel extends ClientModel {
 	public boolean cameraInitiallyFacingAvatar;
 
 	public boolean goggleDogPass;
+	
+	private String localFolder;  // for worlds and avatars
 
 	IabHelper purchaseHelper;
 
@@ -152,6 +154,7 @@ public class AndroidClientModel extends ClientModel {
 		for (int i = 0; i < NAVATARS; i++) {
 			avatarDisplayNames[i] = preferences.getString("avatarDisplayName" + i, null);
 		}
+		localFolder = preferences.getString("localFolder", context.getFilesDir().toString());
 	}
 
 	public void setContext(Activity context) {
@@ -210,6 +213,7 @@ public class AndroidClientModel extends ClientModel {
 		for (int i = 0; i < NAVATARS; i++) {
 			editor.putString("avatarDisplayName" + i, avatarDisplayNames[i]);
 		}
+		editor.putString("localFolder", localFolder);
 		editor.commit();
 	}
 
@@ -1293,5 +1297,13 @@ public class AndroidClientModel extends ClientModel {
 		}
 		return returnValue.rc;
 	}
+	
+	public void setLocalFolder(String localFolder) {
+		this.localFolder = localFolder;
+		savePreferences(this.context);
+	}
 
+	public String getLocalFolder() {
+		return localFolder;
+	}
 }
