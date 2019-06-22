@@ -38,7 +38,7 @@ public class SimpleTextureShader extends Shader {
 			"\n" +
 			"void main() {\n" +
 			"	vec4 textureColor = texture2D(colorTexture, textureCoord); \n" +
-			"	float diffuseLightIntensity = (sunIntensity + 0.1) * max(0.0,dot(sunPosition, -mNormal));\n" +
+			"	float diffuseLightIntensity = sunIntensity * max(0.0,dot(sunPosition, -mNormal));\n" +
 			"	float sValue = fullBright ? 1.0 : max(ambientLightIntensity, diffuseLightIntensity); \n" +
 			"	gl_FragColor = sunColor * (color * textureColor * vec4(sValue, sValue, sValue, 1.0)); \n" +
 			"}";
@@ -64,7 +64,7 @@ public class SimpleTextureShader extends Shader {
 			"	if (textureColor.a < 0.5) {\n" +
 			"	  discard;\n" +
 			"	} \n" +
-			"	float diffuseLightIntensity = (sunIntensity + 0.1) * max(0.0,dot(sunPosition, -mNormal));\n" +
+			"	float diffuseLightIntensity = sunIntensity * max(0.0,dot(sunPosition, -mNormal));\n" +
 			"	float sValue = fullBright ? 1.0 : max(ambientLightIntensity, diffuseLightIntensity); \n" +
 			"	gl_FragColor = sunColor * (color * textureColor * vec4(sValue, sValue, sValue, 1.0)); \n" +
 			"}";
