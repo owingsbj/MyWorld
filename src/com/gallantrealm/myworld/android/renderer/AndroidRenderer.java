@@ -283,6 +283,13 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 					} else {
 						if (id != 0) { // open a resource
 							is = context.getResources().openRawResource(id); // raw resource
+						} else if (textureName.startsWith("/")) { // fully qualified file name
+							try {
+								File file = new File(textureName);
+								is = new BufferedInputStream(new FileInputStream(file), 65536);
+							} catch (Exception e2) {
+								// not there
+							}
 						} else { // open an asset or local file
 							try {
 //								try {
