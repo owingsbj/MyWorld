@@ -45,6 +45,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	public float renderingThreshold = 1000.0f; // Note: not currently working right on Android
 	int nextGroup;
 	public WWAction[] actions;
+	boolean persistent;       // if true the world is saved by a background thread
 
 	// Game related properties
 	int level;
@@ -873,7 +874,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 				behaviorThread = new BehaviorThread(this);
 				behaviorThread.start();
 			}
-			if (saveWorldFileName != null && saveWorldThread == null) {
+			if (persistent && saveWorldFileName != null && saveWorldThread == null) {
 				saveWorldThread = new SaveWorldThread(world, saveWorldFileName);
 				saveWorldThread.start();
 			}
@@ -1280,4 +1281,11 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		return shadowSupport;
 	}
 
+	public void setPersistent(boolean save) {
+		persistent = save;
+	}
+	
+	public boolean isPersistent() {
+		return persistent;
+	}
 }
