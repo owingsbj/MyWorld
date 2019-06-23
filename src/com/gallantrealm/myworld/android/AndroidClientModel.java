@@ -27,6 +27,7 @@ import com.zeemote.zc.DeviceFactory;
 import com.zeemote.zc.IDeviceSearch;
 import com.zeemote.zc.IProgressMonitor;
 import com.zeemote.zc.IStreamConnector;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -53,6 +54,7 @@ import android.preference.PreferenceManager;
 import android.view.InputDevice;
 import uk.co.labbookpages.WavFile;
 
+@SuppressLint("NewApi")
 public class AndroidClientModel extends ClientModel {
 
 	public static final int FULLVERSION = 0;
@@ -154,7 +156,7 @@ public class AndroidClientModel extends ClientModel {
 		for (int i = 0; i < NAVATARS; i++) {
 			avatarDisplayNames[i] = preferences.getString("avatarDisplayName" + i, null);
 		}
-		localFolder = preferences.getString("localFolder", context.getFilesDir().toString());
+		localFolder = preferences.getString("localFolder", Environment.getExternalStorageDirectory().toString() + "/DevWorlds");
 	}
 
 	public void setContext(Activity context) {
