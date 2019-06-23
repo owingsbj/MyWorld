@@ -134,7 +134,7 @@ public class AndroidClientModel extends ClientModel {
 		useSensors = preferences.getBoolean("useSensors", false);
 		useZeemote = preferences.getBoolean("useZeemote", false);
 		useScreenControl = preferences.getBoolean("showScreenControls", true);
-		controlOnLeft = preferences.getBoolean("controlOnLeft", true);
+		controlOnLeft = preferences.getBoolean("controlOnLeft", false);
 		usingMoga = false; // this is determined dynamically now, by querying for a moga controller
 		controlSensitivity = preferences.getFloat("controlSensitivity", 0.5f);
 		stereoscopic = preferences.getBoolean("stereoscopic", false);
