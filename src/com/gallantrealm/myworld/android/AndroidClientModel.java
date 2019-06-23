@@ -131,10 +131,10 @@ public class AndroidClientModel extends ClientModel {
 		playMusic = preferences.getBoolean("playMusic", true);
 		playSoundEffects = preferences.getBoolean("playSoundEffects", true);
 		vibration = preferences.getBoolean("vibration", true);
-		useSensors = preferences.getBoolean("useSensors", canUseSensors());
+		useSensors = preferences.getBoolean("useSensors", false);
 		useZeemote = preferences.getBoolean("useZeemote", false);
-		useScreenControl = preferences.getBoolean("showScreenControls", !useSensors && !useZeemote);
-		controlOnLeft = preferences.getBoolean("controlOnLeft", false);
+		useScreenControl = preferences.getBoolean("showScreenControls", true);
+		controlOnLeft = preferences.getBoolean("controlOnLeft", true);
 		usingMoga = false; // this is determined dynamically now, by querying for a moga controller
 		controlSensitivity = preferences.getFloat("controlSensitivity", 0.5f);
 		stereoscopic = preferences.getBoolean("stereoscopic", false);
@@ -514,7 +514,7 @@ public class AndroidClientModel extends ClientModel {
 	}
 
 	public boolean useScreenControl() {
-		return useScreenControl && !useMoga(context) && hasTouchScreen();
+		return useScreenControl && !useMoga(context); // && hasTouchScreen();
 	}
 
 	public void setUseScreenControl(boolean useScreenControl) {
