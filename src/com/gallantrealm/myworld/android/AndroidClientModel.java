@@ -127,7 +127,10 @@ public class AndroidClientModel extends ClientModel {
 		preferencesVersion = preferences.getInt("preferencesVersion", 1);
 		avatarName = preferences.getString("avatarName", context.getString(R.string.defaultAvatarName));
 		worldName = preferences.getString("worldName", context.getString(R.string.defaultWorldName));
-		worldClassName = preferences.getString("worldClassName", worldName);
+		worldClassName = preferences.getString("worldClassName", context.getString(R.string.defaultWorldClassName));
+		if (worldClassName.equals("")) {
+			worldClassName = worldName;
+		}
 		playMusic = preferences.getBoolean("playMusic", true);
 		playSoundEffects = preferences.getBoolean("playSoundEffects", true);
 		vibration = preferences.getBoolean("vibration", true);

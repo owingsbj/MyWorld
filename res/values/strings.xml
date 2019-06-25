@@ -9,6 +9,7 @@
 	<string name="helpClassName">com.gallantrealm.myworld.android.HelpActivity</string>
 	<string name="settingsClassName">com.gallantrealm.myworld.android.SettingsActivity</string>
 	<string name="defaultWorldName">com.gallantrealm.myworld.android.DemoWorld</string>
+	<string name="defaultWorldClassName"></string>
 	<string name="defaultAvatarName">user1</string>
 	<string name="supportsScreenController">true</string>
 	<string name="accelerometerHint">Tilt left/right to turn, forward/back to move</string>
