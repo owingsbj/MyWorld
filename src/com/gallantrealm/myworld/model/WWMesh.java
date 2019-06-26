@@ -1,14 +1,12 @@
 package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
-
 import com.gallantrealm.myworld.client.renderer.IRenderer;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 
 /**
- * A mesh is a shape with an uneven surface which is formed using a grid of values. A mesh can be a box, where only the
- * top is uneven, a cylinder, where the sides are uneven, or a sphere, where the entire surface is uneven.
+ * A mesh is a shape with an uneven surface which is formed using a grid of values. A mesh can be a box, where only the top is uneven, a cylinder, where the sides are uneven, or a sphere, where the entire surface is uneven.
  */
 public class WWMesh extends WWObject {
 	static final long serialVersionUID = 1L;
@@ -87,7 +85,7 @@ public class WWMesh extends WWObject {
 		this.cellsX = cellsX;
 		this.cellsY = cellsY;
 	}
-	
+
 	public final void setMeshSize(int[] cells) {
 		setMeshSize(cells[0], cells[1]);
 	}
@@ -114,6 +112,93 @@ public class WWMesh extends WWObject {
 	public final void lowerMeshPoint(int cx, int cy, float value) {
 		if (value < mesh[cx][cy]) {
 			setMeshPoint(cx, cy, value);
+		}
+	}
+
+	/**
+	 * Create a cone.  This slopes flatly to a peak.
+	 */
+	public final void cone(float x, float y, float height, float baseSize) {
+		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
+			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
+				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
+					double d = Math.sqrt((cx - x) * (cx - x) + (cy - y) * (cy - y));
+					if (d < baseSize) {
+						double z =  (baseSize - d)  / baseSize;
+						setMeshPoint(cx, cy, (float) (getMeshPoint(cx, cy) + z * height));
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create a plateau.  This is a flat area with cliffs all around.  With a negative height
+	 * it creates a ravine.
+	 */
+	public final void plateau(float x, float y, float height, float baseSize) {
+		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
+			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
+				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
+					double d = Math.sqrt((cx - x) * (cx - x) + (cy - y) * (cy - y));
+					if (d < baseSize) {
+						setMeshPoint(cx, cy, (float) (getMeshPoint(cx, cy) + height));
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create a mound.  This is a semispherical bump that quickly ramps up, curves then down.  With
+	 * a negative height it creates a bowl.
+	 */
+	public final void mound(float x, float y, float height, float baseSize) {
+		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
+			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
+				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
+					double d = Math.sqrt((cx - x) * (cx - x) + (cy - y) * (cy - y));
+					if (d < baseSize) {
+						double z =  Math.cos(d / baseSize * Math.PI / 2.0);
+						setMeshPoint(cx, cy, (float) (getMeshPoint(cx, cy) + z * height));
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create a hill.  This is a shape that slowly rolls up then slowly rolls down, with no
+	 * sharp peak.
+	 */
+	public final void hill(float x, float y, float height, float baseSize) {
+		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
+			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
+				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
+					double d = Math.sqrt((cx - x) * (cx - x) + (cy - y) * (cy - y));
+					if (d < baseSize) {
+						double z =  (Math.cos(d / baseSize * Math.PI) + 1.0) / 0.5;
+						setMeshPoint(cx, cy, (float) (getMeshPoint(cx, cy) + z * height));
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create a peak. This is a shape similar to a mountain top. The sides slope up gradually and a sharp peak is formed at the top.
+	 */
+	public final void peak(float x, float y, float height, float baseSize) {
+		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
+			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
+				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
+					double d = Math.sqrt((cx - x) * (cx - x) + (cy - y) * (cy - y));
+					if (d < baseSize) {
+						double z =  (baseSize - d) * (baseSize - d)  / baseSize / baseSize;
+						setMeshPoint(cx, cy, (float) (getMeshPoint(cx, cy) + z * height));
+					}
+				}
+			}
 		}
 	}
 
@@ -270,8 +355,7 @@ public class WWMesh extends WWObject {
 	}
 
 	/**
-	 * Determines the value of the mesh at a particular point. This can be used to position objects so they reside on
-	 * top of the mesh.
+	 * Determines the value of the mesh at a particular point. This can be used to position objects so they reside on top of the mesh.
 	 * 
 	 * @param point
 	 * @return
