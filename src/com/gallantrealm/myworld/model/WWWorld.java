@@ -674,6 +674,8 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			WWVector relativeVelocity = collision.firstObject.getVelocity();
 			WWVector secondVelocity = collision.secondObject.getVelocity();
 			relativeVelocity.subtract(secondVelocity);
+			WWVector collisionVector = collision.overlapVector.clone().normalize();
+			relativeVelocity.scale(collisionVector);
 			float volume = FastMath.min(1.0f, relativeVelocity.length() * 0.025f);
 			if (volume > 0.1f && rendering != null) {
 				rendering.getRenderer().getSoundGenerator().playSound(collision.firstObject.getImpactSound(), 1, position, volume, 1.0f);
@@ -689,6 +691,8 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			WWVector relativeVelocity = collision.firstObject.getVelocity();
 			WWVector secondVelocity = collision.secondObject.getVelocity();
 			relativeVelocity.subtract(secondVelocity);
+			WWVector collisionVector = collision.overlapVector.clone().normalize();
+			relativeVelocity.scale(collisionVector);
 			float volume = FastMath.min(1.0f, relativeVelocity.length() * 0.025f);
 			if (volume > 0.1f && rendering != null) {
 				rendering.getRenderer().getSoundGenerator().playSound(collision.secondObject.getImpactSound(), 1, position, volume, 1.0f);
