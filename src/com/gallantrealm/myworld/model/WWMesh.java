@@ -118,7 +118,7 @@ public class WWMesh extends WWObject {
 	/**
 	 * Create a cone.  This slopes flatly to a peak.
 	 */
-	public final void cone(float x, float y, float height, float baseSize) {
+	public final void createCone(float x, float y, float height, float baseSize) {
 		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
 			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
 				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
@@ -136,7 +136,7 @@ public class WWMesh extends WWObject {
 	 * Create a plateau.  This is a flat area with cliffs all around.  With a negative height
 	 * it creates a ravine.
 	 */
-	public final void plateau(float x, float y, float height, float baseSize) {
+	public final void createPlateau(float x, float y, float height, float baseSize) {
 		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
 			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
 				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
@@ -153,7 +153,7 @@ public class WWMesh extends WWObject {
 	 * Create a mound.  This is a semispherical bump that quickly ramps up, curves then down.  With
 	 * a negative height it creates a bowl.
 	 */
-	public final void mound(float x, float y, float height, float baseSize) {
+	public final void createMound(float x, float y, float height, float baseSize) {
 		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
 			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
 				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
@@ -171,7 +171,7 @@ public class WWMesh extends WWObject {
 	 * Create a hill.  This is a shape that slowly rolls up then slowly rolls down, with no
 	 * sharp peak.
 	 */
-	public final void hill(float x, float y, float height, float baseSize) {
+	public final void createHill(float x, float y, float height, float baseSize) {
 		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
 			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
 				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
@@ -188,7 +188,7 @@ public class WWMesh extends WWObject {
 	/**
 	 * Create a peak. This is a shape similar to a mountain top. The sides slope up gradually and a sharp peak is formed at the top.
 	 */
-	public final void peak(float x, float y, float height, float baseSize) {
+	public final void createPeak(float x, float y, float height, float baseSize) {
 		for (int cx = Math.round(x - baseSize); cx < x + baseSize; cx++) {
 			for (int cy = Math.round(y - baseSize); cy < y + baseSize; cy++) {
 				if (cx >= 0 && cx <= cellsX && cy >= 0 && cy <= cellsY) {
