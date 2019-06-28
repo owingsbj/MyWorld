@@ -191,6 +191,12 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 				if (i > lastObjectIndex) {
 					lastObjectIndex = i;
 				}
+				// if the object has children, add the children as well
+				WWObject[] childObjects = object.getChildren();
+				for (int j = 0; j < childObjects.length; j++) {
+					addObject(childObjects[j]);
+					childObjects[j].parentId = object.id;
+				}
 				return i;
 			}
 		}
@@ -206,18 +212,19 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		if (object != null) {
 
 			// if the object has children, remove the children as well
-			int[] childIds = object.getChildren();
-			for (int i = 0; i < childIds.length; i++) {
-				removeObject(childIds[i]);
+			WWObject[] children = object.getChildren();
+			for (int i = 0; i < children.length; i++) {
+				removeObject(children[i].id);
 			}
 
 			// if the object is a member of a collection, remove it from the collection
 			if (object.parentId != 0) {
 				WWObject parent = getObject(object.parentId);
 				if (parent != null) {
-					parent.removeChild(id);
+					parent.removeChild(object);
 					parent.setLastModifyTime(getWorldTime());
 				}
+				object.parentId = 0;
 			}
 
 			object.setDeleted();
@@ -276,7 +283,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		return -1;
 	}
 
-	private final WWObject getObject(int id) {
+	public final WWObject getObject(int id) {
 		if (id < 0) {
 			throw new IllegalArgumentException("Invalid object id: " + id);
 		}

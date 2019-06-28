@@ -11,14 +11,13 @@ import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
 
 /**
- * This is the base class for all objects in the world. Note that not all fields of this class are shared with clients
- * -- only those that are needed for rendering the client. An editor for the object may expose other fields as well via
+ * This is the base class for all objects in the world. Note that not all fields of this class are shared with clients -- only those that are needed for rendering the client. An editor for the object may expose other fields as well via
  * editing, and fields are available for object behaviors (which run on the server).
  */
 public abstract class WWObject extends WWEntity implements IRenderable, Serializable, Cloneable, Sendable {
 	static final long serialVersionUID = 1L;
 
-	static final int[] DEFAULT_CHILDREN = new int[] {};
+	static final WWObject[] DEFAULT_CHILDREN = new WWObject[0];
 
 	public static final float TORADIAN = 0.0174532925f;
 	public static final float TODEGREES = 57.29577866f;
@@ -38,6 +37,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public int parentId;
 	boolean gluedToParent = true;
 	int[] childrenIds;
+	WWObject[] children;
 
 	// Physics properties
 	public boolean physical;
@@ -103,9 +103,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public transient long lastRenderingTime;
 
 	public boolean alwaysRender;
-	
+
 	public boolean shadowless;
-	
+
 	public WWAction[] actions;
 
 	transient WWVector startPosition;
@@ -117,7 +117,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	transient Object primitive;
 	transient IVideoTextureRenderer videoTextureRenderer;
 
-	//public transient boolean visible; // indicates that the object is visible to the viewer (local world only)
+	// public transient boolean visible; // indicates that the object is visible to the viewer (local world only)
 
 	public WWObject() {
 		sideAttributes = new SideAttributes[NSIDES];
@@ -137,8 +137,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	/**
 	 * This method streams the information that needs to be sent for an update or the object's state on the client.
 	 * <p>
-	 * When overriding this method in subclasses, be sure to invoke the parent method LAST. Also, implement the receive
-	 * method to match, or communication will be corrupted.
+	 * When overriding this method in subclasses, be sure to invoke the parent method LAST. Also, implement the receive method to match, or communication will be corrupted.
 	 */
 	@Override
 	public void send(DataOutputStreamX os) throws IOException {
@@ -153,7 +152,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		os.writeKnownObjectArray(sideAttributes);
 		os.writeInt(parentId);
 		os.writeBoolean(gluedToParent);
-		os.writeIntArray(childrenIds);
+		os.writeKnownObjectArray(children);
 		os.writeBoolean(physical);
 		os.writeBoolean(phantom);
 		os.writeFloat(density);
@@ -238,7 +237,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		sideAttributes = (SideAttributes[]) is.readKnownObjectArray(SideAttributes.class);
 		parentId = is.readInt();
 		gluedToParent = is.readBoolean();
-		childrenIds = is.readIntArray();
+		children = (WWObject[]) is.readKnownObjectArray(WWObject.class);
 		physical = is.readBoolean();
 		phantom = is.readBoolean();
 		density = is.readFloat();
@@ -491,7 +490,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setRotation(float x, float y, float z) {
 		setOrientation(getPosition(getWorldTime()), new WWVector(x, y, z), null, null, getWorldTime());
 	}
-	
+
 	public final void setRotation(float[] rots) {
 		setRotation(rots[0], rots[1], rots[2]);
 	}
@@ -584,7 +583,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				WWVector parentRotation = new WWVector();
 				parent.getAbsolutePosition(parentPosition, worldTime);
 				parent.getRotation(parentRotation, worldTime);
-				//parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
+				// parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
 				parent.transform(position, parentPosition, parentRotation, worldTime);
 			}
 			lastGetAbsolutePositionX = position.x;
@@ -609,7 +608,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			WWVector parentRotation = new WWVector();
 			parent.getAbsoluteAnimatedPosition(parentPosition, worldTime);
 			parent.getAnimatedRotation(parentRotation, worldTime);
-			//parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
+			// parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
 			parent.transform(position, parentPosition, parentRotation, worldTime);
 		}
 	}
@@ -642,7 +641,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setPosition(float x, float y, float z) {
 		setOrientation(new WWVector(x, y, z), getRotation(getWorldTime()), null, null, getWorldTime());
 	}
-	
+
 	public final void setPosition(float[] pos) {
 		setPosition(pos[0], pos[1], pos[2]);
 	}
@@ -684,9 +683,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * A physical object is influenced by gravity and by the interaction of other objects. (An object does NOT need to
-	 * be physical to influence other objects, however. By making an object physical, it will use time on the server and
-	 * client to simulate the interactions with other objects.)
+	 * A physical object is influenced by gravity and by the interaction of other objects. (An object does NOT need to be physical to influence other objects, however. By making an object physical, it will use time on the server and client
+	 * to simulate the interactions with other objects.)
 	 */
 	public final void setPhysical(boolean physical) {
 		this.physical = physical;
@@ -769,24 +767,17 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Use this method to set all position, rotation, and momentum values in one call. This avoid undo overhead from
-	 * detection of updated objects. Note that individual setPosition, setRotation, setVelocity, and setAMomentum calls
-	 * will internally call this method.
+	 * Use this method to set all position, rotation, and momentum values in one call. This avoid undo overhead from detection of updated objects. Note that individual setPosition, setRotation, setVelocity, and setAMomentum calls will
+	 * internally call this method.
 	 */
 	public final void setOrientation(WWVector newPosition, WWVector newRotation, WWVector newVelocity, WWVector newAMomentum, long newMoveTime) {
 
 		/*
-		 * ignoring glue behavior from child to parent // If this is a child and the child is glued to the parent,
-		 * orient the parent // instead. It will move all of its children accordingly. if (parentId != 0 &&
-		 * gluedToParent && world != null) { WWVector deltaPosition = newPosition.clone();
-		 * deltaPosition.subtract(getPosition(lastMoveTime)); WWVector deltaVelocity = newVelocity.clone();
-		 * deltaVelocity.subtract(getVelocity()); WWVector deltaRotation = newRotation.clone();
-		 * deltaRotation.subtract(getRotation(lastMoveTime)); WWVector deltaAMomentum = newAMomentum.clone();
-		 * deltaAMomentum.subtract(getAMomentum()); WWObject parent = world.objects[parentId]; WWVector
-		 * newParentPosition = parent.getPosition(lastMoveTime); newParentPosition.add(deltaPosition); WWVector
-		 * newParentVelocity = parent.getVelocity(); // TODO rotate/position parent relative to child delta rotate
-		 * parent.setOrientation(newParentPosition, newRotation, newParentVelocity, newAMomentum, newMoveTime); // TODO
-		 * determine if some dynamic properties should be ignored for glued children return; }
+		 * ignoring glue behavior from child to parent // If this is a child and the child is glued to the parent, orient the parent // instead. It will move all of its children accordingly. if (parentId != 0 && gluedToParent && world !=
+		 * null) { WWVector deltaPosition = newPosition.clone(); deltaPosition.subtract(getPosition(lastMoveTime)); WWVector deltaVelocity = newVelocity.clone(); deltaVelocity.subtract(getVelocity()); WWVector deltaRotation =
+		 * newRotation.clone(); deltaRotation.subtract(getRotation(lastMoveTime)); WWVector deltaAMomentum = newAMomentum.clone(); deltaAMomentum.subtract(getAMomentum()); WWObject parent = world.objects[parentId]; WWVector
+		 * newParentPosition = parent.getPosition(lastMoveTime); newParentPosition.add(deltaPosition); WWVector newParentVelocity = parent.getVelocity(); // TODO rotate/position parent relative to child delta rotate
+		 * parent.setOrientation(newParentPosition, newRotation, newParentVelocity, newAMomentum, newMoveTime); // TODO determine if some dynamic properties should be ignored for glued children return; }
 		 */
 
 //		WWVector[] savedChildPositions = null;
@@ -921,7 +912,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setFreedomMoveZ(boolean freedomMoveZ) {
 		this.freedomMoveZ = freedomMoveZ;
 	}
-	
+
 	public final void setFreedomMove(boolean[] freedoms) {
 		this.freedomMoveX = freedoms[0];
 		this.freedomMoveX = freedoms[1];
@@ -951,7 +942,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setFreedomRotateZ(boolean freedomRotateZ) {
 		this.freedomRotateZ = freedomRotateZ;
 	}
-	
+
 	public final void setFreedomRotate(boolean[] freedoms) {
 		this.freedomRotateX = freedoms[0];
 		this.freedomRotateY = freedoms[1];
@@ -981,8 +972,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * If true, the object is considered to have similar properties for all surfaces. This can speed up drawing of an
-	 * object by allowing the drawing of all surface to be combined into a single call to the graphics engine.
+	 * If true, the object is considered to have similar properties for all surfaces. This can speed up drawing of an object by allowing the drawing of all surface to be combined into a single call to the graphics engine.
 	 */
 	public final boolean isMonolithic() {
 		return monolithic;
@@ -1046,8 +1036,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Returns true if the object is in motion in any way. For WWObject, this means moving or rotating. If the object is
-	 * a member of a collection and the collection is dynamic, the object is also dynamic. Subclasses can add additional
+	 * Returns true if the object is in motion in any way. For WWObject, this means moving or rotating. If the object is a member of a collection and the collection is dynamic, the object is also dynamic. Subclasses can add additional
 	 * property tests that indicate the object is dynamically changing in some way.
 	 */
 	public final boolean isDynamic() {
@@ -1086,22 +1075,19 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			rendering.updateRendering();
 		}
 	}
-	
+
 	public final WWVector getSize() {
 		return new WWVector(sizeX, sizeY, sizeZ);
 	}
 
 	/**
-	 * Determines if this object overlaps the give object. If so, return a vector pointing directly to the location of
-	 * the overlap. The length of the vector depends on the depth of penetration of the object. This vector can be used
-	 * to apply physical properties to the object as a result of the two objects making contact.
+	 * Determines if this object overlaps the give object. If so, return a vector pointing directly to the location of the overlap. The length of the vector depends on the depth of penetration of the object. This vector can be used to apply
+	 * physical properties to the object as a result of the two objects making contact.
 	 * <p>
-	 * For situations where the object is contained within another object, the vector's direction is taken from the
-	 * velocity vector of the object. This is somewhat arbitrary, but hints to the physics thread as to the direction in
-	 * which to move the objects such that they are not overlapping.
+	 * For situations where the object is contained within another object, the vector's direction is taken from the velocity vector of the object. This is somewhat arbitrary, but hints to the physics thread as to the direction in which to
+	 * move the objects such that they are not overlapping.
 	 * <p>
-	 * Note: the world time is passed into this method to improve accuracy. The physics simulation depends on applying
-	 * all physics for all objects in the world at exact points in time.
+	 * Note: the world time is passed into this method to improve accuracy. The physics simulation depends on applying all physics for all objects in the world at exact points in time.
 	 */
 	public final WWVector getOverlapVector(WWObject object, long worldTime) {
 
@@ -1124,11 +1110,12 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	private transient WWVector lastOverlapPosition;
 	private transient WWVector lastOverlapRotation;
 
-	public final void getOverlap(WWObject object, WWVector position, WWVector rotation, WWVector objectPosition, WWVector objectRotation, long worldTime, WWVector tempPoint, WWVector tempPoint2, WWVector overlapPoint, WWVector overlapVector) {
+	public final void getOverlap(WWObject object, WWVector position, WWVector rotation, WWVector objectPosition, WWVector objectRotation, long worldTime, WWVector tempPoint, WWVector tempPoint2, WWVector overlapPoint,
+			WWVector overlapVector) {
 		// To simplify overlap testing, check several key points. These are the eight corners, twelve
-		// half edge points, and six center side points of the box. Test each of these. 
+		// half edge points, and six center side points of the box. Test each of these.
 
-		// First, transform the edge points by current rotation and position.  These points are cached just in case
+		// First, transform the edge points by current rotation and position. These points are cached just in case
 		// they are needed on the next overlap
 		WWVector[] transformedEdgePoints;
 		int edgePointsLength;
@@ -1174,12 +1161,11 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		}
 
 		// Note: If objects still penetrate walls, the only thing to do is to speed up the physics thread and iterate more often.
-		// I've tried just about everything else.  Keep in mind that with enough speed, any object can quantum-jump!
+		// I've tried just about everything else. Keep in mind that with enough speed, any object can quantum-jump!
 	}
 
 	/**
-	 * Returns a vector giving the amount of penetration of a point within the object, or null if the point does not
-	 * penetrate.
+	 * Returns a vector giving the amount of penetration of a point within the object, or null if the point does not penetrate.
 	 */
 	public abstract void getPenetration(WWVector point, WWVector position, WWVector rotation, long worldTime, WWVector tempPoint, WWVector penetrationVector);
 
@@ -1195,9 +1181,11 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 					// - six center side points, starting with base, then front (for speed)
 					new WWVector(0, 0, -sz2), new WWVector(0, -sy2, 0), new WWVector(sx2, 0, 0), new WWVector(-sx2, 0, 0), new WWVector(0, sy2, 0), new WWVector(0, 0, sz2),
 					// - eight corners
-					new WWVector(sx2, sy2, sz2), new WWVector(-sx2, sy2, sz2), new WWVector(sx2, -sy2, sz2), new WWVector(-sx2, -sy2, sz2), new WWVector(sx2, sy2, -sz2), new WWVector(-sx2, sy2, -sz2), new WWVector(sx2, -sy2, -sz2), new WWVector(-sx2, -sy2, -sz2),
+					new WWVector(sx2, sy2, sz2), new WWVector(-sx2, sy2, sz2), new WWVector(sx2, -sy2, sz2), new WWVector(-sx2, -sy2, sz2), new WWVector(sx2, sy2, -sz2), new WWVector(-sx2, sy2, -sz2), new WWVector(sx2, -sy2, -sz2),
+					new WWVector(-sx2, -sy2, -sz2),
 					// - twelve half edge points
-					new WWVector(sx2, sy2, 0), new WWVector(-sx2, sy2, 0), new WWVector(sx2, -sy2, 0), new WWVector(-sx2, -sy2, 0), new WWVector(sx2, 0, sz2), new WWVector(-sx2, 0, sz2), new WWVector(sx2, 0, -sz2), new WWVector(-sx2, 0, -sz2), new WWVector(0, sy2, sz2), new WWVector(0, -sy2, sz2), new WWVector(0, sy2, -sz2), new WWVector(0, -sy2, -sz2) };
+					new WWVector(sx2, sy2, 0), new WWVector(-sx2, sy2, 0), new WWVector(sx2, -sy2, 0), new WWVector(-sx2, -sy2, 0), new WWVector(sx2, 0, sz2), new WWVector(-sx2, 0, sz2), new WWVector(sx2, 0, -sz2),
+					new WWVector(-sx2, 0, -sz2), new WWVector(0, sy2, sz2), new WWVector(0, -sy2, sz2), new WWVector(0, sy2, -sz2), new WWVector(0, -sy2, -sz2) };
 		}
 		return edgePoints;
 	}
@@ -1254,8 +1242,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Anti-rotate a point, removing the object's rotation. Note that this is only useful to perform on velocity/force
-	 * vectors.
+	 * Anti-rotate a point, removing the object's rotation. Note that this is only useful to perform on velocity/force vectors.
 	 */
 	public final WWVector antiRotate(WWVector point, WWVector rotation, long worldTime) {
 
@@ -1432,7 +1419,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			if (clone.sideAttributes[i] == SideAttributes.getDefaultSideAttributes()) {
 				sideAttributes[i] = SideAttributes.getDefaultSideAttributes();
 			} else {
-				sideAttributes[i] = (SideAttributes)clone.sideAttributes[i].clone();
+				sideAttributes[i] = (SideAttributes) clone.sideAttributes[i].clone();
 			}
 		}
 
@@ -1451,7 +1438,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Same as clone, but behaviors aren't cloned.
 	 * 
 	 * @return
-	 * @throws CloneNotSupportedException 
+	 * @throws CloneNotSupportedException
 	 */
 	public Object cloneNoBehavior() {
 		WWObject clone = (WWObject) super.clone();
@@ -1467,7 +1454,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	public void copyFrom(WWObject newObject) {
-		//this.id = newObject.id;
+		// this.id = newObject.id;
 		this.lastMoveTime = newObject.lastMoveTime;
 		this.positionX = newObject.positionX;
 		this.positionY = newObject.positionY;
@@ -1479,7 +1466,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		// Grouping properties
 		this.parentId = newObject.parentId;
 		this.gluedToParent = newObject.gluedToParent;
-		this.childrenIds = newObject.childrenIds;
+		this.children = newObject.children; // no need to clone as any change will cause copy of array
 
 		// Physics properties
 		this.physical = newObject.physical;
@@ -1520,10 +1507,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		this.impactSound = newObject.impactSound;
 		this.slidingSound = newObject.slidingSound;
 
-		//this.behaviors = newObject.behaviors;
+		// this.behaviors = newObject.behaviors;
 
-		//this.rendering = newObject.rendering;
-		//this.lastRenderingTime = newObject.lastRenderingTime;
+		// this.rendering = newObject.rendering;
+		// this.lastRenderingTime = newObject.lastRenderingTime;
 
 		this.stopPosition = newObject.stopPosition;
 		this.stopRotation = newObject.stopRotation;
@@ -1576,25 +1563,33 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		this.gluedToParent = gluedToParent;
 	}
 
-	public final int[] getChildren() {
-		if (childrenIds == null) {
+	public final WWObject[] getChildren() {
+		migrateChildIds();
+		if (children == null) {
 			return DEFAULT_CHILDREN;
 		}
-		return childrenIds;
+		return children;
 	}
 
-	public final void setChildren(int[] childrenIds) {
-		this.childrenIds = childrenIds;
+	// convert childrenIds over to children. We're phasing out childrenIds.
+	private void migrateChildIds() {
+		if (childrenIds != null) {
+			children = new WWObject[childrenIds.length];
+			for (int i = 0; i < childrenIds.length; i++) {
+				children[i] = world.getObject(childrenIds[i]);
+			}
+			childrenIds = null;
+		}
 	}
 
-	public final int getChildId(int i) {
-		return childrenIds[i];
+	public final void setChildren(WWObject[] children) {
+		this.children = children;
 	}
 
 	public final WWObject getChild(String name) {
-		for (int i = 0; i < childrenIds.length; i++) {
-			int childId = childrenIds[i];
-			WWObject childObject = world.objects[childId];
+		migrateChildIds();
+		for (int i = 0; i < children.length; i++) {
+			WWObject childObject = children[i];
 			if (name.equals(childObject.getName())) {
 				return childObject;
 			}
@@ -1602,32 +1597,36 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		return null;
 	}
 
-	public final void addChild(int childId) {
-		int[] newChildrenIds;
-		if (childrenIds == null) {
-			newChildrenIds = new int[1];
-		} else {
-			newChildrenIds = new int[childrenIds.length + 1];
-			for (int i = 0; i < childrenIds.length; i++) {
-				newChildrenIds[i] = childrenIds[i];
+	public final void addChild(WWObject child) {
+		migrateChildIds();
+		if (!child.isChildOf(this)) {
+			WWObject[] newChildren;
+			if (children == null) {
+				newChildren = new WWObject[1];
+			} else {
+				newChildren = new WWObject[children.length + 1];
+				for (int i = 0; i < children.length; i++) {
+					newChildren[i] = children[i];
+				}
 			}
+			newChildren[newChildren.length - 1] = child;
+			children = newChildren;
 		}
-		newChildrenIds[newChildrenIds.length - 1] = childId;
-		childrenIds = newChildrenIds;
 	}
 
-	public final void removeChild(int childId) {
-		if (childrenIds != null) {
-			for (int i = 0; i < childrenIds.length; i++) {
-				if (childrenIds[i] == childId) {
-					int[] newChildrenIds = new int[childrenIds.length - 1];
+	public final void removeChild(WWObject child) {
+		migrateChildIds();
+		if (children != null && child.isChildOf(this)) {
+			for (int i = 0; i < children.length; i++) {
+				if (children[i] == child) {
+					WWObject[] newChildren = new WWObject[children.length - 1];
 					for (int j = 0; j < i; j++) {
-						newChildrenIds[j] = childrenIds[j];
+						newChildren[j] = children[j];
 					}
-					for (int j = i; j < childrenIds.length - 1; j++) {
-						newChildrenIds[j] = childrenIds[j + 1];
+					for (int j = i; j < children.length - 1; j++) {
+						newChildren[j] = children[j + 1];
 					}
-					childrenIds = newChildrenIds;
+					children = newChildren;
 					return;
 				}
 			}
@@ -1713,8 +1712,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Invoked by BehaviorThread to launch behaviors events on the object. If the object has a parent and the behaviors
-	 * do not override, the parent object will also be invoked for the behavior event.
+	 * Invoked by BehaviorThread to launch behaviors events on the object. If the object has a parent and the behaviors do not override, the parent object will also be invoked for the behavior event.
 	 */
 	final void invokeBehavior(String command, WWEntity agent, Object params) {
 		try {
@@ -1815,8 +1813,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Overridable is subclasses to make smarter extent calculations, avoiding more complicated math when determining
-	 * overlaps.
+	 * Overridable is subclasses to make smarter extent calculations, avoiding more complicated math when determining overlaps.
 	 */
 	protected void calculateExtents() {
 		extent = (float) Math.sqrt(sizeX * sizeX + sizeY * sizeY + sizeZ * sizeZ) / 2.0f;
@@ -1862,7 +1859,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			}
 		} else {
 			if (sideAttributes[side].isDefault || sideAttributes[side] == sideAttributes[SIDE_ALL]) {
-				sideAttributes[side] = (SideAttributes)sideAttributes[SIDE_ALL].clone();
+				sideAttributes[side] = (SideAttributes) sideAttributes[SIDE_ALL].clone();
 				sideAttributes[side].isDefault = false;
 				monolithic = false;
 			}
@@ -1873,7 +1870,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final WWColor getColor(int side) {
 		return new WWColor(sideAttributes[side].red, sideAttributes[side].green, sideAttributes[side].blue);
 	}
-	
+
 	public final WWColor getColor() {
 		return getColor(SIDE_ALL);
 	}
@@ -1951,11 +1948,11 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		getEditableSideAttributes(side).green = color.getGreen();
 		getEditableSideAttributes(side).blue = color.getBlue();
 	}
-	
+
 	public final void setColor(WWColor color) {
 		setColor(SIDE_ALL, color);
 	}
-	
+
 	public final void setColorTop(WWColor color) {
 		setColor(SIDE_TOP, color);
 	}
@@ -2075,7 +2072,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		getEditableSideAttributes(side).textureScaleX = scaleX;
 		getEditableSideAttributes(side).textureScaleY = scaleY;
 	}
-	
+
 	public final WWTexture getTexture(int side) {
 		WWTexture texture = new WWTexture();
 		SideAttributes sideAttributes = getEditableSideAttributes(side);
@@ -2091,7 +2088,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		texture.refreshInterval = sideAttributes.textureRefreshInterval;
 		return texture;
 	}
-	
+
 	public final WWTexture getTexture() {
 		return getTexture(SIDE_ALL);
 	}
@@ -2162,7 +2159,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		setTextureScale(side, scaleX, scaleY);
 		setTextureRotation(side, rotation);
 	}
-	
+
 	public final void setTexture(int side, WWTexture texture) {
 		setTextureURL(side, texture.name);
 		setTextureScale(side, texture.scaleX, texture.scaleY);
@@ -2174,7 +2171,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		setTextureAMomentum(side, texture.aMomentum);
 		setTextureRefreshInterval(side, texture.refreshInterval);
 	}
-	
+
 	public final void setTexture(WWTexture texture) {
 		setTexture(SIDE_ALL, texture);
 	}
@@ -2262,7 +2259,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final float getTransparency(int side) {
 		return sideAttributes[side].transparency;
 	}
-	
+
 	public final float getTransparency() {
 		return getTransparency(SIDE_ALL);
 	}
@@ -2326,7 +2323,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setTransparency(int side, float transparency) {
 		getEditableSideAttributes(side).transparency = transparency;
 	}
-	
+
 	public final void setTransparency(float transparency) {
 		setTransparency(SIDE_ALL, transparency);
 	}
@@ -2390,7 +2387,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final float getShininess(int side) {
 		return sideAttributes[side].shininess;
 	}
-	
+
 	public final float getShininess() {
 		return getShininess(SIDE_ALL);
 	}
@@ -2582,7 +2579,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setFullBright(int side, boolean fullBright) {
 		getEditableSideAttributes(side).fullBright = fullBright;
 	}
-	
+
 	public final void setFullBright(boolean fullBright) {
 		setFullBright(SIDE_ALL, fullBright);
 	}
@@ -2703,5 +2700,5 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public WWAction[] getActions() {
 		return actions;
 	}
-	
+
 }
