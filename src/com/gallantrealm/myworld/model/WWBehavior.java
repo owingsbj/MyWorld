@@ -131,6 +131,14 @@ public abstract class WWBehavior extends WWEntity {
 	public boolean timerEvent(WWObject object) {
 		return timerEvent();
 	}
+	
+	/**
+	 * This event is invoked when a physical object is pushed.  This is typically an avatar being pushed by 
+	 * the user, but any object can be pushed via behavior scripts.
+	 */
+	public boolean pushEvent(WWVector amount) {
+		return false;
+	}
 
 	// TODO add other needed events:
 	// - changed event
