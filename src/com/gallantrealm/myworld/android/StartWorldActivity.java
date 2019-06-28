@@ -181,12 +181,12 @@ public class StartWorldActivity extends Activity {
 					StartWorldActivity.this.finish();
 				}
 			}, 2500l);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			runOnUiThread(new Runnable() {
 				public void run() {
 					if (worldClassName.startsWith("file:")) {
-						final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Sorry, the world could not be opened.", new String[] { "OK" }, null);
+						final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't open the world:\n" + e.getMessage(), new String[] { "OK" }, null);
 						messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 							public void onDismiss(DialogInterface dialogInterface) {
 								StartWorldActivity.this.finish();
@@ -194,12 +194,12 @@ public class StartWorldActivity extends Activity {
 						});
 						messageDialog.show();
 					} else {
-						final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "The state could not be restored. Starting new.", new String[] { "OK" }, null);
+						final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't restore the world:\n" + e.getMessage(), new String[] { "OK" }, null);
 						messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 							public void onDismiss(DialogInterface dialogInterface) {
 								AsyncTask.execute(new Runnable() {
 									public void run() {
-										newWorld(worldClassName);
+										StartWorldActivity.this.finish();
 									}
 								});
 							}
@@ -266,7 +266,7 @@ public class StartWorldActivity extends Activity {
 					} else {
 						message = e.getMessage();
 					}
-					final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't initialize the world.  " + message, new String[] { "OK" }, null);
+					final MessageDialog messageDialog = new MessageDialog(StartWorldActivity.this, null, "Couldn't create the world:\n" + message, new String[] { "OK" }, null);
 					messageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 						public void onDismiss(DialogInterface d) {
 							clientModel.getContext().finish();
