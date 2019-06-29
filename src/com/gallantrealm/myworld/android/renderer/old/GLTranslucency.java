@@ -1,13 +1,12 @@
 package com.gallantrealm.myworld.android.renderer.old;
 
-import android.opengl.GLES10;
-
 import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
 import com.gallantrealm.myworld.model.SideAttributes;
 import com.gallantrealm.myworld.model.WWObject;
 import com.gallantrealm.myworld.model.WWTranslucency;
 import com.gallantrealm.myworld.model.WWVector;
+import android.opengl.GLES10;
 
 /**
  * Creates a primitive with evenly spaced layers in the x, y, and z dimensions. These layers, when given partial
@@ -519,7 +518,7 @@ public final class GLTranslucency extends GLObject {
 							//GLES10.glMaterialf(GLES10.GL_FRONT_AND_BACK, GLES10.GL_SHININESS, 1.0f);
 							String textureUrl = sideAttributes.textureURL;
 							if (textureUrl != null) {
-								int textureId = renderer.getTexture(textureUrl);
+								int textureId = renderer.getTexture(textureUrl, sideAttributes.pixelate);
 								GLES10.glMatrixMode(GLES10.GL_TEXTURE);
 								GLES10.glPushMatrix();
 								GLES10.glLoadIdentity();
@@ -592,7 +591,7 @@ public final class GLTranslucency extends GLObject {
 							//GLES10.glMaterialf(GLES10.GL_FRONT_AND_BACK, GLES10.GL_SHININESS, 1.0f);
 							String textureUrl = sideAttributes.textureURL;
 							if (textureUrl != null) {
-								int textureId = renderer.getTexture(textureUrl);
+								int textureId = renderer.getTexture(textureUrl, sideAttributes.pixelate);
 								GLES10.glMatrixMode(GLES10.GL_TEXTURE);
 								GLES10.glPushMatrix();
 								GLES10.glLoadIdentity();

@@ -522,7 +522,7 @@ public class GLTranslucency extends GLObject  {
 							// GLES20.glMaterialfv(GLES20.GL_FRONT_AND_BACK, GLES20.GL_SPECULAR, new float[] { sideColor.getRed(), sideColor.getGreen(), sideColor.getBlue(), 0.0f }, 0);
 							// GLES20.glMaterialf(GLES20.GL_FRONT_AND_BACK, GLES20.GL_SHININESS, 1.0f);
 							String textureUrl = object.getTextureURL(side);
-							int textureId = renderer.getTexture(textureUrl);
+							int textureId = renderer.getTexture(textureUrl, object.getTexturePixelate(side));
 							Matrix.setIdentityM(textureMatrix, 0);
 							Matrix.scaleM(textureMatrix, 0, 1.0f / object.sideAttributes[side].textureScaleX, 1.0f / object.sideAttributes[side].textureScaleY, 1.0f);
 							Matrix.translateM(textureMatrix, 0, object.getTextureOffsetX(side, worldTime), object.getTextureOffsetY(side, worldTime), 0.0f);
@@ -532,7 +532,7 @@ public class GLTranslucency extends GLObject  {
 							}
 							GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 							GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-							int bumpTextureId = renderer.getNormalTexture(textureUrl);
+							int bumpTextureId = renderer.getNormalTexture(textureUrl, object.getTexturePixelate(side));
 							GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
 							GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, bumpTextureId);
 							GLSurface geometry = sides[side];
@@ -573,7 +573,7 @@ public class GLTranslucency extends GLObject  {
 							// GLES20.glMaterialfv(GLES20.GL_FRONT_AND_BACK, GLES20.GL_SPECULAR, new float[] { sideColor.getRed(), sideColor.getGreen(), sideColor.getBlue(), 0.0f }, 0);
 							// GLES20.glMaterialf(GLES20.GL_FRONT_AND_BACK, GLES20.GL_SHININESS, 1.0f);
 							String textureUrl = object.getTextureURL(side);
-							int textureId = renderer.getTexture(textureUrl);
+							int textureId = renderer.getTexture(textureUrl, object.getTexturePixelate(side));
 							Matrix.setIdentityM(textureMatrix, 0);
 							Matrix.scaleM(textureMatrix, 0, 1.0f / object.sideAttributes[side].textureScaleX, 1.0f / object.sideAttributes[side].textureScaleY, 1.0f);
 							Matrix.translateM(textureMatrix, 0, object.getTextureOffsetX(side, worldTime), object.getTextureOffsetY(side, worldTime), 0.0f);
@@ -583,7 +583,7 @@ public class GLTranslucency extends GLObject  {
 							}
 							GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 							GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-							int bumpTextureId = renderer.getNormalTexture(textureUrl);
+							int bumpTextureId = renderer.getNormalTexture(textureUrl, object.getTexturePixelate(side));
 							GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
 							GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, bumpTextureId);
 							GLSurface geometry = sides[side];

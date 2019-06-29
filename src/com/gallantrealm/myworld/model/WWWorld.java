@@ -437,7 +437,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		}
 		if (preloadedTextures != null) {
 			for (int i = 0; i < preloadedTextures.size(); i++) {
-				((AndroidRenderer) renderer).getTexture(preloadedTextures.get(i));
+				((AndroidRenderer) renderer).getTexture(preloadedTextures.get(i), false);
 			}
 		}
 	}

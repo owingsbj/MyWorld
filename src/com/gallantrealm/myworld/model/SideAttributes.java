@@ -38,6 +38,7 @@ public final class SideAttributes implements Serializable, Cloneable, Sendable {
 	public boolean bumpMap;  // keep, for compatibility..
 	public boolean alphaTest;
 	public boolean isDefault;
+	public boolean pixelate;
 
 	public SideAttributes() {
 	}
@@ -71,6 +72,7 @@ public final class SideAttributes implements Serializable, Cloneable, Sendable {
 		os.writeFloat(textureAMomentum);
 		os.writeLong(textureRefreshInterval);
 		os.writeBoolean(alphaTest);
+		os.writeBoolean(pixelate);
 	}
 
 	@Override
@@ -92,6 +94,7 @@ public final class SideAttributes implements Serializable, Cloneable, Sendable {
 		textureAMomentum = is.readFloat();
 		textureRefreshInterval = is.readLong();
 		alphaTest = is.readBoolean();
+		pixelate = is.readBoolean();
 	}
 
 }

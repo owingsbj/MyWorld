@@ -1,11 +1,10 @@
 package com.gallantrealm.myworld.android.renderer.neu;
 
-import android.opengl.GLES20;
-import android.opengl.Matrix;
-
 import com.gallantrealm.myworld.model.SideAttributes;
 import com.gallantrealm.myworld.model.WWObject;
 import com.gallantrealm.myworld.model.WWParticleEmitter;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 /**
  * Creates a primitive with a complex surface shape composed from a two dimensional array of rectangles. Three types of
@@ -64,13 +63,13 @@ public class GLParticleEmitter extends GLObject {
 			}
 		}
 		String textureUrl = sideAttributes.textureURL;
-		int textureId = renderer.getTexture(textureUrl);
+		int textureId = renderer.getTexture(textureUrl, sideAttributes.pixelate);
 		if (textureId != lastTextureId) {
 			GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
 			lastTextureId = textureId;
 		}
-		int bumpTextureId = renderer.getNormalTexture(textureUrl);
+		int bumpTextureId = renderer.getNormalTexture(textureUrl, sideAttributes.pixelate);
 		if (bumpTextureId != lastBumpTextureId) {
 			GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
 			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, bumpTextureId);

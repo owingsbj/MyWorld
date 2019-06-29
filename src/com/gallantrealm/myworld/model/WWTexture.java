@@ -12,12 +12,13 @@ public class WWTexture implements Serializable, Cloneable {
 	public float scaleX = 1.0f;
 	public float scaleY = 1.0f;
 	public float rotation;
-	public float offsetX = 0.5f;
-	public float offsetY = 0.5f;
+	public float offsetX;
+	public float offsetY;
 	public float velocityX;
 	public float velocityY;
 	public float aMomentum;
 	public long refreshInterval;
+	public boolean pixelate;
 	
 	public WWTexture() {
 	}
@@ -46,6 +47,16 @@ public class WWTexture implements Serializable, Cloneable {
 		this.rotation = rotation;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
+	}
+	
+	public WWTexture(String url, float scaleX, float scaleY, float rotation, float offsetX, float offsetY, boolean pixelate) {
+		this.name = url;
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+		this.rotation = rotation;
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+		this.pixelate = pixelate;
 	}
 	
 	public String getName() {
@@ -116,6 +127,13 @@ public class WWTexture implements Serializable, Cloneable {
 	}
 	public void setRefreshInterval(long refreshInterval) {
 		this.refreshInterval = refreshInterval;
+	}
+	
+	public boolean isPixelate() {
+		return pixelate;
+	}
+	public void setPixelate(boolean pixelate) {
+		this.pixelate = pixelate;
 	}
 	
 	@Override

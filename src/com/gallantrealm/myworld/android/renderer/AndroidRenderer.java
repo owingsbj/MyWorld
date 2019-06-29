@@ -156,14 +156,14 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 	Bitmap regenBitmap;
 	String regenTextureName;
 
-	public synchronized final int getNormalTexture(String textureName) {
+	public synchronized final int getNormalTexture(String textureName, boolean pixelate) {
 		if (textureName == null) {
 			textureName = "white";
 		}
 		if (textureName.endsWith(".png")) {
-			textureName = textureName.substring(0, textureName.length()-4) + "_nrm.png";
+			textureName = textureName.substring(0, textureName.length() - 4) + "_nrm.png";
 		} else if (textureName.endsWith(".jpg")) {
-			textureName = textureName.substring(0, textureName.length()-4) + "_nrm.jpg";
+			textureName = textureName.substring(0, textureName.length() - 4) + "_nrm.jpg";
 		} else {
 			textureName = textureName + "_nrm.png";
 		}
@@ -213,12 +213,12 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 						bitmap = BitmapFactory.decodeStream(is);
 					}
 				}
-				if (bitmap == null) {  // a failure
-					int textureId = getNormalTexture("white");  // use white
+				if (bitmap == null) { // a failure
+					int textureId = getNormalTexture("white", true); // use white
 					normalTextureCache.put(textureName, textureId);
 					return textureId;
 				}
-				int textureId = genTexture(bitmap, textureName);
+				int textureId = genTexture(bitmap, textureName, pixelate);
 				normalTextureCache.put(textureName, textureId);
 				return textureId;
 			} finally {
@@ -233,7 +233,7 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 		}
 	}
 
-	public synchronized final int getTexture(String textureName) {
+	public synchronized final int getTexture(String textureName, boolean pixelate) {
 		if (textureName == null) {
 			textureName = "white";
 		}
@@ -314,11 +314,11 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 					}
 				}
 				if (bitmap == null) { // problems
-					int textureId = getTexture("white");   // use white texture
+					int textureId = getTexture("white", true); // use white texture
 					textureCache.put(textureName, textureId);
 					return textureId;
 				}
-				int textureId = genTexture(bitmap, textureName);
+				int textureId = genTexture(bitmap, textureName, pixelate);
 				textureCache.put(textureName, textureId);
 				return textureId;
 			} finally {
@@ -333,7 +333,7 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 		}
 	}
 
-	final int genTexture(Bitmap bitmap, String textureName) {
+	final int genTexture(Bitmap bitmap, String textureName, boolean pixelate) {
 		System.out.println("generating texture " + textureName);
 		int[] textureIds = new int[1];
 		GLES20.glGenTextures(1, textureIds, 0);
@@ -349,7 +349,11 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 				GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES11.GL_GENERATE_MIPMAP, GLES20.GL_FALSE);
 			}
 			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST_MIPMAP_NEAREST);
-			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+			if (pixelate) {
+				GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+			} else {
+				GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+			}
 		}
 // GLES20.glTexParameterx(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
 // GLES20.glTexParameterx(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
@@ -701,7 +705,7 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 			dampCameraLean = (cameraLean + clientModel.cameraDampRate * dampCameraLean) / (clientModel.cameraDampRate + 1);
 		}
 		dampCameraDistance = (limitedCameraDistance + clientModel.cameraDampRate * dampCameraDistance) / (clientModel.cameraDampRate + 1);
-		clientModel.setDampedCameraLocation(dampXCamera, dampYCamera,  dampZCamera);
+		clientModel.setDampedCameraLocation(dampXCamera, dampYCamera, dampZCamera);
 		clientModel.setDampedCameraRotation(dampCameraTilt, dampCameraLean, dampCameraPan);
 	}
 

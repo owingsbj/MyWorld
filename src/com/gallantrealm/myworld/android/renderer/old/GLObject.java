@@ -1,16 +1,14 @@
 package com.gallantrealm.myworld.android.renderer.old;
 
-import android.opengl.GLES10;
-import android.opengl.Matrix;
-
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
 import com.gallantrealm.myworld.client.renderer.IRenderer;
 import com.gallantrealm.myworld.model.SideAttributes;
 import com.gallantrealm.myworld.model.WWColor;
-import com.gallantrealm.myworld.model.WWConstant;
 import com.gallantrealm.myworld.model.WWObject;
 import com.gallantrealm.myworld.model.WWVector;
+import android.opengl.GLES10;
+import android.opengl.Matrix;
 
 /**
  * This is the superclass of all OpenGL primitives used in MyWorld.
@@ -269,7 +267,7 @@ public abstract class GLObject extends GLRendering {
 				if (picking == 1) { // object picking
 					GLSurface.drawMonolith(sides, false);
 				} else if (picking == 2) { // surface point picking
-					int textureId = renderer.getTexture("surface_select");
+					int textureId = renderer.getTexture("surface_select", true);
 					lastTextureUrl = null;
 					lastTextureId = textureId;
 					GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_DIFFUSE, new float[] { 1, 1, 1, 0 }, 0);
@@ -285,7 +283,7 @@ public abstract class GLObject extends GLRendering {
 					GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
 					lastTextureMatrixIdentity = false;
 				} else if (picking == 3) { // surface point picking - vertical
-					int textureId = renderer.getTexture("surface_select");
+					int textureId = renderer.getTexture("surface_select", true);
 					lastTextureUrl = null;
 					lastTextureId = textureId;
 					GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_DIFFUSE, new float[] { 1, 1, 1, 0 }, 0);
@@ -323,7 +321,7 @@ public abstract class GLObject extends GLRendering {
 					if (textureUrl != null) {
 						int textureId = lastTextureId;
 						if (textureUrl != lastTextureUrl) {
-							textureId = renderer.getTexture(textureUrl);
+							textureId = renderer.getTexture(textureUrl, sideAttributes.pixelate);
 							lastTextureUrl = textureUrl;
 						}
 						if (!object.fixed) { // note: texture scale/rotation/offsets are "baked" into coordinates for fixed
@@ -411,7 +409,7 @@ public abstract class GLObject extends GLRendering {
 							GLSurface geometry = sides[side];
 							geometry.draw(false);
 						} else if (picking == 2) { // surface point picking - horizontal
-							int textureId = renderer.getTexture("surface_select");
+							int textureId = renderer.getTexture("surface_select", true);
 							lastTextureUrl = null;
 							lastTextureId = textureId;
 							GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_DIFFUSE, new float[] { 1, 1, 1, 0 }, 0);
@@ -428,7 +426,7 @@ public abstract class GLObject extends GLRendering {
 							GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
 							lastTextureMatrixIdentity = false;
 						} else if (picking == 3) { // surface point picking - vertical
-							int textureId = renderer.getTexture("surface_select");
+							int textureId = renderer.getTexture("surface_select", true);
 							lastTextureUrl = null;
 							lastTextureId = textureId;
 							GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_DIFFUSE, new float[] { 1, 1, 1, 0 }, 0);
@@ -466,7 +464,7 @@ public abstract class GLObject extends GLRendering {
 							if (textureUrl != null) {
 								int textureId = lastTextureId;
 								if (textureUrl != lastTextureUrl) {
-									textureId = renderer.getTexture(textureUrl);
+									textureId = renderer.getTexture(textureUrl, sideAttributes.pixelate);
 									lastTextureUrl = textureUrl;
 								}
 								if (!object.fixed) {
@@ -566,7 +564,7 @@ public abstract class GLObject extends GLRendering {
 			if (textureUrl != null) {
 				int textureId = lastTextureId;
 				if (textureUrl != lastTextureUrl) {
-					textureId = renderer.getTexture(textureUrl);
+					textureId = renderer.getTexture(textureUrl, sideAttributes.pixelate);
 					lastTextureUrl = textureUrl;
 				}
 				if (!lastTextureMatrixIdentity) {

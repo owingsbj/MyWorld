@@ -2080,12 +2080,13 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		texture.scaleX = sideAttributes.textureScaleX;
 		texture.scaleY = sideAttributes.textureScaleY;
 		texture.rotation = sideAttributes.textureRotation;
-		texture.offsetX = sideAttributes.textureOffsetX;
-		texture.offsetY = sideAttributes.textureOffsetY;
+		texture.offsetX = sideAttributes.textureOffsetX - 0.5f;
+		texture.offsetY = sideAttributes.textureOffsetY - 0.5f;
 		texture.velocityX = sideAttributes.textureVelocityX;
 		texture.velocityY = sideAttributes.textureVelocityY;
 		texture.aMomentum = sideAttributes.textureAMomentum;
 		texture.refreshInterval = sideAttributes.textureRefreshInterval;
+		texture.pixelate = sideAttributes.pixelate;
 		return texture;
 	}
 
@@ -2164,12 +2165,13 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		setTextureURL(side, texture.name);
 		setTextureScale(side, texture.scaleX, texture.scaleY);
 		setTextureRotation(side, texture.rotation);
-		setTextureOffsetX(side, texture.offsetX);
-		setTextureOffsetY(side, texture.offsetY);
+		setTextureOffsetX(side, texture.offsetX + 0.5f);
+		setTextureOffsetY(side, texture.offsetY + 0.5f);
 		setTextureVelocityX(side, texture.velocityX);
 		setTextureVelocityY(side, texture.velocityY);
 		setTextureAMomentum(side, texture.aMomentum);
 		setTextureRefreshInterval(side, texture.refreshInterval);
+		setTexturePixelate(side, texture.pixelate);
 	}
 
 	public final void setTexture(WWTexture texture) {
@@ -2254,6 +2256,14 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final void setTextureRefreshInterval(int side, long millis) {
 		getEditableSideAttributes(side).textureRefreshInterval = millis;
+	}
+
+	public final boolean getTexturePixelate(int side) {
+		return sideAttributes[side].pixelate;
+	}
+
+	public final void setTexturePixelate(int side, boolean pixelate) {
+		getEditableSideAttributes(side).pixelate = pixelate;
 	}
 
 	public final float getTransparency(int side) {
