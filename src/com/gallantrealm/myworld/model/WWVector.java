@@ -13,6 +13,9 @@ import com.gallantrealm.myworld.communication.Sendable;
 public class WWVector implements Cloneable, Serializable, Sendable {
 	static final long serialVersionUID = 1L;
 
+	public static final float TORADIAN = 0.0174532925f;
+	public static final float TODEGREES = 57.29577866f;
+
 	public static final WWVector ZERO_VECTOR = new WWVector(0, 0, 0);
 
 	public float x;
@@ -300,6 +303,77 @@ public class WWVector implements Cloneable, Serializable, Sendable {
 		z = theading;
 		x = tattitude;
 		y = tbank;
+		return this;
+	}
+	
+	public final WWVector rotate(WWVector rotation) {
+		float r;
+		float theta;
+		float newTheta;
+
+		// Rotate around x axis
+		if (rotation.x != 0.0) {
+			r = (float) Math.sqrt(y * y + z * z);
+			theta = FastMath.atan2(y, z);
+			newTheta = theta + TORADIAN * rotation.x;
+			y = r * FastMath.sin(newTheta);
+			z = r * FastMath.cos(newTheta);
+		}
+
+		// Rotate around y axis
+		if (rotation.y != 0.0) {
+			r = (float) Math.sqrt(x * x + z * z);
+			theta = FastMath.atan2(x, z);
+			newTheta = theta + TORADIAN * -rotation.y;
+			x = r * FastMath.sin(newTheta);
+			z = r * FastMath.cos(newTheta);
+		}
+
+		// Rotate around z axis
+		if (rotation.z != 0.0) {
+			r = (float) Math.sqrt(x * x + y * y);
+			theta = FastMath.atan2(x, y);
+			newTheta = theta + TORADIAN * rotation.z;
+			x = r * FastMath.sin(newTheta);
+			y = r * FastMath.cos(newTheta);
+		}
+
+		return this;
+	}
+
+	public final WWVector antiRotate(WWVector rotation) {
+
+		float r;
+		float theta;
+		float newTheta;
+
+		// Anti-rotate around z axis
+		if (rotation.z != 0.0f) {
+			r = (float) Math.sqrt(x * x + y * y);
+			theta = FastMath.atan2(x, y);
+			newTheta = theta - TORADIAN * rotation.z;
+			x = r * FastMath.sin(newTheta);
+			y = r * FastMath.cos(newTheta);
+		}
+
+		// Anti-rotate around y axis
+		if (rotation.y != 0.0f) {
+			r = (float) Math.sqrt(x * x + z * z);
+			theta = FastMath.atan2(x, z);
+			newTheta = theta - TORADIAN * -rotation.y;
+			x = r * FastMath.sin(newTheta);
+			z = r * FastMath.cos(newTheta);
+		}
+
+		// Anti-rotate around x axis
+		if (rotation.x != 0.0f) {
+			r = (float) Math.sqrt(y * y + z * z);
+			theta = FastMath.atan2(y, z);
+			newTheta = theta - TORADIAN * rotation.x;
+			y = r * FastMath.sin(newTheta);
+			z = r * FastMath.cos(newTheta);
+		}
+
 		return this;
 	}
 
