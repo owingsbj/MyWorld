@@ -341,7 +341,7 @@ public class WWVector implements Cloneable, Serializable, Sendable {
 		return this;
 	}
 
-	public final WWVector antiRotate(WWVector rotation) {
+	public final WWVector antirotate(WWVector rotation) {
 
 		float r;
 		float theta;
