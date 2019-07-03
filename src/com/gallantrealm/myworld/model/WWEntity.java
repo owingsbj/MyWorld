@@ -15,15 +15,11 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 
 	public WWWorld world;
 
-	private String name;
-	private String description;
-	private long createTime;
-	private long lastModifyTime;
+	public String name;
+	public String description;
+	public long createTime;
+	public long lastModifyTime;
 	public boolean deleted;
-
-	private final WWWorld getWorld() {
-		return world;
-	}
 
 	public void setWorld(WWWorld world) {
 		this.world = world;
@@ -99,9 +95,6 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 	}
 
 	public final String getName() {
-		if (name == null) {
-			return this.getClass().getSimpleName();
-		}
 		return name;
 	}
 
