@@ -707,6 +707,14 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final float getVelocityLength() {
 		return (float) Math.sqrt(velocityX * velocityX + velocityY * velocityY + velocityZ * velocityZ);
 	}
+	
+	public final WWVector getAngularVelocity() {
+		return new WWVector(aMomentumX, aMomentumY, aMomentumZ);
+	}
+	
+	public final void setAngularVelocity(WWVector aVelocity) {
+		setOrientation(getPosition(getWorldTime()), getRotation(getWorldTime()), null, aVelocity, getWorldTime());
+	}
 
 	public final WWVector getAMomentum() {
 		return new WWVector(aMomentumX, aMomentumY, aMomentumZ);
