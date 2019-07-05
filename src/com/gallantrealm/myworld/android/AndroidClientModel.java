@@ -20,6 +20,7 @@ import com.gallantrealm.myworld.android.themes.DefaultTheme;
 import com.gallantrealm.myworld.android.themes.Theme;
 import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
+import com.gallantrealm.myworld.client.model.InputResponseHandler;
 import com.gallantrealm.myworld.model.WWWorld;
 import com.gallantrealm.myworld.server.MyWorldServer;
 import com.zeemote.zc.Controller;
@@ -1301,6 +1302,28 @@ public class AndroidClientModel extends ClientModel {
 		} catch (InterruptedException e) {
 		}
 		return returnValue.rc;
+	}
+	
+	@Override
+	public void inputAlert(final String title, final String message, final String initialValue, final String[] options, final InputResponseHandler handler) {
+		if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+			throw new IllegalThreadStateException("This can't be called on the looper thread");
+		}
+		getContext().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				final InputDialog inputDialog = new InputDialog(getContext(), title, message, initialValue, options);
+//				currentDialog = inputDialog;
+				inputDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialogInterface) {
+						handler.handleInput(inputDialog.getValue(), inputDialog.getButtonPressed());
+//						currentDialog = null;
+					}
+				});
+				inputDialog.show();
+			}
+		});
 	}
 	
 	public void setLocalFolder(String localFolder) {
