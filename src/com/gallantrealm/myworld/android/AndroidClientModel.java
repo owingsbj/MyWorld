@@ -117,7 +117,8 @@ public class AndroidClientModel extends ClientModel {
 
 	public boolean goggleDogPass;
 	
-	private String localFolder;  // for worlds and avatars
+	private String localFolder;  // for local worlds and avatars
+	private boolean showDebugLogging;  // for debugging, adds world debug logging to console.
 
 	IabHelper purchaseHelper;
 
@@ -161,6 +162,7 @@ public class AndroidClientModel extends ClientModel {
 			avatarDisplayNames[i] = preferences.getString("avatarDisplayName" + i, null);
 		}
 		localFolder = preferences.getString("localFolder", Environment.getExternalStorageDirectory().toString() + "/DevWorlds");
+		showDebugLogging = preferences.getBoolean("showDebugLogging", false);
 	}
 
 	public void setContext(Activity context) {
@@ -220,6 +222,7 @@ public class AndroidClientModel extends ClientModel {
 			editor.putString("avatarDisplayName" + i, avatarDisplayNames[i]);
 		}
 		editor.putString("localFolder", localFolder);
+		editor.putBoolean("showDebugLogging", showDebugLogging);
 		editor.commit();
 	}
 
@@ -1333,6 +1336,14 @@ public class AndroidClientModel extends ClientModel {
 
 	public String getLocalFolder() {
 		return localFolder;
+	}
+	
+	public void setShowDebugLogging(boolean showDebugLogging) {
+		this.showDebugLogging = showDebugLogging;
+	}
+	
+	public boolean isShowDebugLogging() {
+		return showDebugLogging;
 	}
 	
 	public static final int MAX_LOG_LINES = 5;
