@@ -1334,4 +1334,24 @@ public class AndroidClientModel extends ClientModel {
 	public String getLocalFolder() {
 		return localFolder;
 	}
+	
+	public static final int MAX_LOG_LINES = 5;
+
+	public static String[] logMessages = new String[MAX_LOG_LINES];
+	
+	static {
+		for (int i = 0; i < MAX_LOG_LINES; i++) {
+			logMessages[i] = "";
+		}
+	}
+	
+	public void log(String message) {
+		for (int i = 1; i < MAX_LOG_LINES; i++) {
+			logMessages[i-1] = logMessages[i];
+		}
+		logMessages[MAX_LOG_LINES-1] = message;
+		fireClientModelChanged(ClientModelChangedEvent.EVENT_TYPE_LOG_UPDATED);
+	}
+	
+
 }

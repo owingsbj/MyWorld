@@ -270,4 +270,13 @@
 		android:textSize="40dp"
 		android:textStyle="bold"
 		android:typeface="normal"/>
+
+	<TextView
+	    android:id="@+id/logText"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:lines="5"
+	    android:textAppearance="?android:attr/textAppearanceSmall" />
+
 </RelativeLayout>

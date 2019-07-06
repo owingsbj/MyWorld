@@ -272,6 +272,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		}
 		
 		updateAvatarActions(false);
+		updateLogText();
 
 		System.out.println("<ShowWorldActivity.onStart");
 	}
@@ -1080,7 +1081,27 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			updateJoyButton();
 		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_CALIBRATE_SENSORS) {
 			calibrateSensors();
+		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_LOG_UPDATED) {
+			updateLogText();
 		}
+	}
+	
+	public void updateLogText() {
+		runOnUiThread(new Runnable() {
+			public void run() {
+				TextView logText = (TextView) findViewById(R.id.logText);
+				StringBuffer text = new StringBuffer();
+				for (int i = 0; i < AndroidClientModel.MAX_LOG_LINES; i++) {
+					if (clientModel.logMessages[i] != null) {
+						text.append(clientModel.logMessages[i]);
+					}
+					if (i < AndroidClientModel.MAX_LOG_LINES - 1) {
+						text.append("\n");
+					}
+				}
+				logText.setText(text.toString());
+			}
+		});
 	}
 
 	public void updateTitleAndStatus() {
