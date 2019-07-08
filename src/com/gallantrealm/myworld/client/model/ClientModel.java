@@ -34,9 +34,8 @@ import com.gallantrealm.myworld.model.WWVector;
 import com.gallantrealm.myworld.model.WWWorld;
 
 /**
- * This class maintains information shared within the client. Controls and actions in the client act upon the data in
- * this model. Other views, control panels, actions will listen on events from this model and update their state
- * accordingly. This provides a clean separation of model from view, implementing the Document-View design pattern.
+ * This class maintains information shared within the client. Controls and actions in the client act upon the data in this model. Other views, control panels, actions will listen on events from this model and update their state accordingly.
+ * This provides a clean separation of model from view, implementing the Document-View design pattern.
  */
 public abstract class ClientModel {
 
@@ -48,6 +47,7 @@ public abstract class ClientModel {
 	public float topOfTilt = 15;
 	public float wayBehindDistance = 12;
 	public float wayBehindTilt = 30;
+	public float minCameraDistance = 0.5f;
 	public float maxCameraDistance = 250f;
 
 	public boolean limitCameraDistance = true;
@@ -119,7 +119,7 @@ public abstract class ClientModel {
 	public float cameraDampRate = 0f; // higher moves camera slower
 
 	private AlertListener alertListener;
-	
+
 	// Constructor
 	public ClientModel() {
 		listeners = new ArrayList<ClientModelChangedListener>();
@@ -133,7 +133,7 @@ public abstract class ClientModel {
 		}
 		communications = new TCPCommunications();
 	}
-	
+
 	public boolean isLocalWorld() {
 		return localWorld != null;
 	}
@@ -230,7 +230,7 @@ public abstract class ClientModel {
 
 	public void setWorld(WWWorld world) {
 		this.world = world;
-		//initializeCameraPosition();
+		// initializeCameraPosition();
 		fireClientModelChanged(ClientModelChangedEvent.EVENT_TYPE_WWMODEL_UPDATED);
 	}
 
@@ -342,7 +342,7 @@ public abstract class ClientModel {
 			world.pause();
 		}
 
-		//world.clear();
+		// world.clear();
 		world = null;
 
 		showMessage("disconnected");
@@ -439,7 +439,7 @@ public abstract class ClientModel {
 				requestThread.queue(request);
 				// Also thrust local object. This allows the client to appear more responsive. Note that the
 				// server will correct any "error" in the client's positioning.
-				//getWorld().thrustObject(objectId, object);
+				// getWorld().thrustObject(objectId, object);
 				// Note: deactivated because it causes "jerky" motion with latent connections
 			}
 		}
@@ -462,9 +462,9 @@ public abstract class ClientModel {
 
 	public void setSelectedObject(WWObject object) {
 		selectedObject = object;
-		System.out.println("ClientModel.setSelectedObject "+object);
+		System.out.println("ClientModel.setSelectedObject " + object);
 		setCameraObject(object);
-		setCameraSlide(0,0,0);
+		setCameraSlide(0, 0, 0);
 		fireClientModelChanged(ClientModelChangedEvent.EVENT_TYPE_OBJECT_SELECTED);
 	}
 
@@ -551,8 +551,7 @@ public abstract class ClientModel {
 	}
 
 	/**
-	 * This value is used to adjust the camera pan as the avatar is rotated. It is set when the avatar starts to turn,
-	 * then again set on every camera update.
+	 * This value is used to adjust the camera pan as the avatar is rotated. It is set when the avatar starts to turn, then again set on every camera update.
 	 */
 	protected float lastAvatarRotationZ = 0.0f;
 
@@ -593,11 +592,21 @@ public abstract class ClientModel {
 			setCameraDistance(behindDistance);
 			setCameraTilt(behindTilt);
 			setCameraPan(0.0f);
-		} else if (viewpoint == 1) { // top of avatar
-			setCameraObject(avatar);
-			setCameraDistance(0.0f);
-			setCameraTilt(topOfTilt);
-			setCameraPan(0.0f);
+		} else if (viewpoint == 1) { // top or head of avatar
+			// TODO consider making head object name adjustable
+			WWObject head = avatar.getDescendant("head");
+			if (head != null) {
+				setCameraObject(head);
+				setCameraDistance(0.0f);
+				setCameraPoint(new WWVector(0, 0, 0));
+				setCameraTilt(0);
+				setCameraPan(0.0f);
+			} else {
+				setCameraObject(avatar);
+				setCameraDistance(0.0f);
+				setCameraTilt(topOfTilt);
+				setCameraPan(0.0f);
+			}
 		} else if (viewpoint == 2) { // birds eye
 			setCameraObject(avatar);
 			setCameraDistance(birdsEyeHeight);
@@ -629,7 +638,8 @@ public abstract class ClientModel {
 	 */
 	public void forceAvatar(float thrustVelocity, float turnVelocity, float liftVelocity, float tiltVelocity, float leanVelocity, float slideVelocity) {
 
-		if (thrustVelocity == lastAvatarThrustVelocity && turnVelocity == lastAvatarTurnVelocity && liftVelocity == lastAvatarLiftVelocity && tiltVelocity == lastAvatarTiltVelocity && leanVelocity == lastAvatarLeanVelocity && slideVelocity == lastAvatarSlideVelocity) {
+		if (thrustVelocity == lastAvatarThrustVelocity && turnVelocity == lastAvatarTurnVelocity && liftVelocity == lastAvatarLiftVelocity && tiltVelocity == lastAvatarTiltVelocity && leanVelocity == lastAvatarLeanVelocity
+				&& slideVelocity == lastAvatarSlideVelocity) {
 			return;
 		}
 		if (world == null) {
@@ -692,8 +702,8 @@ public abstract class ClientModel {
 	}
 
 	public void setCameraDistance(float cameraDistance) {
-		//TODO consider making the min and max camera distance a parameter of the world.
-		this.cameraDistance = FastMath.min(Math.max(cameraDistance, 0.5f), maxCameraDistance);
+		// TODO consider making the min and max camera distance a parameter of the world.
+		this.cameraDistance = FastMath.min(Math.max(cameraDistance, minCameraDistance), maxCameraDistance);
 	}
 
 	public WWObject getCameraObject() {
@@ -701,14 +711,14 @@ public abstract class ClientModel {
 	}
 
 	public void setCameraObject(WWObject cameraObject) {
-		System.out.println("ClientModel.setCameraObject "+cameraObject);
+		System.out.println("ClientModel.setCameraObject " + cameraObject);
 		this.cameraObject = cameraObject;
 	}
 
 	public float getCameraPan() {
 		return cameraPan;
 	}
-	
+
 	public void setCameraPan(float cameraPan) {
 		this.cameraPan = cameraPan;
 	}
@@ -835,7 +845,7 @@ public abstract class ClientModel {
 		dampedCameraLean = y;
 		dampedCameraPan = z;
 	}
-	
+
 	public WWVector getDampedCameraRotation() {
 		return new WWVector(dampedCameraTilt, dampedCameraLean, dampedCameraPan);
 	}
@@ -1021,7 +1031,7 @@ public abstract class ClientModel {
 		} else if (world.getWorldActions()[action] == null) {
 			return;
 		}
-		//world.getWorldActions()[action].start();
+		// world.getWorldActions()[action].start();
 		world.startWorldAction(action, 0, 0);
 	}
 
@@ -1031,7 +1041,7 @@ public abstract class ClientModel {
 		} else if (world.getWorldActions()[action] == null) {
 			return;
 		}
-		//world.getWorldActions()[action].stop();
+		// world.getWorldActions()[action].stop();
 		world.stopWorldAction(action);
 	}
 
