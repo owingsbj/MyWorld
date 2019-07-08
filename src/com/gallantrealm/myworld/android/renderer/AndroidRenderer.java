@@ -593,7 +593,6 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 				cameraObject.rotate(point, cameraObjectRotation, time);
 				cameraPoint.add(point); // so avatar is in lower part of screen
 			}
-			clientModel.setCameraPoint(cameraPoint);
 		}
 
 		// Adjust camera position based on camera slide
@@ -624,7 +623,7 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 				for (int i = 0; i <= lastObjectIndex; i++) {
 					WWObject object = objects[i];
 					if (object != null && !object.deleted && !object.penetratable && object.solid && !object.phantom) {
-						if (cameraObject == avatar) {
+						if (cameraObject != null && avatar != null && (cameraObject == avatar || avatar.isDescendant(cameraObject))) {
 							cameraLocation.x = slideCameraPointX + limitedCameraDistance * (float) Math.sin(TORADIAN * (cameraPan + cameraObjectRotation.z)) * (float) Math.cos(TORADIAN * (cameraTilt + cameraObjectRotation.x));
 							if (cameraDistance < 10) {
 								cameraLocation.y = slideCameraPointY + limitedCameraDistance * (float) Math.cos(TORADIAN * (cameraPan + cameraObjectRotation.z)) * (float) Math.cos(TORADIAN * (cameraTilt + cameraObjectRotation.x));
@@ -659,7 +658,7 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 				}
 			}
 		}
-		limitedCameraDistance = FastMath.max(0.5f, limitedCameraDistance);
+		limitedCameraDistance = FastMath.max(clientModel.minCameraDistance, limitedCameraDistance);
 		lastLimitedCameraDistance = limitedCameraDistance;
 
 		// Dampen camera, to give the user a better understanding of the position change
@@ -690,11 +689,16 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 			dampZCamera = slideCameraPointZ; // to avoid shaky's
 		}
 
-		if (cameraObject != null && avatar == cameraObject) {
+		if (cameraObject != null && avatar != null && (avatar == cameraObject || avatar.isDescendant(cameraObject))) {
 			dampCameraPan = ((cameraPan + cameraObjectRotation.z) + clientModel.cameraDampRate * dampCameraPan) / (clientModel.cameraDampRate + 1);
 			if (cameraDistance < 10) {
-				dampCameraTilt = ((cameraTilt - cameraObjectRotation.x) + 4 * clientModel.cameraDampRate * dampCameraTilt) / (4 * clientModel.cameraDampRate + 1);
-				dampCameraLean = ((cameraLean - cameraObjectRotation.y) + 4 * clientModel.cameraDampRate * dampCameraLean) / (4 * clientModel.cameraDampRate + 1);
+				if (avatar == cameraObject) {
+					dampCameraTilt = ((cameraTilt - cameraObjectRotation.x) + 4 * clientModel.cameraDampRate * dampCameraTilt) / (4 * clientModel.cameraDampRate + 1);
+					dampCameraLean = ((cameraLean - cameraObjectRotation.y) + 4 * clientModel.cameraDampRate * dampCameraLean) / (4 * clientModel.cameraDampRate + 1);
+				} else {
+					dampCameraTilt = cameraTilt - cameraObjectRotation.x;
+					dampCameraLean = cameraLean - cameraObjectRotation.y;
+				}
 			} else {
 				dampCameraTilt = (cameraTilt + clientModel.cameraDampRate * dampCameraTilt) / (clientModel.cameraDampRate + 1);
 				dampCameraLean = (cameraLean + clientModel.cameraDampRate * dampCameraLean) / (clientModel.cameraDampRate + 1);
