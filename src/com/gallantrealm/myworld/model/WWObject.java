@@ -1640,6 +1640,34 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			}
 		}
 	}
+	
+	public final WWObject getDescendant(String name) {
+		migrateChildIds();
+		for (int i = 0; i < children.length; i++) {
+			WWObject childObject = children[i];
+			if (name.equals(childObject.getName())) {
+				return childObject;
+			}
+			WWObject descendant = childObject.getDescendant(name);
+			if (descendant != null) {
+				return descendant;
+			}
+		}
+		return null;
+	}
+
+	public final boolean isDescendant(WWObject object) {
+		migrateChildIds();
+		for (WWObject child : getChildren()) {
+			if (child == object) {
+				return true;
+			}
+			if (child.isDescendant(object)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public final int addBehavior(final byte[] behaviorClassBinary) {
 		BehaviorAttributes behaviorAttributes = new BehaviorAttributes(behaviorClassBinary);
