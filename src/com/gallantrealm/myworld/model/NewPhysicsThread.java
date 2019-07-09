@@ -1,7 +1,6 @@
 package com.gallantrealm.myworld.model;
 
 import java.util.ArrayList;
-
 import com.gallantrealm.myworld.FastMath;
 
 /**
@@ -137,7 +136,7 @@ public class NewPhysicsThread extends PhysicsThread {
 							// vector points in the direction of the deepest overlap, and the length of the
 							// vector indicates the amount of overlap
 							object2.getRotation(rotation2, worldTime);
-							object.getOverlap(object2, position, rotation, position2, rotation2, worldTime, tempPoint, tempPoint2, overlapPoint, overlapVector);
+							object.getOverlap(object2, position, rotation, object.rotationPoint, position2, rotation2, worldTime, tempPoint, tempPoint2, overlapPoint, overlapVector);
 
 							if (!overlapVector.isZero()) {
 

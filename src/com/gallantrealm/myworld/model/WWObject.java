@@ -32,6 +32,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	float rotationX; // degrees
 	float rotationY; // degrees
 	float rotationZ; // degrees
+	public WWVector rotationPoint = new WWVector();
 
 	// Grouping properties
 	public int parentId;
@@ -494,6 +495,14 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setRotation(float[] rots) {
 		setRotation(rots[0], rots[1], rots[2]);
 	}
+	
+	public final WWVector getRotationPoint() {
+		return rotationPoint;
+	}
+	
+	public final void setRotationPoint(WWVector rotationPoint) {
+		this.rotationPoint = rotationPoint;
+	}
 
 	public final WWVector getAbsolutePosition(long worldTime) {
 		WWVector position = new WWVector();
@@ -583,8 +592,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				WWVector parentRotation = new WWVector();
 				parent.getAbsolutePosition(parentPosition, worldTime);
 				parent.getRotation(parentRotation, worldTime);
+				WWVector parentRotationPoint = parent.getRotationPoint();
 				// parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
-				parent.transform(position, parentPosition, parentRotation, worldTime);
+				transform(position, parentPosition, parentRotation, parentRotationPoint, worldTime);
 			}
 			lastGetAbsolutePositionX = position.x;
 			lastGetAbsolutePositionY = position.y;
@@ -608,8 +618,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			WWVector parentRotation = new WWVector();
 			parent.getAbsoluteAnimatedPosition(parentPosition, worldTime);
 			parent.getAnimatedRotation(parentRotation, worldTime);
+			WWVector parentRotationPoint = parent.getRotationPoint();
 			// parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
-			parent.transform(position, parentPosition, parentRotation, worldTime);
+			transform(position, parentPosition, parentRotation, parentRotationPoint, worldTime);
 		}
 	}
 
@@ -1101,6 +1112,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 		WWVector position = getPosition(worldTime);
 		WWVector rotation = getRotation(worldTime);
+		WWVector rotationPoint = getRotationPoint();
 		WWVector objectPosition = object.getPosition(worldTime);
 		WWVector objectRotation = object.getRotation(worldTime);
 		WWVector tempPoint = new WWVector();
@@ -1108,7 +1120,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		WWVector overlapPoint = new WWVector();
 		WWVector overlapVector = new WWVector();
 
-		getOverlap(object, position, rotation, objectPosition, objectRotation, worldTime, tempPoint, tempPoint2, overlapPoint, overlapVector);
+		getOverlap(object, position, rotation, rotationPoint, objectPosition, objectRotation, worldTime, tempPoint, tempPoint2, overlapPoint, overlapVector);
 
 		return overlapVector;
 
@@ -1118,7 +1130,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	private transient WWVector lastOverlapPosition;
 	private transient WWVector lastOverlapRotation;
 
-	public final void getOverlap(WWObject object, WWVector position, WWVector rotation, WWVector objectPosition, WWVector objectRotation, long worldTime, WWVector tempPoint, WWVector tempPoint2, WWVector overlapPoint,
+	public final void getOverlap(WWObject object, WWVector position, WWVector rotation, WWVector rotationPoint, WWVector objectPosition, WWVector objectRotation, long worldTime, WWVector tempPoint, WWVector tempPoint2, WWVector overlapPoint,
 			WWVector overlapVector) {
 		// To simplify overlap testing, check several key points. These are the eight corners, twelve
 		// half edge points, and six center side points of the box. Test each of these.
@@ -1144,7 +1156,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				} else {
 					constEdgePoints[i].copyInto(edgePoint);
 				}
-				transform(edgePoint, position, rotation, worldTime);
+				transform(edgePoint, position, rotation, rotationPoint, worldTime);
 				transformedEdgePoints[i] = edgePoint;
 			}
 			lastTransformedEdgePoints = transformedEdgePoints;
@@ -1199,15 +1211,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Rotate a point according to the object's rotation.
+	 * Rotate a point according to a given rotation.
 	 */
-	public final WWVector rotate(WWVector point, WWVector rotation, long worldTime) {
-
-		// if this is a member of a collection, adjust rotation according to parent's rotation
-//		if (parentId != 0) {
-//			WWObject parent = world.objects[parentId];
-//			parent.rotate(point, parent.getRotation(worldTime), worldTime);
-//		}
+	public static final WWVector rotate(WWVector point, WWVector rotation, long worldTime) {
 
 		float x = point.x;
 		float y = point.y;
@@ -1250,9 +1256,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Anti-rotate a point, removing the object's rotation. Note that this is only useful to perform on velocity/force vectors.
+	 * Anti-rotate a point, removing a given rotation. Note that this is mainly useful to perform on velocity/force vectors.
 	 */
-	public final WWVector antiRotate(WWVector point, WWVector rotation, long worldTime) {
+	public static final WWVector antiRotate(WWVector point, WWVector rotation, long worldTime) {
 
 		float x = point.x;
 		float y = point.y;
@@ -1292,26 +1298,17 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		point.y = y;
 		point.z = z;
 
-		// if this is a member of a collection, adjust rotation according to parent's rotation
-//		if (parentId != 0) {
-//			WWObject parent = world.objects[parentId];
-//			parent.antiRotate(point, parent.getRotation(worldTime), worldTime);
-//		}
-
 		return point;
 	}
 
 	/**
-	 * Transform a point according to the object's rotation and position at the given time.
+	 * Transform a point according to a rotation and position at a given time.
 	 */
-	public final WWVector transform(WWVector point, WWVector position, WWVector rotation, long worldTime) {
+	public static final WWVector transform(WWVector point, WWVector position, WWVector rotation, WWVector rotationPoint, long worldTime) {
 
-		// if this is a member of a collection, translate according to parent first
-//		if (parentId != 0) {
-//			WWObject parent = world.objects[parentId];
-//			parent.transform(point, parent.getPosition(worldTime), parent.getRotation(worldTime), worldTime);
-//		}
-
+//		float x = point.x + rotationPoint.x;
+//		float y = point.y + rotationPoint.y;
+//		float z = point.z + rotationPoint.z;
 		float x = point.x;
 		float y = point.y;
 		float z = point.z;
@@ -1359,9 +1356,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Anti-transform a point, removing the object's position and rotation.
+	 * Anti-transform a point, removing the a given position and rotation.
 	 */
-	public final WWVector antiTransform(WWVector point, WWVector position, WWVector rotation, long time) {
+	public static final WWVector antiTransform(WWVector point, WWVector position, WWVector rotation, long time) {
 
 		float r;
 		float theta;
@@ -1402,12 +1399,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		point.x = x;
 		point.y = y;
 		point.z = z;
-
-		// if this is a member of a collection, antitranslate according to parent
-//		if (parentId != 0) {
-//			WWObject parent = world.objects[parentId];
-//			parent.antiTransform(point, parent.getPosition(time), parent.getRotation(time), time);
-//		}
 
 		return point;
 	}

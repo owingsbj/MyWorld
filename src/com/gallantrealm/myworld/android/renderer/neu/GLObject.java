@@ -152,6 +152,7 @@ public abstract class GLObject extends GLRendering {
 			Matrix.setIdentityM(modelMatrix, 0);
 			object.getAnimatedPosition(position, worldTime);
 			Matrix.translateM(modelMatrix, 0, position.x, position.z, position.y);
+			Matrix.translateM(modelMatrix, 0, object.rotationPoint.x, object.rotationPoint.z, object.rotationPoint.y);
 			object.getAnimatedRotation(rotation, worldTime);
 			if (rotation.z != 0) {
 				Matrix.rotateM(modelMatrix, 0, rotation.z, 0, 1, 0);
@@ -162,6 +163,7 @@ public abstract class GLObject extends GLRendering {
 			if (rotation.x != 0) {
 				Matrix.rotateM(modelMatrix, 0, rotation.x, 1, 0, 0);
 			}
+			Matrix.translateM(modelMatrix, 0, -object.rotationPoint.x, -object.rotationPoint.z, -object.rotationPoint.y);
 			object.lastRenderingTime = worldTime;
 		}
 	}
