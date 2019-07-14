@@ -711,7 +711,6 @@ public abstract class ClientModel {
 	}
 
 	public void setCameraObject(WWObject cameraObject) {
-		System.out.println("ClientModel.setCameraObject " + cameraObject);
 		this.cameraObject = cameraObject;
 	}
 

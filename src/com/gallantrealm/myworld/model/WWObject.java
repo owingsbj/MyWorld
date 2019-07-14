@@ -367,6 +367,17 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		}
 		return rotation;
 	}
+	
+	public final WWVector getAbsoluteAnimatedRotation(WWVector rotation, long worldTime) {
+		getAnimatedRotation(rotation, worldTime);
+		int p = parentId;
+		if (p != 0) {
+			WWObject parent = world.objects[p];
+			WWVector parentRotation = parent.getAbsoluteAnimatedRotation(worldTime);
+			rotation.add(parentRotation);
+		}
+		return rotation;
+	}
 
 	public final WWVector getRotation() {
 		return getRotation(getWorldTime());
@@ -617,7 +628,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			WWVector parentPosition = new WWVector();
 			WWVector parentRotation = new WWVector();
 			parent.getAbsoluteAnimatedPosition(parentPosition, worldTime);
-			parent.getAnimatedRotation(parentRotation, worldTime);
+			parent.getAbsoluteAnimatedRotation(parentRotation, worldTime);
 			WWVector parentRotationPoint = parent.getRotationPoint();
 			// parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
 			transform(position, parentPosition, parentRotation, parentRotationPoint, worldTime);

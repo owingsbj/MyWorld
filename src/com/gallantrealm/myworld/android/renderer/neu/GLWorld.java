@@ -54,10 +54,6 @@ public class GLWorld implements IRendering {
 
 	public void draw(Shader shader, float[] viewMatrix, float[] sunViewMatrix, long worldTime, int drawType) {
 
-		// determine adjustedcameraposition, used for visibility calculations
-		WWVector adjustedCameraPosition = renderer.getAdjustedCameraPosition();
-		WWVector temp = new WWVector();
-
 		// And all the objects
 		WWObject[] objects = world.objects;
 		int lastObjectIndex = world.lastObjectIndex;
