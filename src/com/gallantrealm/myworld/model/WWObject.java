@@ -367,7 +367,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		}
 		return rotation;
 	}
-	
+
 	public final WWVector getAbsoluteAnimatedRotation(WWVector rotation, long worldTime) {
 		getAnimatedRotation(rotation, worldTime);
 		int p = parentId;
@@ -506,11 +506,11 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setRotation(float[] rots) {
 		setRotation(rots[0], rots[1], rots[2]);
 	}
-	
+
 	public final WWVector getRotationPoint() {
 		return rotationPoint;
 	}
-	
+
 	public final void setRotationPoint(WWVector rotationPoint) {
 		this.rotationPoint = rotationPoint;
 	}
@@ -729,11 +729,11 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final float getVelocityLength() {
 		return (float) Math.sqrt(velocityX * velocityX + velocityY * velocityY + velocityZ * velocityZ);
 	}
-	
+
 	public final WWVector getAngularVelocity() {
 		return new WWVector(aMomentumX, aMomentumY, aMomentumZ);
 	}
-	
+
 	public final void setAngularVelocity(WWVector aVelocity) {
 		setOrientation(getPosition(getWorldTime()), getRotation(getWorldTime()), null, aVelocity, getWorldTime());
 	}
@@ -1141,8 +1141,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	private transient WWVector lastOverlapPosition;
 	private transient WWVector lastOverlapRotation;
 
-	public final void getOverlap(WWObject object, WWVector position, WWVector rotation, WWVector rotationPoint, WWVector objectPosition, WWVector objectRotation, long worldTime, WWVector tempPoint, WWVector tempPoint2, WWVector overlapPoint,
-			WWVector overlapVector) {
+	public final void getOverlap(WWObject object, WWVector position, WWVector rotation, WWVector rotationPoint, WWVector objectPosition, WWVector objectRotation, long worldTime, WWVector tempPoint, WWVector tempPoint2,
+			WWVector overlapPoint, WWVector overlapVector) {
 		// To simplify overlap testing, check several key points. These are the eight corners, twelve
 		// half edge points, and six center side points of the box. Test each of these.
 
@@ -1583,7 +1583,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	// convert childrenIds over to children. We're phasing out childrenIds.
 	private void migrateChildIds() {
-		if (childrenIds != null) {
+		if (childrenIds != null && world != null) {
 			children = new WWObject[childrenIds.length];
 			for (int i = 0; i < childrenIds.length; i++) {
 				children[i] = world.getObject(childrenIds[i]);
@@ -1598,10 +1598,12 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final WWObject getChild(String name) {
 		migrateChildIds();
-		for (int i = 0; i < children.length; i++) {
-			WWObject childObject = children[i];
-			if (name.equals(childObject.getName())) {
-				return childObject;
+		if (children != null) {
+			for (int i = 0; i < children.length; i++) {
+				WWObject childObject = children[i];
+				if (name.equals(childObject.getName())) {
+					return childObject;
+				}
 			}
 		}
 		return null;
@@ -1642,17 +1644,19 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			}
 		}
 	}
-	
+
 	public final WWObject getDescendant(String name) {
 		migrateChildIds();
-		for (int i = 0; i < children.length; i++) {
-			WWObject childObject = children[i];
-			if (name.equals(childObject.getName())) {
-				return childObject;
-			}
-			WWObject descendant = childObject.getDescendant(name);
-			if (descendant != null) {
-				return descendant;
+		if (children != null) {
+			for (int i = 0; i < children.length; i++) {
+				WWObject childObject = children[i];
+				if (name.equals(childObject.getName())) {
+					return childObject;
+				}
+				WWObject descendant = childObject.getDescendant(name);
+				if (descendant != null) {
+					return descendant;
+				}
 			}
 		}
 		return null;
@@ -1660,12 +1664,14 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final boolean isDescendant(WWObject object) {
 		migrateChildIds();
-		for (WWObject child : getChildren()) {
-			if (child == object) {
-				return true;
-			}
-			if (child.isDescendant(object)) {
-				return true;
+		if (children != null) {
+			for (WWObject child : getChildren()) {
+				if (child == object) {
+					return true;
+				}
+				if (child.isDescendant(object)) {
+					return true;
+				}
 			}
 		}
 		return false;
