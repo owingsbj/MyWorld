@@ -1389,12 +1389,9 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		System.out.println("Keycode: " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_BUTTON_A || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) { // OK
-			System.out.println("ENTER");
 			clientModel.startAvatarAction(0, 0, 0); // typically start game or fire
 		} else if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_BUTTON_B) { // CANCEL/BACK
-			System.out.println("BACK");
 			if (clientModel != null && clientModel.world != null && clientModel.world.needsSaving()) {
 				final MessageDialog dialog;
 				if (clientModel.world.supportsSaveAndQuit()) {
@@ -1455,28 +1452,24 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == 37) { // "i" on keyboard
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
-				System.out.println("DPAD UP");
 				usingDPad = true;
 				dPadUpDown = true;
 			}
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == 39) { // "k" on keyboard
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
-				System.out.println("DPAD DOWN");
 				usingDPad = true;
 				dPadDownDown = true;
 			}
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == 38) { // "j" on keyboard
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
-				System.out.println("DPAD LEFT");
 				usingDPad = true;
 				dPadLeftDown = true;
 			}
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == 40) { // "l" on keyboard
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
-				System.out.println("DPAD RIGHT");
 				usingDPad = true;
 				dPadRightDown = true;
 			}
@@ -1496,7 +1489,6 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			}
 			return true;
 		}
-		System.out.println("Taking default action");
 		return false; // super.onKeyDown(keyCode, event);
 	}
 
