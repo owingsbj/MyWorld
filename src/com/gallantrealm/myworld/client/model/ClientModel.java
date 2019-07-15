@@ -818,14 +818,23 @@ public abstract class ClientModel {
 	public WWVector getCameraLocation(long worldTime) {
 		float x;
 		float y;
-		if (selectedObject == getAvatar()) {
-			x = xcamera + cameraDistance * FastMath.sin(TORADIAN * cameraPan + selectedObject.getRotation(worldTime).getZ()) * FastMath.cos(TORADIAN * cameraTilt);
-			y = ycamera + cameraDistance * FastMath.cos(TORADIAN * cameraPan + selectedObject.getRotation(worldTime).getZ()) * FastMath.cos(TORADIAN * cameraTilt);
+		float z;
+		if (cameraObject != null) {
+			WWVector pos = cameraObject.getAbsolutePosition(worldTime);
+			if (cameraObject == getAvatar() || getAvatar().isDescendant(cameraObject)) {
+				x = xcamera + pos.x + cameraDistance * FastMath.sin(TORADIAN * cameraPan + cameraObject.getAbsoluteRotation(worldTime).getZ()) * FastMath.cos(TORADIAN * cameraTilt);
+				y = ycamera + pos.y + cameraDistance * FastMath.cos(TORADIAN * cameraPan + cameraObject.getAbsoluteRotation(worldTime).getZ()) * FastMath.cos(TORADIAN * cameraTilt);
+				z = zcamera + pos.z + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
+			} else {
+				x = xcamera + pos.x + cameraDistance * FastMath.sin(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
+				y = ycamera + pos.y + cameraDistance * FastMath.cos(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
+				z = zcamera + pos.z + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
+			}
 		} else {
 			x = xcamera + cameraDistance * FastMath.sin(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
 			y = ycamera + cameraDistance * FastMath.cos(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
+			z = zcamera + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
 		}
-		float z = zcamera + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
 		return new WWVector(x, y, z);
 	}
 

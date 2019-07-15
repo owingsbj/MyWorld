@@ -2754,5 +2754,13 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public WWAction[] getActions() {
 		return actions;
 	}
+	
+	public void playSound(String soundName, float volume) {
+		if (getRendering() != null) {
+			rendering.getRenderer().getSoundGenerator().playSound(soundName, 1, this.getPosition(), volume, 1.0f);
+		}
+	}
+
+
 
 }

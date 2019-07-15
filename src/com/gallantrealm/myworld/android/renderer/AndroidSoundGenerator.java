@@ -49,9 +49,10 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		soundMap = new HashMap<String, Integer>();
 
 		// load all the predefined sounds
-		loadSound("water", R.raw.sound_water);
-		loadSound("splash", R.raw.sound_water);
-		loadSound("movingWater", R.raw.sound_moving_water);
+		loadSound("trickle", R.raw.sound_trickle);
+		loadSound("splash", R.raw.sound_splash);
+		loadSound("rush", R.raw.sound_rush);
+		loadSound("underwater", R.raw.sound_underwater);
 		loadSound("grass", R.raw.sound_grass);
 		loadSound("movingGrass", R.raw.sound_moving_grass);
 		loadSound("wood", R.raw.sound_wood);
@@ -93,7 +94,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		loadSound("guitar", R.raw.sound_guitar);
 		loadSound("musicbox", R.raw.sound_musicbox);
 
-		//soundGeneratorThread.start();
+		// soundGeneratorThread.start();
 	}
 
 	final void loadSound(String soundName, int soundId) {
@@ -102,7 +103,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 			soundMap.put(soundName, soundPool.load(context, soundId, 0));
 		}
 	}
-
+	
 	@Override
 	public void playSound(String sound, int priority, WWVector position, float volume, float pitch) {
 		if (paused) {
@@ -118,16 +119,18 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		if (position != null) {
 			WWObject avatar = AndroidClientModel.getClientModel().getAvatar();
 			long time = AndroidClientModel.getClientModel().world.getWorldTime();
-			distanceFrom = (float) Math.max(1.0, avatar.getPosition(time).distanceFrom(position));
+			WWVector location = AndroidClientModel.getClientModel().getCameraLocation(time);
+			distanceFrom = (float) Math.max(1.0, location.distanceFrom(position));
 		} else {
 			distanceFrom = 1;
 		}
-		if (distanceFrom < 100.0f) {  // only play sounds fairly near (should be a world property)
+		System.out.println("playSound " + sound + " distance " + distanceFrom + " volume " + volume + " pitch " + pitch);
+		if (distanceFrom < 100.0f) { // only play sounds fairly near (should be a world property)
 			Integer soundId = soundMap.get(sound);
 			if (soundId != null) {
 				AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 				float currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC) / 15.0f;
-				float level = volume * currentVolume / distanceFrom;
+				float level = Math.min(1.0f, volume * currentVolume / distanceFrom / distanceFrom * 10.0f);
 				if (AndroidClientModel.getClientModel().isPlaySoundEffects()) {
 					soundPool.play(soundId, level, level, priority, 0, pitch);
 				}
@@ -159,7 +162,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 			float currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC) / 15.0f;
 			float level = volume * currentVolume / distanceFrom;
 			pitch = FastMath.max(0.6f, FastMath.min(1.9f, pitch));
-			//System.out.println("Starting: " + sound);
+			// System.out.println("Starting: " + sound);
 			int streamId = soundPool.play(soundId, level, level, priority, 10000, pitch);
 			synchronized (playingStreams) {
 				playingStreams.put(streamId, new StreamInfo(sound, streamId, level, priority, pitch));
@@ -216,7 +219,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 			soundPool.stop(streamId);
 			StreamInfo info = playingStreams.get(new Integer(streamId));
 			if (info != null) {
-				//System.out.println("Stopping: " + info.soundName);
+				// System.out.println("Stopping: " + info.soundName);
 				playingStreams.remove(new Integer(streamId));
 			}
 		}
