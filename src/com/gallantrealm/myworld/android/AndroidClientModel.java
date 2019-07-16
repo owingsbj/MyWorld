@@ -1364,5 +1364,10 @@ public class AndroidClientModel extends ClientModel {
 		fireClientModelChanged(ClientModelChangedEvent.EVENT_TYPE_LOG_UPDATED);
 	}
 	
+	public void clearLog() {
+		for (int i = 0; i < MAX_LOG_LINES; i++) {
+			logMessages[i] = "";
+		}
+	}
 
 }

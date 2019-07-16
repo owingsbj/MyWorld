@@ -96,6 +96,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 	private RelativeLayout.LayoutParams originalJoyButtonLayoutParams;
 
 	private TextView flashMessageText;
+	private TextView logText;
 
 	private Dialog currentDialog;
 
@@ -186,10 +187,14 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		}
 
 		flashMessageText = (TextView) findViewById(R.id.flashMessageText);
+		logText = (TextView) findViewById(R.id.logText);
 
 		titleText.setTypeface(typeface);
 		statusText.setTypeface(typeface);
 		flashMessageText.setTypeface(typeface);
+		
+		logText.setText("");
+		clientModel.clearLog();
 
 		worldView.setOnTouchListener(this);
 		rightActionButton2.setOnTouchListener(this);
