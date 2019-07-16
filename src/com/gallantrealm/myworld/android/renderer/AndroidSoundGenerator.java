@@ -119,18 +119,16 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		if (position != null) {
 			WWObject avatar = AndroidClientModel.getClientModel().getAvatar();
 			long time = AndroidClientModel.getClientModel().world.getWorldTime();
-			WWVector location = AndroidClientModel.getClientModel().getCameraLocation(time);
-			distanceFrom = (float) Math.max(1.0, location.distanceFrom(position));
+			distanceFrom = (float) Math.max(1.0, avatar.getPosition(time).distanceFrom(position));
 		} else {
 			distanceFrom = 1;
 		}
-		System.out.println("playSound " + sound + " distance " + distanceFrom + " volume " + volume + " pitch " + pitch);
-		if (distanceFrom < 100.0f) { // only play sounds fairly near (should be a world property)
+		if (distanceFrom < 100.0f) {  // only play sounds fairly near (should be a world property)
 			Integer soundId = soundMap.get(sound);
 			if (soundId != null) {
 				AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 				float currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC) / 15.0f;
-				float level = Math.min(1.0f, volume * currentVolume / distanceFrom / distanceFrom * 10.0f);
+				float level = FastMath.min(1.0f, volume * currentVolume / distanceFrom);
 				if (AndroidClientModel.getClientModel().isPlaySoundEffects()) {
 					soundPool.play(soundId, level, level, priority, 0, pitch);
 				}
@@ -160,7 +158,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		if (soundId != null) {
 			AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 			float currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC) / 15.0f;
-			float level = volume * currentVolume / distanceFrom;
+			float level = FastMath.min(1.0f, volume * currentVolume / distanceFrom);
 			pitch = FastMath.max(0.6f, FastMath.min(1.9f, pitch));
 			// System.out.println("Starting: " + sound);
 			int streamId = soundPool.play(soundId, level, level, priority, 10000, pitch);
