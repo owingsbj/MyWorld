@@ -1,18 +1,19 @@
-package com.gallantrealm.myworld.model;
+package com.gallantrealm.myworld.model.physics;
 
 import java.util.ArrayList;
 import com.gallantrealm.myworld.FastMath;
+import com.gallantrealm.myworld.model.WWBehavior;
+import com.gallantrealm.myworld.model.WWObject;
+import com.gallantrealm.myworld.model.WWVector;
+import com.gallantrealm.myworld.model.WWWorld;
 
 /**
- * This thread performs updates to the world according to physical properties. This involves detecting collision and
- * forces between objects and adjusting the position, orientation, velocity and angular momentum to match.
+ * This thread performs updates to the world according to physical properties. This involves detecting collision and forces between objects and adjusting the position, orientation, velocity and angular momentum to match.
  * <p>
- * Note that this thread does not actually handle moving or rotating objects due to their own velocity and angular
- * momentum. This is handled within the WWObject itself.
+ * Note that this thread does not actually handle moving or rotating objects due to their own velocity and angular momentum. This is handled within the WWObject itself.
  * <p>
- * This is the "New" version of physics. It mimicks real world more precisely. In particular, it applies thrust and
- * torque first, before other forces are determined. This causes the thrust and torque to be limited by other forces,
- * such as what occurs in the real world.
+ * This is the "New" version of physics. It mimicks real world more precisely. In particular, it applies thrust and torque first, before other forces are determined. This causes the thrust and torque to be limited by other forces, such as
+ * what occurs in the real world.
  */
 public class NewPhysicsThread extends PhysicsThread {
 
@@ -73,9 +74,9 @@ public class NewPhysicsThread extends PhysicsThread {
 		for (int i = 0; i <= lastObjectIndex; i++) {
 			WWObject object = objects[i];
 
-			// For physical objects, determine forces upon the object.  This done by summing 
+			// For physical objects, determine forces upon the object. This done by summing
 			// up all forces on the object, ignoring those where freedom is restricted.
-			// Only examine physical objects that are also solid.  Non-solid (liquid, gas)
+			// Only examine physical objects that are also solid. Non-solid (liquid, gas)
 			// objects are not influenced by other objects (but do influence other objects
 			// by being tested in the inner loop below).
 			if (object != null && object.physical && object.solid && !object.deleted) {
@@ -104,7 +105,7 @@ public class NewPhysicsThread extends PhysicsThread {
 				object.rotate(totalForce, rotation, worldTime);
 				WWVector totalTorque = torque.clone();
 
-				// sum in gravitational force only if object has mass							
+				// sum in gravitational force only if object has mass
 				if (object.getDensity() > 0.0) {
 					totalForce.add(world.getGravityForce(position.x, position.y, position.z));
 				}
@@ -113,7 +114,7 @@ public class NewPhysicsThread extends PhysicsThread {
 				float objectExtent = object.extent;
 				for (int j = 1; j <= lastObjectIndex; j++) {
 					WWObject object2 = objects[j];
-					if (object2 != null && !object2.phantom && object2 != object && !object2.deleted) { //	&& !object2.isChildOf(object)) {
+					if (object2 != null && !object2.phantom && object2 != object && !object2.deleted && !object.isDescendant(object2)) {
 
 						// First, see if the objects are close enough to possibly overlap.
 						// If they are, it is worth determining if they actually do overlap
@@ -132,10 +133,10 @@ public class NewPhysicsThread extends PhysicsThread {
 							pz = -pz;
 						if (/* object2.parentId != 0 || */(px <= maxExtentx && py <= maxExtenty && pz <= maxExtentz)) {
 
-							// Determine if the objects overlap, and the vector of overlap.  This
+							// Determine if the objects overlap, and the vector of overlap. This
 							// vector points in the direction of the deepest overlap, and the length of the
 							// vector indicates the amount of overlap
-							object2.getRotation(rotation2, worldTime);
+							object2.getAbsoluteRotation(rotation2, worldTime);
 							object.getOverlap(object2, position, rotation, object.rotationPoint, position2, rotation2, worldTime, tempPoint, tempPoint2, overlapPoint, overlapVector);
 
 							if (!overlapVector.isZero()) {
@@ -156,7 +157,7 @@ public class NewPhysicsThread extends PhysicsThread {
 									if (overlapVector.length() > 0) {
 										unitOverlapVector = new WWVector(overlapVector);
 									} else { // use force
-										unitOverlapVector = overlapVector.clone(); //new WWVector(-force.x, -force.y, -force.z);
+										unitOverlapVector = overlapVector.clone(); // new WWVector(-force.x, -force.y, -force.z);
 									}
 									unitOverlapVector.normalize();
 									if (FastMath.avg(object.elasticity, object2.elasticity) > 0.0) { // bounce both objects off of each other
@@ -193,7 +194,7 @@ public class NewPhysicsThread extends PhysicsThread {
 											totalForce.add(antiForceVector);
 											velocity.scale(1.0f, 1.0f, 1.0f - Math.abs(unitOverlapVector.z));
 
-										} else if (slideStyle == 1) { // used in bonkers  
+										} else if (slideStyle == 1) { // used in bonkers
 
 											WWVector unitVelocity = velocity.clone().normalize();
 											float repelMag = 1 - unitVelocity.add(unitOverlapVector).length();
@@ -221,8 +222,8 @@ public class NewPhysicsThread extends PhysicsThread {
 
 									// boyancy
 									if (object.isFreedomMoveZ() && object2.getDensity() > 0.0) {
-										// Note: pressure is determined by how deep into the object.  This is an
-										// estimate here, based on the extent.  This will be correct only if the object is level (flat)
+										// Note: pressure is determined by how deep into the object. This is an
+										// estimate here, based on the extent. This will be correct only if the object is level (flat)
 										float pressure = FastMath.max(position2.z + object2.sizeZ / 2.0f - position.z, 0.0f);
 										float boyancy = object2.getDensity() * pressure - object.getDensity();
 										if (boyancy > 0) {
@@ -286,7 +287,7 @@ public class NewPhysicsThread extends PhysicsThread {
 //						velocity.scale(1.0f / (1.0f + velocity.length() - thrustVelocity.length()));
 //					}
 
-				// Apply torque to object.  Again, ignoring freedom of movement settings
+				// Apply torque to object. Again, ignoring freedom of movement settings
 //					object.antiRotate(torque, rotation); // so torque is relative to current object orientation
 //					object.antiRotate(torqueVelocity, rotation); // so torque is relative to current object orientation
 //				if (torque.length() != 0.0) {
@@ -340,11 +341,12 @@ public class NewPhysicsThread extends PhysicsThread {
 //							position.z = originalPosition.z - 0.5f;
 //						}
 
-				if (queueUpdates) {
-					queuedUpdates.add(new QueuedUpdate(object, position.clone().subtract(originalPosition), rotation.clone().subtract(originalRotation), velocity.clone().subtract(originalVelocity), aMomentum.clone().subtract(originalAMomentum), worldTime));
-				} else {
-					object.setOrientation(position, rotation, velocity, aMomentum, worldTime);
-				}
+					if (queueUpdates) {
+						queuedUpdates.add(new QueuedUpdate(object, position.clone().subtract(originalPosition), rotation.clone().subtract(originalRotation), velocity.clone().subtract(originalVelocity),
+								aMomentum.clone().subtract(originalAMomentum), worldTime));
+					} else {
+						object.setOrientation(position, rotation, velocity, aMomentum, worldTime);
+					}
 
 //				}
 
@@ -356,7 +358,7 @@ public class NewPhysicsThread extends PhysicsThread {
 
 		world.updateWorldTime(timeIncrement);
 
-		// performed queued updates.  This done with world locked so that the updates are "instantaneous"
+		// performed queued updates. This done with world locked so that the updates are "instantaneous"
 		if (queueUpdates) {
 			synchronized (world) {
 				WWVector tposition = new WWVector();

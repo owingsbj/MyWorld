@@ -354,6 +354,20 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
+	 * Returns the rotation including contribution from parents
+	 */
+	public final WWVector getAbsoluteRotation(WWVector rotation, long worldTime) {
+		getRotation(rotation, worldTime);
+		int p = parentId;
+		if (p != 0) {
+			WWObject parent = world.objects[p];
+			WWVector parentRotation = parent.getAbsoluteRotation(worldTime);
+			rotation.add(parentRotation);
+		}
+		return rotation;
+	}
+
+	/**
 	 * Returns the animation rotation including contribution from parents
 	 */
 	public final WWVector getAbsoluteAnimatedRotation(long worldTime) {
@@ -1026,7 +1040,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		updateSound();
 	}
 
-	final void updateSound() {
+	public final void updateSound() {
 		if (sound != null && soundVolume > 0) {
 			WWVector absolutePosition = new WWVector();
 			getAbsolutePosition(absolutePosition, world.getWorldTime());
@@ -1758,7 +1772,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	/**
 	 * Invoked by BehaviorThread to launch behaviors events on the object. If the object has a parent and the behaviors do not override, the parent object will also be invoked for the behavior event.
 	 */
-	final void invokeBehavior(String command, WWEntity agent, Object params) {
+	public final void invokeBehavior(String command, WWEntity agent, Object params) {
 		try {
 			boolean overrideParent = false;
 			if (behaviors != null) {

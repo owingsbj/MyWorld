@@ -14,8 +14,8 @@ public abstract class WWBehavior extends WWEntity {
 
 	static final long serialVersionUID = 1L;
 
-	WWObject owner;
-	int timer;
+	public WWObject owner;
+	public int timer;
 
 	/**
 	 * Returns the object that this behavior is associated with.

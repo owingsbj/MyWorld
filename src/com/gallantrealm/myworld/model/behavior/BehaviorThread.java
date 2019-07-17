@@ -1,10 +1,12 @@
-package com.gallantrealm.myworld.model;
+package com.gallantrealm.myworld.model.behavior;
 
 import java.util.ArrayList;
-
+import com.gallantrealm.myworld.model.WWEntity;
+import com.gallantrealm.myworld.model.WWObject;
+import com.gallantrealm.myworld.model.WWWorld;
 import com.gallantrealm.myworld.model.WWWorld.ActionParams;
 
-class BehaviorThread extends Thread {
+public class BehaviorThread extends Thread {
 
 	private class BehaviorRequest {
 		public String event; // the act

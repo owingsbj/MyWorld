@@ -1,7 +1,11 @@
-package com.gallantrealm.myworld.model;
+package com.gallantrealm.myworld.model.physics;
 
 import java.util.Vector;
 import com.gallantrealm.myworld.FastMath;
+import com.gallantrealm.myworld.model.WWBehavior;
+import com.gallantrealm.myworld.model.WWObject;
+import com.gallantrealm.myworld.model.WWVector;
+import com.gallantrealm.myworld.model.WWWorld;
 
 /**
  * This thread performs updates to the world according to physical properties. This involves detecting collision and
@@ -58,8 +62,9 @@ public class OldPhysicsThread extends PhysicsThread {
 
 //					synchronized (object) { // to keep it from being modified
 
-				// Get current orientation and momentum values.
 				long originalLastMoveTime = object.lastMoveTime;
+
+				// Get current orientation and momentum values.
 				object.getPosition(position, worldTime);
 				object.getRotation(rotation, worldTime);
 				object.getVelocity(velocity);

@@ -1,10 +1,11 @@
-package com.gallantrealm.myworld.model;
+package com.gallantrealm.myworld.model.persistence;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import com.gallantrealm.myworld.model.WWWorld;
 
 /**
  * Saves the world every minute.

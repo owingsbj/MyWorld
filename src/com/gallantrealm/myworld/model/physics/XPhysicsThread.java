@@ -1,7 +1,11 @@
-package com.gallantrealm.myworld.model;
+package com.gallantrealm.myworld.model.physics;
 
 import java.util.ArrayList;
 import com.gallantrealm.myworld.FastMath;
+import com.gallantrealm.myworld.model.WWBehavior;
+import com.gallantrealm.myworld.model.WWObject;
+import com.gallantrealm.myworld.model.WWVector;
+import com.gallantrealm.myworld.model.WWWorld;
 
 /**
  * This thread performs updates to the world according to physical properties. This involves detecting collision and

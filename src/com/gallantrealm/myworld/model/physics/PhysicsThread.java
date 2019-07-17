@@ -1,4 +1,8 @@
-package com.gallantrealm.myworld.model;
+package com.gallantrealm.myworld.model.physics;
+
+import com.gallantrealm.myworld.model.WWObject;
+import com.gallantrealm.myworld.model.WWParticleEmitter;
+import com.gallantrealm.myworld.model.WWWorld;
 
 /**
  * This thread performs updates to the world according to physical properties. This involves detecting collision and

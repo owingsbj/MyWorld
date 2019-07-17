@@ -13,6 +13,11 @@ import com.gallantrealm.myworld.client.renderer.IRenderer;
 import com.gallantrealm.myworld.client.renderer.IRendering;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
+import com.gallantrealm.myworld.model.behavior.BehaviorThread;
+import com.gallantrealm.myworld.model.persistence.SaveWorldThread;
+import com.gallantrealm.myworld.model.physics.NewPhysicsThread;
+import com.gallantrealm.myworld.model.physics.ObjectCollision;
+import com.gallantrealm.myworld.model.physics.PhysicsThread;
 import android.opengl.GLES20;
 
 /**
@@ -53,16 +58,16 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	String status = "";
 
 	// Transient data
-	final boolean createPhysicsThread;
-	final boolean createBehaviorThread;
-	final String saveWorldFileName;
+	public final boolean createPhysicsThread;
+	public final boolean createBehaviorThread;
+	public final String saveWorldFileName;
 	public final int iterationTime;
-	transient PhysicsThread physicsThread;
-	transient BehaviorThread behaviorThread;
-	transient SaveWorldThread saveWorldThread;
-	transient boolean onClient;
-	transient boolean rendered;
-	transient ArrayList<String> preloadedTextures;
+	public transient PhysicsThread physicsThread;
+	public transient BehaviorThread behaviorThread;
+	public transient SaveWorldThread saveWorldThread;
+	public transient boolean onClient;
+	public transient boolean rendered;
+	public transient ArrayList<String> preloadedTextures;
 
 	/**
 	 * The current time in the world. When the world is created the time starts at zero. It is then updated whenever the physics thread is running.
@@ -160,7 +165,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	/**
 	 * Invoked by the physics thread to update the time
 	 */
-	void updateWorldTime(long millis) {
+	public void updateWorldTime(long millis) {
 		worldTime += millis;
 		// actualTimeAtLastUpdate = System.currentTimeMillis();
 	}
@@ -901,12 +906,6 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		}
 	}
 
-	class ActionParams {
-		int i;
-		float x;
-		float y;
-	}
-
 	/**
 	 * @deprecated Use get/setActions
 	 */
@@ -976,10 +975,16 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		}
 	}
 
+	public class ActionParams {
+		int i;
+		float x;
+		float y;
+	}
+
 	/**
 	 * Invoked by BehaviorThread to launch world actions
 	 */
-	final void invokeAction(String command, WWEntity agent, ActionParams params) {
+	public final void invokeAction(String command, WWEntity agent, ActionParams params) {
 		try {
 			if (command.equals("startWorldAction")) {
 				getWorldActions()[params.i].start(params.x, params.y);
