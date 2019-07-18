@@ -58,15 +58,15 @@ public class OldPhysicsThread extends PhysicsThread {
 			// Only examine physical objects that are also solid.  Non-solid (liquid, gas)
 			// objects are not influenced by other objects (but do influence other objects
 			// by being tested in the inner loop below).
-			if (object != null && !object.deleted && object.physical && object.solid) {
+			if (object != null && object.physical && object.solid && !object.deleted) {
 
 //					synchronized (object) { // to keep it from being modified
 
 				long originalLastMoveTime = object.lastMoveTime;
 
 				// Get current orientation and momentum values.
-				object.getPosition(position, worldTime);
-				object.getRotation(rotation, worldTime);
+				object.getAbsolutePosition(position, worldTime);
+				object.getAbsoluteRotation(rotation, worldTime);
 				object.getVelocity(velocity);
 				object.getAMomentum(aMomentum);
 				WWVector thrust = object.getThrust();
@@ -90,18 +90,18 @@ public class OldPhysicsThread extends PhysicsThread {
 				float objectExtent = object.extent;
 				for (int j = 1; j <= lastObjectIndex; j++) {
 					WWObject object2 = objects[j];
-					if (object2 != null && object2 != object && !object2.deleted && !object2.phantom && !object2.isChildOf(object)) {
+					if (object2 != null && !object2.phantom && object2 != object && !object2.deleted && !object.isDescendant(object2)) {
 
-						// First, see if the objects are "close".  If they are, it is worth
-						// determining if they actually overlap
+						// First, see if the objects are close enough to possibly overlap.
+						// If they are, it is worth determining if they actually do overlap
 						float maxExtent = objectExtent + object2.extent; //FastMath.max(objectExtent, object2.extent);
-						object2.getPosition(position2, worldTime);
+						object2.getAbsolutePosition(position2, worldTime);
 						if (/* object2.parentId != 0 || */(Math.abs(position2.x - position.x) < maxExtent && Math.abs(position2.y - position.y) < maxExtent && Math.abs(position2.z - position.z) < maxExtent)) {
 
 							// Determine if the objects overlap, and the vector of overlap.  This
 							// vector points in the direction of the deepest overlap, and the length of the
 							// vector indicates the amount of overlap
-							object2.getRotation(rotation2, worldTime);
+							object2.getAbsoluteRotation(rotation2, worldTime);
 							object.getOverlap(object2, position, rotation, object.rotationPoint, position2, rotation2, worldTime, tempPoint, tempPoint2, overlapPoint, overlapVector);
 
 							if (!overlapVector.isZero()) {
@@ -291,8 +291,7 @@ public class OldPhysicsThread extends PhysicsThread {
 //				}
 
 				// Update the position, rotation, velocity and angular momentum values on the object if any have changed due to
-				// physical interaction with another object.  Avoid updating though if some other thread has changed
-				// the object since
+				// physical interaction with another object, but only if the object has not been moved by some other thread
 				if (object.lastMoveTime == originalLastMoveTime && (!position.equals(originalPosition) || !rotation.equals(originalRotation) || !velocity.equals(originalVelocity) || !aMomentum.equals(originalAMomentum))) {
 
 					// Cap the movements, to cure possible physics ills

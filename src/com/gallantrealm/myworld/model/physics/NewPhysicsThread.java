@@ -10,9 +10,9 @@ import com.gallantrealm.myworld.model.WWWorld;
 /**
  * This thread performs updates to the world according to physical properties. This involves detecting collision and forces between objects and adjusting the position, orientation, velocity and angular momentum to match.
  * <p>
- * Note that this thread does not actually handle moving or rotating objects due to their own velocity and angular momentum. This is handled within the WWObject itself.
+ * Note that this thread does not actually handle moving or rotating objects due to their own velocity and angular momentum. That is handled within WWObject itself.
  * <p>
- * This is the "New" version of physics. It mimicks real world more precisely. In particular, it applies thrust and torque first, before other forces are determined. This causes the thrust and torque to be limited by other forces, such as
+ * This is the "New" version of physics. It mimics real world more precisely. In particular, it applies thrust and torque first, before other forces are determined. This causes the thrust and torque to be limited by other forces, such as
  * what occurs in the real world.
  */
 public class NewPhysicsThread extends PhysicsThread {
@@ -86,8 +86,8 @@ public class NewPhysicsThread extends PhysicsThread {
 				long originalLastMoveTime = object.lastMoveTime;
 
 				// Get current orientation and momentum values.
-				object.getPosition(position, worldTime);
-				object.getRotation(rotation, worldTime);
+				object.getAbsolutePosition(position, worldTime);
+				object.getAbsoluteRotation(rotation, worldTime);
 				object.getVelocity(velocity);
 				object.getAMomentum(aMomentum);
 				WWVector thrust = object.getThrust();
@@ -102,7 +102,7 @@ public class NewPhysicsThread extends PhysicsThread {
 
 				// start with thrust and torque by the object itself
 				WWVector totalForce = thrust.clone();
-				object.rotate(totalForce, rotation, worldTime);
+				WWObject.rotate(totalForce, rotation, worldTime);
 				WWVector totalTorque = torque.clone();
 
 				// sum in gravitational force only if object has mass
@@ -237,17 +237,23 @@ public class NewPhysicsThread extends PhysicsThread {
 								if (object2.isSolid() && object.getElasticity() + object2.getElasticity() > 0) {
 									// no friction for solids touching with elasticity
 								} else {
-									float friction = FastMath.min(object.friction, object2.friction) * 10.0f; // * deltaTime * 10.0f;
+									float friction = FastMath.min(object.friction, object2.friction) * 2.0f;
 									if (friction > 0) {
-
+										
 										// Friction is a force acting opposite of relative velocity/amomentum of the two items colliding.
-										WWVector frictionVForce = object2.getVelocity();
+										WWVector frictionVForce = object2.getVelocity();    // TODO include object2 amomentum (if object2 is large)
 										frictionVForce.subtract(velocity);
 										frictionVForce.scale(friction);
+										if (frictionVForce.length() > 1) {
+											frictionVForce.scale(frictionVForce.length());
+										}
 										totalForce.add(frictionVForce);
-										WWVector frictionAForce = object2.getAMomentum();
+										WWVector frictionAForce = object2.getAMomentum();   // TODO include object2 position (if  object2 is large)
 										frictionAForce.subtract(aMomentum);
 										frictionAForce.scale(friction);
+										if (frictionAForce.length() > 1) {
+											frictionAForce.scale(frictionAForce.length());
+										}
 										totalTorque.add(frictionAForce);
 
 									}
@@ -259,7 +265,7 @@ public class NewPhysicsThread extends PhysicsThread {
 					} // if object != object2
 				} // for object2
 
-//					// Cap forces to avoid really bad behaviors
+					// Cap force to avoid really bad behaviors
 //					if (totalForce.length() > 10) {
 //						totalForce.scale(10 / totalForce.length());
 //					}
@@ -287,42 +293,29 @@ public class NewPhysicsThread extends PhysicsThread {
 //						velocity.scale(1.0f / (1.0f + velocity.length() - thrustVelocity.length()));
 //					}
 
-				// Apply torque to object. Again, ignoring freedom of movement settings
-//					object.antiRotate(torque, rotation); // so torque is relative to current object orientation
-//					object.antiRotate(torqueVelocity, rotation); // so torque is relative to current object orientation
-//				if (torque.length() != 0.0) {
-				if (object.isFreedomRotateX()) {
-					if (torqueVelocity.x < 0.0 && torqueVelocity.x < aMomentum.x) {
-						aMomentum.x = FastMath.max(torqueVelocity.x, aMomentum.x + torque.x * 10.0f * deltaTime);
-					} else if (torqueVelocity.x > 0.0 && torqueVelocity.x > aMomentum.x) {
-						aMomentum.x = FastMath.min(torqueVelocity.x, aMomentum.x + torque.x * 10.0f * deltaTime);
-					}
-				} else {
-					aMomentum.x = torqueVelocity.x;
+				aMomentum.x += totalTorque.x * deltaTime;
+				aMomentum.y += totalTorque.y * deltaTime;
+				aMomentum.z += totalTorque.z * deltaTime;
+				
+				if (!object.freedomRotateX) {
+					aMomentum.x = 0;
 				}
-				if (object.isFreedomRotateY()) {
-					if (torqueVelocity.y < 0.0 && torqueVelocity.y < aMomentum.y) {
-						aMomentum.y = FastMath.max(torqueVelocity.y, aMomentum.y + torque.y * 10.0f * deltaTime);
-					} else if (torqueVelocity.y > 0.0 && torqueVelocity.y > aMomentum.y) {
-						aMomentum.y = FastMath.min(torqueVelocity.y, aMomentum.y + torque.y * 10.0f * deltaTime);
-					}
-				} else {
-					aMomentum.y = torqueVelocity.y;
+				if (!object.freedomRotateY) {
+					aMomentum.y = 0;
 				}
-				if (object.isFreedomRotateZ()) {
-					if (torqueVelocity.z < 0.0 && torqueVelocity.z < aMomentum.z) {
-						aMomentum.z = FastMath.max(torqueVelocity.z, aMomentum.z + torque.z * 10.0f * deltaTime);
-					} else if (torqueVelocity.z > 0.0 && torqueVelocity.z > aMomentum.z) {
-						aMomentum.z = FastMath.min(torqueVelocity.z, aMomentum.z + torque.z * 10.0f * deltaTime);
-					}
-				} else {
-					aMomentum.z = torqueVelocity.z;
+				if (!object.freedomRotateZ) {
+					aMomentum.z = 0;
 				}
+				
+				// Cap amomentum according to terminal amomentum
+//				if (aMomentum.length() > torqueVelocity.length()) {
+//					aMomentum.scale(1.0f / (1.0f + aMomentum.length() - torqueVelocity.length()));
 //				}
+
 
 				// Update the position, rotation, velocity and angular momentum values on the object if any have changed due to
 				// physical interaction with another object, but only if the object has not been moved by some other thread
-//				if (object.lastMoveTime == originalLastMoveTime && (!position.equals(originalPosition) || !rotation.equals(originalRotation) || !velocity.equals(originalVelocity) || !aMomentum.equals(originalAMomentum))) {
+				if (object.lastMoveTime == originalLastMoveTime && (!position.equals(originalPosition) || !rotation.equals(originalRotation) || !velocity.equals(originalVelocity) || !aMomentum.equals(originalAMomentum))) {
 
 //						// Cap the movements, to cure possible physics ills
 //						if (position.x - originalPosition.x > 1f) {
@@ -347,8 +340,7 @@ public class NewPhysicsThread extends PhysicsThread {
 					} else {
 						object.setOrientation(position, rotation, velocity, aMomentum, worldTime);
 					}
-
-//				}
+				}
 
 //				} // synchronize object
 
