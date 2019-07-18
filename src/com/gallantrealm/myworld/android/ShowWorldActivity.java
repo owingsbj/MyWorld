@@ -269,7 +269,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		}
 		updateTitleAndStatus();
 		clientModel.cameraToViewpoint();
-		clientModel.forceAvatar(0, 0, 0, 0, 0);
+		clientModel.forceAvatar(0, 0, 0, 0, 0, 0);
 		wakelock.acquire();
 
 		if (clientModel.world != null) {
@@ -920,6 +920,11 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		controller(-joystickEvent.getScaledX(-50, 50), -joystickEvent.getScaledY(-50, 50));
 	}
 
+	/**
+	 * All forms of avatar control funnel into this method.
+	 * @param deltaX the movement in the x dimension, from -50 to 50
+	 * @param deltaY the movement in the y dimension, from -50 to 50
+	 */
 	public void controller(float deltaX, float deltaY) {
 		WWWorld world = clientModel.world;
 		if (world == null || !world.isRunning()) {
@@ -932,7 +937,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		float xrange = 25.0f;
 		float yrange = 25.0f;
 		float thrust = clientModel.getAvatarThrust();
-		float torque = clientModel.getAvatarTurn();
+		float turn = clientModel.getAvatarTurn();
 		float lift = clientModel.getAvatarLift();
 		float tilt = clientModel.getAvatarTilt();
 		float lean = clientModel.getAvatarLean();
@@ -941,9 +946,9 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			float[] moveX = world.getMoveXTurn();
 			float deltaXtrunced = Math.min(Math.max(deltaX, -xrange), xrange);
 			int deltaXindex = (int) ((deltaXtrunced + xrange) * moveX.length / (xrange * 2 + 1));
-			torque = moveX[deltaXindex];
+			turn = moveX[deltaXindex];
 		} else {
-			torque = clientModel.getAvatarTurn();
+			turn = clientModel.getAvatarTurn();
 		}
 		if (world.getMoveXType() == WWWorld.MOVE_TYPE_LEAN) {
 			float[] moveX = world.getMoveXLean();
@@ -985,7 +990,8 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		} else {
 			lift = clientModel.getAvatarLift();
 		}
-		clientModel.forceAvatar(thrust, torque, lift, tilt, lean, slide);
+		System.out.println("forceAvatar: "+thrust+" "+turn);
+		clientModel.forceAvatar(thrust, turn, lift, tilt, lean, slide);
 	}
 
 	/**

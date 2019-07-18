@@ -101,9 +101,41 @@ public class NewPhysicsThread extends PhysicsThread {
 				WWVector originalAMomentum = aMomentum.clone();
 
 				// start with thrust and torque by the object itself
+				// note that these are attenuated (by thrust and torque velocity) if the velocity
+				// and torque are already high.
 				WWVector totalForce = thrust.clone();
+				if (thrustVelocity.x > 0 && velocity.x > thrustVelocity.x) {
+					totalForce.x = 0;
+				} else if (thrustVelocity.x < 0 && velocity.x < thrustVelocity.x) {
+					totalForce.x = 0;
+				}
+				if (thrustVelocity.y > 0 && velocity.y > thrustVelocity.y) {
+					totalForce.y = 0;
+				} else if (thrustVelocity.y < 0 && velocity.y < thrustVelocity.y) {
+					totalForce.y = 0;
+				}
+				if (thrustVelocity.z > 0 && velocity.z > thrustVelocity.z) {
+					totalForce.z = 0;
+				} else if (thrustVelocity.z < 0 && velocity.z < thrustVelocity.z) {
+					totalForce.z = 0;
+				}
 				WWObject.rotate(totalForce, rotation, worldTime);
 				WWVector totalTorque = torque.clone();
+				if (torqueVelocity.x > 0 && velocity.x > torqueVelocity.x) {
+					totalTorque.x = 0;
+				} else if (torqueVelocity.x < 0 && velocity.x < torqueVelocity.x) {
+					totalTorque.x = 0;
+				}
+				if (torqueVelocity.y > 0 && velocity.y > torqueVelocity.y) {
+					totalTorque.y = 0;
+				} else if (torqueVelocity.y < 0 && velocity.y < torqueVelocity.y) {
+					totalTorque.y = 0;
+				}
+				if (torqueVelocity.z > 0 && velocity.z > torqueVelocity.z) {
+					totalTorque.z = 0;
+				} else if (torqueVelocity.z < 0 && velocity.z < torqueVelocity.z) {
+					totalTorque.z = 0;
+				}
 
 				// sum in gravitational force only if object has mass
 				if (object.getDensity() > 0.0) {

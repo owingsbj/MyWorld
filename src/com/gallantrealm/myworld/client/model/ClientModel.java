@@ -629,10 +629,6 @@ public abstract class ClientModel {
 		this.cameraDampRate = cameraDampRate;
 	}
 
-	public void forceAvatar(float thrustVelocity, float turnVelocity, float liftVelocity, float tiltVelocity, float leanVelocity) {
-		forceAvatar(thrustVelocity, turnVelocity, liftVelocity, tiltVelocity, leanVelocity, 0);
-	}
-
 	/**
 	 * Moves an avatar using the thrust velocity and torque velocity specified.
 	 */
@@ -655,15 +651,15 @@ public abstract class ClientModel {
 
 			// move and turn avatar
 			if (localWorld != null) {
-				avatar.setThrust(new WWVector(slideVelocity, -thrustVelocity, liftVelocity));
+				avatar.setThrust(new WWVector(slideVelocity * 10, -thrustVelocity * 10, liftVelocity * 10));
 				avatar.setThrustVelocity(new WWVector(slideVelocity, -thrustVelocity, liftVelocity));
-				avatar.setTorque(new WWVector(tiltVelocity, leanVelocity, turnVelocity));
+				avatar.setTorque(new WWVector(tiltVelocity * 10, leanVelocity * 10, turnVelocity * 10));
 				avatar.setTorqueVelocity(new WWVector(tiltVelocity, leanVelocity, turnVelocity));
 			} else {
 				WWObject updatedAvatar = (WWObject) avatar.cloneNoBehavior();
-				updatedAvatar.setThrust(new WWVector(slideVelocity, -thrustVelocity, liftVelocity));
+				updatedAvatar.setThrust(new WWVector(slideVelocity * 10, -thrustVelocity * 10, liftVelocity * 10));
 				updatedAvatar.setThrustVelocity(new WWVector(slideVelocity, -thrustVelocity, liftVelocity));
-				updatedAvatar.setTorque(new WWVector(tiltVelocity, leanVelocity, turnVelocity));
+				updatedAvatar.setTorque(new WWVector(tiltVelocity * 10, leanVelocity * 10, turnVelocity * 10));
 				updatedAvatar.setTorqueVelocity(new WWVector(tiltVelocity, leanVelocity, turnVelocity));
 				thrustObject(avatarId, updatedAvatar);
 			}
