@@ -45,7 +45,6 @@ public abstract class PhysicsThread extends Thread {
 				try {
 					long startTime = System.currentTimeMillis();
 					long timeIncrement = Math.min(startTime - lastStartTime, iterationTime);
-
 					performIteration(timeIncrement);
 					updateParticles(world.getWorldTime());
 

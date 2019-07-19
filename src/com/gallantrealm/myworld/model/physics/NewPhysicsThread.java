@@ -47,6 +47,9 @@ public class NewPhysicsThread extends PhysicsThread {
 
 	@Override
 	public void performIteration(long timeIncrement) {
+		if (timeIncrement <= 0) {
+			return;
+		}
 		long worldTime = world.getWorldTime() + timeIncrement;
 		float deltaTime = timeIncrement / 1000.0f;
 
@@ -104,6 +107,8 @@ public class NewPhysicsThread extends PhysicsThread {
 				// note that these are attenuated (by thrust and torque velocity) if the velocity
 				// and torque are already high.
 				WWVector totalForce = thrust.clone();
+				WWObject.rotate(totalForce, rotation, worldTime);
+				WWObject.rotate(thrustVelocity, rotation, worldTime);
 				if (thrustVelocity.x > 0 && velocity.x > thrustVelocity.x) {
 					totalForce.x = 0;
 				} else if (thrustVelocity.x < 0 && velocity.x < thrustVelocity.x) {
@@ -119,7 +124,6 @@ public class NewPhysicsThread extends PhysicsThread {
 				} else if (thrustVelocity.z < 0 && velocity.z < thrustVelocity.z) {
 					totalForce.z = 0;
 				}
-				WWObject.rotate(totalForce, rotation, worldTime);
 				WWVector totalTorque = torque.clone();
 				if (torqueVelocity.x > 0 && velocity.x > torqueVelocity.x) {
 					totalTorque.x = 0;

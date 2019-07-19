@@ -990,7 +990,6 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		} else {
 			lift = clientModel.getAvatarLift();
 		}
-		System.out.println("forceAvatar: "+thrust+" "+turn);
 		clientModel.forceAvatar(thrust, turn, lift, tilt, lean, slide);
 	}
 
