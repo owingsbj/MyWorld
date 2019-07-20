@@ -279,12 +279,12 @@ public class NewPhysicsThread extends PhysicsThread {
 										// Friction is a force acting opposite of relative velocity/amomentum of the two items colliding.
 										WWVector frictionVForce = object2.getVelocity(); // TODO include object2 amomentum (if object2 is large)
 										frictionVForce.subtract(velocity);
-										frictionVForce.scale(10* friction / FastMath.range(frictionVForce.length(), 0.001f, 1f));
+										frictionVForce.scale(10* friction / FastMath.range(frictionVForce.length(), 0.01f, 1f));
 										totalForce.add(frictionVForce);
 										
 										WWVector frictionAForce = object2.getAMomentum(); // TODO include object2 position (if object2 is large)
 										frictionAForce.subtract(aMomentum);
-										frictionAForce.scale(10 * friction / FastMath.range(frictionAForce.length() / 10.0f, 0.001f, 1f));
+										frictionAForce.scale(10 * friction / FastMath.range(frictionAForce.length() / 10.0f, 0.01f, 1f));
 										totalTorque.add(frictionAForce);
 
 									}
