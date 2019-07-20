@@ -653,13 +653,13 @@ public abstract class ClientModel {
 			if (localWorld != null) {
 				avatar.setThrust(new WWVector(slideVelocity * 10, -thrustVelocity * 10, liftVelocity * 10));
 				avatar.setThrustVelocity(new WWVector(slideVelocity, -thrustVelocity, liftVelocity));
-				avatar.setTorque(new WWVector(tiltVelocity * 25, leanVelocity * 25, turnVelocity * 25));
+				avatar.setTorque(new WWVector(tiltVelocity * 100, leanVelocity * 100, turnVelocity * 100));
 				avatar.setTorqueVelocity(new WWVector(tiltVelocity, leanVelocity, turnVelocity));
 			} else {
 				WWObject updatedAvatar = (WWObject) avatar.cloneNoBehavior();
 				updatedAvatar.setThrust(new WWVector(slideVelocity * 10, -thrustVelocity * 10, liftVelocity * 10));
 				updatedAvatar.setThrustVelocity(new WWVector(slideVelocity, -thrustVelocity, liftVelocity));
-				updatedAvatar.setTorque(new WWVector(tiltVelocity * 25, leanVelocity * 25, turnVelocity * 25));
+				updatedAvatar.setTorque(new WWVector(tiltVelocity * 100, leanVelocity * 100, turnVelocity * 100));
 				updatedAvatar.setTorqueVelocity(new WWVector(tiltVelocity, leanVelocity, turnVelocity));
 				thrustObject(avatarId, updatedAvatar);
 			}
