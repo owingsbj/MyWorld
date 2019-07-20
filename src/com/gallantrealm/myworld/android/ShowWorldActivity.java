@@ -521,7 +521,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			// if (clientModel.useDPad()) {
 			dPadTimerTask = new DPadTimerTask();
 			dPadTimer = new Timer();
-			dPadTimer.schedule(dPadTimerTask, 50, 50); // similar in time to sensor delay game (40ms)
+			dPadTimer.schedule(dPadTimerTask, 40, 40); // same time as sensor delay game (40ms)
 			// }
 		}
 		super.onResume();
