@@ -1484,25 +1484,25 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keyCode == 44) { // "p" on keyboard
 			clientModel.startWorldAction(0); // typically pause
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == 37) { // "i" on keyboard
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP ) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadUpDown = true;
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == 39) { // "k" on keyboard
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadDownDown = true;
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == 38) { // "j" on keyboard
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadLeftDown = true;
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == 40) { // "l" on keyboard
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadRightDown = true;
@@ -1523,6 +1523,39 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			}
 			return true;
 		}
+		
+		// keys to support simulators on windows and mac
+		else if (keyCode == KeyEvent.KEYCODE_1) {
+			clientModel.startAvatarAction(0, 0, 0);
+		} else if (keyCode == KeyEvent.KEYCODE_2) {
+			clientModel.startAvatarAction(1, 0, 0);
+		} else if (keyCode == KeyEvent.KEYCODE_3) {
+			clientModel.startAvatarAction(2, 0, 0);
+		} else if (keyCode == KeyEvent.KEYCODE_4) {
+			clientModel.startAvatarAction(3, 0, 0);
+		} else if (keyCode == KeyEvent.KEYCODE_5) {
+			clientModel.startAvatarAction(4, 0, 0);
+		} else if (keyCode == KeyEvent.KEYCODE_6) {
+			clientModel.startAvatarAction(5, 0, 0);
+		} else if (keyCode == KeyEvent.KEYCODE_7) {
+			clientModel.startAvatarAction(6, 0, 0);
+		}
+		else if (keyCode == KeyEvent.KEYCODE_F1) {
+			clientModel.startWorldAction(0);
+		} else if (keyCode == KeyEvent.KEYCODE_F2) {
+			clientModel.startWorldAction(1);
+		} else if (keyCode == KeyEvent.KEYCODE_F3) {
+			clientModel.startWorldAction(2);
+		} else if (keyCode == KeyEvent.KEYCODE_F4) {
+			clientModel.startWorldAction(3);
+		} else if (keyCode == KeyEvent.KEYCODE_F5) {
+			clientModel.startWorldAction(4);
+		} else if (keyCode == KeyEvent.KEYCODE_F6) {
+			clientModel.startWorldAction(5);
+		} else if (keyCode == KeyEvent.KEYCODE_F7) {
+			clientModel.startWorldAction(6);
+		}
+
 		return false; // super.onKeyDown(keyCode, event);
 	}
 
@@ -1568,6 +1601,38 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 				clientModel.stopWorldAction(6); // for pinball
 			}
 			return true;
+		}
+
+		// keys to support simulators on windows and mac
+		else if (keyCode == KeyEvent.KEYCODE_1) {
+			clientModel.stopAvatarAction(0);
+		} else if (keyCode == KeyEvent.KEYCODE_2) {
+			clientModel.stopAvatarAction(1);
+		} else if (keyCode == KeyEvent.KEYCODE_3) {
+			clientModel.stopAvatarAction(2);
+		} else if (keyCode == KeyEvent.KEYCODE_4) {
+			clientModel.stopAvatarAction(3);
+		} else if (keyCode == KeyEvent.KEYCODE_5) {
+			clientModel.stopAvatarAction(4);
+		} else if (keyCode == KeyEvent.KEYCODE_6) {
+			clientModel.stopAvatarAction(5);
+		} else if (keyCode == KeyEvent.KEYCODE_7) {
+			clientModel.stopAvatarAction(6);
+		}
+		else if (keyCode == KeyEvent.KEYCODE_F1) {
+			clientModel.stopWorldAction(0);
+		} else if (keyCode == KeyEvent.KEYCODE_F2) {
+			clientModel.stopWorldAction(1);
+		} else if (keyCode == KeyEvent.KEYCODE_F3) {
+			clientModel.stopWorldAction(2);
+		} else if (keyCode == KeyEvent.KEYCODE_F4) {
+			clientModel.stopWorldAction(3);
+		} else if (keyCode == KeyEvent.KEYCODE_F5) {
+			clientModel.stopWorldAction(4);
+		} else if (keyCode == KeyEvent.KEYCODE_F6) {
+			clientModel.stopWorldAction(5);
+		} else if (keyCode == KeyEvent.KEYCODE_F7) {
+			clientModel.stopWorldAction(6);
 		}
 
 		return false; // super.onKeyUp(keyCode, event);
