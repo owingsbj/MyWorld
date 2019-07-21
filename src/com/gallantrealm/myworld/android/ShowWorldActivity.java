@@ -93,6 +93,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 	private Button leftActionButton7;
 
 	private ImageButton joyButton;
+	private View joyThumb;
 	private RelativeLayout.LayoutParams originalJoyButtonLayoutParams;
 
 	private TextView flashMessageText;
@@ -167,6 +168,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		leftActionButton6 = (Button) findViewById(R.id.leftActionButton6);
 		leftActionButton7 = (Button) findViewById(R.id.leftActionButton7);
 		joyButton = (ImageButton) findViewById(R.id.joyButton);
+		joyThumb = findViewById(R.id.joyThumb);
 
 		Typeface typeface = clientModel.getTypeface(this);
 		if (typeface != null) {
@@ -462,9 +464,11 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 					if (clientModel.useSensors() || clientModel.useZeemote()) {
 						System.out.println("Using Sensors or Zeemote, so no joyButton");
 						joyButton.setVisibility(Button.GONE);
+						joyThumb.setVisibility(View.GONE);
 					} else {
 						System.out.println("Using JoyButton");
 						joyButton.setVisibility(Button.VISIBLE);
+						joyThumb.setVisibility(View.VISIBLE);
 						if (clientModel.useScreenControl()) {
 							try {
 								if (clientModel.isControlOnLeft()) {
@@ -485,7 +489,9 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 							}
 						} else {
 							joyButton.setVisibility(Button.GONE);
+							joyThumb.setVisibility(View.GONE);
 						}
+						joyThumb.bringToFront();
 						joyButton.bringToFront();
 					}
 				} else {
@@ -494,6 +500,23 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 					params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 					joyButton.setLayoutParams(params);
 				}
+			}
+		});
+	}
+	
+	private void updateJoyThumb(final int x, final int y) {
+		
+		runOnUiThread(new Runnable() {
+			public void run() {
+				int thumbSize = joyThumb.getWidth();
+				int centerX =(joyButton.getWidth() - thumbSize) / 2;
+				int centerY = ( joyButton.getHeight() - thumbSize) / 2;
+				float xRange = (joyButton.getWidth() - thumbSize) / 100.0f * FastMath.cos(y / 200.0f * FastMath.PI);
+				float yRange = (joyButton.getHeight() - thumbSize) / 100.0f * FastMath.cos(x / 200.0f * FastMath.PI);
+				joyThumb.setLeft((int)(joyButton.getLeft() + centerX - x * xRange));
+				joyThumb.setRight((int)(joyButton.getLeft() + centerX - x * xRange + thumbSize));
+				joyThumb.setTop((int)(joyButton.getTop() + centerY - y * yRange));
+				joyThumb.setBottom((int)(joyButton.getTop() + centerY - y * yRange + thumbSize));
 			}
 		});
 	}
@@ -926,6 +949,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 	 * @param deltaY the movement in the y dimension, from -50 to 50
 	 */
 	public void controller(float deltaX, float deltaY) {
+		updateJoyThumb((int)deltaX, (int)deltaY);
 		WWWorld world = clientModel.world;
 		if (world == null || !world.isRunning()) {
 			return;

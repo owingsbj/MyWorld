@@ -61,6 +61,19 @@
 		android:layout_marginRight="30dp"
 		android:layout_marginTop="30dp"
 		android:background="@drawable/joy_button"/>
+
+	<ImageButton
+	    android:id="@+id/joyThumb"
+	    android:layout_width="50dp"
+	    android:layout_height="50dp"
+	    android:layout_alignLeft="@id/joyButton"
+	    android:layout_alignTop="@id/joyButton"
+	    android:layout_marginBottom="10dp"
+	    android:layout_marginLeft="10dp"
+	    android:layout_marginRight="10dp"
+	    android:layout_marginTop="10dp"
+	    android:background="@drawable/joy_button_thumb" />
+
 	<LinearLayout
 		android:layout_alignLeft="@+id/worldView"
 		android:id="@+id/worldActionsView"
