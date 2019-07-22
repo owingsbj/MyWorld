@@ -252,6 +252,13 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		updateAvatarActions(false);
 		updateWorldActions(false);
 		updateJoyButton();
+		
+		// if the layout changes, need to zero the thumb again
+		((RelativeLayout)findViewById(R.id.mainLayout)).addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+			public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+				updateJoyThumb(0, 0);
+			};
+		});
 
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		if (pm.isScreenOn()) { // don't resume rendering and physics unless screen is actually displayed
@@ -280,7 +287,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		
 		updateAvatarActions(false);
 		updateLogText();
-
+		
 		System.out.println("<ShowWorldActivity.onStart");
 	}
 
