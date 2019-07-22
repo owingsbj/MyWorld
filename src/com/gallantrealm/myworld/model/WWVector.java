@@ -43,7 +43,7 @@ public class WWVector implements Cloneable, Serializable, Sendable {
 		//String formattedy = String.format("%+.4f", y);
 		//String formattedz = String.format("%+.4f", z);
 		//return "<" + formattedx + "," + formattedy + "," + formattedz + ">";
-		return "<" + x + "," + y + "," + z + ">";
+		return "<" + x + ", " + y + ", " + z + ">";
 	}
 
 	public final float getX() {

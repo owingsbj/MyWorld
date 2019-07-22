@@ -112,22 +112,20 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 
 	@Override
 	public String toString() {
-		String id = "";
-		if (name != null) {
-			id += name;
-		}
-		id += " - ";
-		if (description != null) {
-			id += description;
-		}
-		id += " - ";
-		id += getClass().getName();
+		String id = getClass().getSimpleName();
 		if (world != null) {
 			if (this instanceof WWObject) {
 				int objectId = world.getObjectId((WWObject) this);
-				id += " ";
+				id += "#";
 				id += objectId;
+			} else if (this instanceof WWUser) {
+				int userId = world.getUserId((WWUser)this);
+				id += "#";
+				id += userId;
 			}
+		}
+		if (name != null) {
+			id += " - " + name;
 		}
 		return id;
 	}

@@ -948,9 +948,9 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	 * @deprecated Use WWObject.getActions
 	 */
 	public WWAction[] getAvatarActions() {
-		if (AndroidClientModel.getClientModel().selectedObject != null) {
-			if (AndroidClientModel.getClientModel().selectedObject.getActions() != null) {
-				return AndroidClientModel.getClientModel().selectedObject.getActions();
+		if (AndroidClientModel.getClientModel().getSelectedObject() != null) {
+			if (AndroidClientModel.getClientModel().getSelectedObject().getActions() != null) {
+				return AndroidClientModel.getClientModel().getSelectedObject().getActions();
 			}
 		}
 		if (AndroidClientModel.getClientModel().getAvatar() != null) {
@@ -965,7 +965,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			params.i = i;
 			params.x = x;
 			params.y = y;
-			WWObject object = AndroidClientModel.getClientModel().selectedObject;
+			WWObject object = AndroidClientModel.getClientModel().getSelectedObject();
 			if (object == null) {
 				object = AndroidClientModel.getClientModel().getAvatar();
 			}
@@ -979,7 +979,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		if (behaviorThread != null) {
 			ActionParams params = new ActionParams();
 			params.i = i;
-			WWObject object = AndroidClientModel.getClientModel().selectedObject;
+			WWObject object = AndroidClientModel.getClientModel().getSelectedObject();
 			if (object == null) {
 				object = AndroidClientModel.getClientModel().getAvatar();
 			}

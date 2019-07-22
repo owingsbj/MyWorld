@@ -37,5 +37,10 @@ public abstract class WWAction implements Serializable {
 
 	public void stop() {
 	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " - " + getName();
+	}
 
 }
