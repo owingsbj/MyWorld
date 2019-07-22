@@ -930,7 +930,8 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			params.i = i;
 			params.x = x;
 			params.y = y;
-			behaviorThread.queue("startWorldAction", null, null, params);
+			WWUser user = getUsers()[AndroidClientModel.getClientModel().getUserId()];
+			behaviorThread.queue("startWorldAction", null, user, params);
 		}
 	}
 
@@ -938,7 +939,8 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		if (behaviorThread != null) {
 			ActionParams params = new ActionParams();
 			params.i = i;
-			behaviorThread.queue("stopWorldAction", null, null, params);
+			WWUser user = getUsers()[AndroidClientModel.getClientModel().getUserId()];
+			behaviorThread.queue("stopWorldAction", null, user, params);
 		}
 	}
 
@@ -963,7 +965,13 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			params.i = i;
 			params.x = x;
 			params.y = y;
-			behaviorThread.queue("startAvatarAction", null, null, params);
+			WWObject object = AndroidClientModel.getClientModel().selectedObject;
+			if (object == null) {
+				object = AndroidClientModel.getClientModel().getAvatar();
+			}
+			WWUser user = getUsers()[AndroidClientModel.getClientModel().getUserId()];
+			behaviorThread.queue("startAvatarAction", null /*object*/, user, params);
+			// Note: currently behavior thread expects null for object of  action
 		}
 	}
 
@@ -971,7 +979,13 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		if (behaviorThread != null) {
 			ActionParams params = new ActionParams();
 			params.i = i;
-			behaviorThread.queue("stopAvatarAction", null, null, params);
+			WWObject object = AndroidClientModel.getClientModel().selectedObject;
+			if (object == null) {
+				object = AndroidClientModel.getClientModel().getAvatar();
+			}
+			WWUser user = getUsers()[AndroidClientModel.getClientModel().getUserId()];
+			behaviorThread.queue("stopAvatarAction", null /*object*/, user, params);
+			// Note: currently behavior thread expects null for object of  action
 		}
 	}
 
