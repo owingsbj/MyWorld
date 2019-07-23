@@ -194,7 +194,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		titleText.setTypeface(typeface);
 		statusText.setTypeface(typeface);
 		flashMessageText.setTypeface(typeface);
-		
+
 		logText.setText("");
 		clientModel.clearLog();
 
@@ -251,10 +251,10 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 
 		updateAvatarActions(false);
 		updateWorldActions(false);
-		updateJoyButton();
-		
+		placeButtonsBasedOnPrefs();
+
 		// if the layout changes, need to zero the thumb again
-		((RelativeLayout)findViewById(R.id.mainLayout)).addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+		((RelativeLayout) findViewById(R.id.mainLayout)).addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
 			public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
 				updateJoyThumb(0, 0);
 			};
@@ -284,10 +284,10 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		if (clientModel.world != null) {
 			clientModel.world.displayed();
 		}
-		
+
 		updateAvatarActions(false);
 		updateLogText();
-		
+
 		System.out.println("<ShowWorldActivity.onStart");
 	}
 
@@ -456,7 +456,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		}
 	}
 
-	private void updateJoyButton() {
+	private void placeButtonsBasedOnPrefs() {
 		if (clientModel == null || clientModel.world == null) {
 			return;
 		}
@@ -467,63 +467,83 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 				if (originalJoyButtonLayoutParams == null) {
 					originalJoyButtonLayoutParams = (RelativeLayout.LayoutParams) joyButton.getLayoutParams();
 				}
-				if (clientModel.world.usesController()) {
-					if (clientModel.useSensors() || clientModel.useZeemote()) {
-						System.out.println("Using Sensors or Zeemote, so no joyButton");
-						joyButton.setVisibility(Button.GONE);
-						joyThumb.setVisibility(View.GONE);
-					} else {
-						System.out.println("Using JoyButton");
-						joyButton.setVisibility(Button.VISIBLE);
-						joyThumb.setVisibility(View.VISIBLE);
-						if (clientModel.useScreenControl()) {
-							try {
-								if (clientModel.isControlOnLeft()) {
-									RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(originalJoyButtonLayoutParams);
-									params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-									params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-									params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-									joyButton.setLayoutParams(params);
-								} else {
-									RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(originalJoyButtonLayoutParams);
-									params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-									params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-									params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-									joyButton.setLayoutParams(params);
-								}
-							} catch (Throwable e) {
-								// fails on some, due to NoSuchMethodError: android.widget.RelativeLayout$LayoutParams.<init>
-							}
+				if (clientModel.world.usesController() && clientModel.useScreenControl()) {
+					System.out.println("Using JoyButton");
+					joyButton.setVisibility(Button.VISIBLE);
+					joyThumb.setVisibility(View.VISIBLE);
+					try {
+						if (clientModel.isControlOnLeft()) {
+							RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(originalJoyButtonLayoutParams);
+							params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+							params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+							params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+							joyButton.setLayoutParams(params);
+							params = new RelativeLayout.LayoutParams(avatarActionsView.getLayoutParams());
+							params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+							params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+							params.addRule(RelativeLayout.BELOW, R.id.titleText);
+							avatarActionsView.setLayoutParams(params);
+							params = new RelativeLayout.LayoutParams(worldActionsView.getLayoutParams());
+							params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+							params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+							params.addRule(RelativeLayout.BELOW, R.id.titleText);
+							worldActionsView.setLayoutParams(params);
 						} else {
-							joyButton.setVisibility(Button.GONE);
-							joyThumb.setVisibility(View.GONE);
+							RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(originalJoyButtonLayoutParams);
+							params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+							params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+							params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+							joyButton.setLayoutParams(params);
+							params = new RelativeLayout.LayoutParams(avatarActionsView.getLayoutParams());
+							params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+							params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+							params.addRule(RelativeLayout.BELOW, R.id.titleText);
+							avatarActionsView.setLayoutParams(params);
+							params = new RelativeLayout.LayoutParams(worldActionsView.getLayoutParams());
+							params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+							params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+							params.addRule(RelativeLayout.BELOW, R.id.titleText);
+							worldActionsView.setLayoutParams(params);
 						}
-						joyThumb.bringToFront();
-						joyButton.bringToFront();
+					} catch (Throwable e) {
+						// fails on some, due to NoSuchMethodError: android.widget.RelativeLayout$LayoutParams.<init>
 					}
+					joyThumb.bringToFront();
+					joyButton.bringToFront();
 				} else {
-					// joyButton.setVisibility(Button.GONE);
-					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, 1);
-					params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-					joyButton.setLayoutParams(params);
+					System.out.println("Not using JoyButton");
+					joyButton.setVisibility(Button.GONE);
+					joyThumb.setVisibility(View.GONE);
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(avatarActionsView.getLayoutParams());
+					params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+					params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+					params.addRule(RelativeLayout.BELOW, R.id.titleText);
+					avatarActionsView.setLayoutParams(params);
+					params = new RelativeLayout.LayoutParams(worldActionsView.getLayoutParams());
+					params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+					params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					params.addRule(RelativeLayout.BELOW, R.id.titleText);
+					worldActionsView.setLayoutParams(params);
 				}
 			}
 		});
 	}
-	
+
+	/**
+	 * Move the thumb in the joy button to reflect the controller position.
+	 */
 	private void updateJoyThumb(final int x, final int y) {
-		
 		runOnUiThread(new Runnable() {
 			public void run() {
 				int thumbSize = joyThumb.getWidth();
-				int centerX =(joyButton.getWidth() - thumbSize) / 2;
-				int centerY = ( joyButton.getHeight() - thumbSize) / 2;
+				int centerX = (joyButton.getWidth() - thumbSize) / 2;
+				int centerY = (joyButton.getHeight() - thumbSize) / 2;
 				float xRange = (joyButton.getWidth() - thumbSize) / 100.0f * FastMath.cos(y / 200.0f * FastMath.PI);
 				float yRange = (joyButton.getHeight() - thumbSize) / 100.0f * FastMath.cos(x / 200.0f * FastMath.PI);
-				joyThumb.setLeft((int)(joyButton.getLeft() + centerX - x * xRange));
-				joyThumb.setRight((int)(joyButton.getLeft() + centerX - x * xRange + thumbSize));
-				joyThumb.setTop((int)(joyButton.getTop() + centerY - y * yRange));
-				joyThumb.setBottom((int)(joyButton.getTop() + centerY - y * yRange + thumbSize));
+				joyThumb.setLeft((int) (joyButton.getLeft() + centerX - x * xRange));
+				joyThumb.setRight((int) (joyButton.getLeft() + centerX - x * xRange + thumbSize));
+				joyThumb.setTop((int) (joyButton.getTop() + centerY - y * yRange));
+				joyThumb.setBottom((int) (joyButton.getTop() + centerY - y * yRange + thumbSize));
 			}
 		});
 	}
@@ -952,11 +972,14 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 
 	/**
 	 * All forms of avatar control funnel into this method.
-	 * @param deltaX the movement in the x dimension, from -50 to 50
-	 * @param deltaY the movement in the y dimension, from -50 to 50
+	 * 
+	 * @param deltaX
+	 *            the movement in the x dimension, from -50 to 50
+	 * @param deltaY
+	 *            the movement in the y dimension, from -50 to 50
 	 */
 	public void controller(float deltaX, float deltaY) {
-		updateJoyThumb((int)deltaX, (int)deltaY);
+		updateJoyThumb((int) deltaX, (int) deltaY);
 		WWWorld world = clientModel.world;
 		if (world == null || !world.isRunning()) {
 			return;
@@ -1115,18 +1138,17 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			updateWorldActions(false);
 		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_WORLD_ACTIONS_RESTORED) {
 			updateWorldActions(true);
-		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_SELECTED_AVATAR_CHANGED || 
-				event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_OBJECT_SELECTED) {
+		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_SELECTED_AVATAR_CHANGED || event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_OBJECT_SELECTED) {
 			updateAvatarActions(false);
 		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_USE_CONTROLLER_CHANGED) {
-			updateJoyButton();
+			placeButtonsBasedOnPrefs();
 		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_CALIBRATE_SENSORS) {
 			calibrateSensors();
 		} else if (event.getEventType() == ClientModelChangedEvent.EVENT_TYPE_LOG_UPDATED) {
 			updateLogText();
 		}
 	}
-	
+
 	public void updateLogText() {
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -1491,7 +1513,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keyCode == 44) { // "p" on keyboard
 			clientModel.startWorldAction(0); // typically pause
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP ) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadUpDown = true;
@@ -1509,7 +1531,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 				dPadLeftDown = true;
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadRightDown = true;
@@ -1530,7 +1552,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			}
 			return true;
 		}
-		
+
 		// keys to support simulators on windows and mac
 		else if (keyCode == KeyEvent.KEYCODE_1) {
 			clientModel.startAvatarAction(0, 0, 0);
@@ -1546,8 +1568,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			clientModel.startAvatarAction(5, 0, 0);
 		} else if (keyCode == KeyEvent.KEYCODE_7) {
 			clientModel.startAvatarAction(6, 0, 0);
-		}
-		else if (keyCode == KeyEvent.KEYCODE_F1) {
+		} else if (keyCode == KeyEvent.KEYCODE_F1) {
 			clientModel.startWorldAction(0);
 		} else if (keyCode == KeyEvent.KEYCODE_F2) {
 			clientModel.startWorldAction(1);
@@ -1625,8 +1646,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			clientModel.stopAvatarAction(5);
 		} else if (keyCode == KeyEvent.KEYCODE_7) {
 			clientModel.stopAvatarAction(6);
-		}
-		else if (keyCode == KeyEvent.KEYCODE_F1) {
+		} else if (keyCode == KeyEvent.KEYCODE_F1) {
 			clientModel.stopWorldAction(0);
 		} else if (keyCode == KeyEvent.KEYCODE_F2) {
 			clientModel.stopWorldAction(1);
