@@ -227,7 +227,8 @@ public final class NewAndroidRenderer extends AndroidRenderer implements IRender
 
 		// The depth texture extension is required for shadows
 		String extensions = GLES20.glGetString(GLES20.GL_EXTENSIONS);
-		if (extensions.contains("GL_OES_depth_texture")) {
+		System.out.println(extensions);
+		if (extensions.contains("GL_OES_depth_texture")  && (extensions.contains("GL_OES_depth24") || extensions.contains("GL_OES_depth32"))) {
 			hasDepthTexture = true;
 		}
 
@@ -326,7 +327,7 @@ public final class NewAndroidRenderer extends AndroidRenderer implements IRender
 				worldRendering.snap(time);
 			}
 			preRender(time);
-
+			
 			// Generate the shadow map texture(s)
 			if (hasDepthTexture && !clientModel.isSimpleRendering() && world.supportsShadows() && worldRendering.drawnOnce) {
 				// generate view matrix for perspective shadow map
