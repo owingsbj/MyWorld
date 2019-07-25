@@ -138,7 +138,7 @@ public class SettingsActivity extends GallantActivity implements View.OnClickLis
 			if (clientModel.isPlayMusic()) {
 				clientModel.playSong(clientModel.getTheme().themeSongId);
 			} else {
-				clientModel.pauseSong();
+				clientModel.stopSong();
 			}
 		} else if (v.equals(playSoundEffectsCheckBox)) {
 			clientModel.setPlaySoundEffects(playSoundEffectsCheckBox.isChecked());

@@ -53,7 +53,7 @@ public class GallantActivity extends Activity implements com.bda.controller.Cont
 	protected void onStop() {
 		super.onStop();
 		if (songId != 0) {
-			clientModel.pauseSong();
+			clientModel.stopSong();
 		}
 		mogaController.exit();
 	}

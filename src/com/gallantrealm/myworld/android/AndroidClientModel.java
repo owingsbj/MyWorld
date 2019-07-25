@@ -328,18 +328,20 @@ public class AndroidClientModel extends ClientModel {
 			songPlayer.setVolume(1f, 1f);
 		}
 		nSongPlayers++;
-		if (nSongPlayers > 0) {
+		if (nSongPlayers == 1) {
 			if (isPlayMusic()) {
 				songPlayer.start();
 			}
 		}
 	}
 
-	public synchronized void pauseSong() {
+	public synchronized void stopSong() {
 		if (songPlayer != null) {
 			nSongPlayers--;
 			if (nSongPlayers == 0) {
-				songPlayer.pause();
+				songPlayer.stop();
+				songPlayer.release();
+				songPlayer = null;
 			}
 		}
 	}
