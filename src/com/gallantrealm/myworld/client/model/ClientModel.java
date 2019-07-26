@@ -592,11 +592,10 @@ public abstract class ClientModel {
 			setCameraDistance(behindDistance);
 			setCameraTilt(behindTilt);
 			setCameraPan(0.0f);
-		} else if (viewpoint == 1) { // top or head of avatar
-			// TODO consider making head object name adjustable
-			WWObject head = avatar.getDescendant("head");
-			if (head != null) {
-				setCameraObject(head);
+		} else if (viewpoint == 1) { // focus object or top of avatar
+			WWObject focus = avatar.getDescendant("focus");
+			if (focus != null) {
+				setCameraObject(focus);
 				setCameraDistance(0.0f);
 				setCameraPoint(new WWVector(0, 0, 0));
 				setCameraTilt(0);
