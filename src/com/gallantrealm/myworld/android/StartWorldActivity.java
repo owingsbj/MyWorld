@@ -114,7 +114,7 @@ public class StartWorldActivity extends Activity {
 
 			// Create or restore the world
 			final File worldFile = new File(getFilesDir(), worldClassName);
-			if (worldFile.exists() && !reset) {
+			if (worldFile.exists() && !clientModel.isCustomizeMode() && !reset) {
 
 				this.runOnUiThread(new Runnable() {
 					@Override
