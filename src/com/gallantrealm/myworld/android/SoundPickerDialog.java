@@ -20,6 +20,7 @@ import android.widget.ListView;
 
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.model.WWBox;
 import com.gallantrealm.myworld.model.WWObject;
 import com.gallantrealm.myworld.model.WWVector;
@@ -41,7 +42,7 @@ public class SoundPickerDialog extends Dialog {
 		Button cancelButton = (Button) findViewById(R.id.cancelButton);
 		final ListView assemblyListView = (ListView) findViewById(R.id.soundListView);
 		assemblyListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+		ClientModel clientModel = AndroidClientModel.getClientModel();
 		adapter = new ArrayAdapter<String>(context, R.layout.sound_list_item, R.id.name) {
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
@@ -76,7 +77,7 @@ public class SoundPickerDialog extends Dialog {
 
 			@Override
 			public void onClick(View v) {
-				AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+				ClientModel clientModel = AndroidClientModel.getClientModel();
 				WWObject selectedObject = clientModel.getSelectedObject();
 				WWVector selectedPosition;
 				if (selectedObject != null) {
@@ -154,7 +155,7 @@ public class SoundPickerDialog extends Dialog {
 
 	@Override
 	public void show() {
-		AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+		ClientModel clientModel = AndroidClientModel.getClientModel();
 		adapter.clear();
 		File filesDir = clientModel.getContext().getFilesDir();
 		File[] files = filesDir.listFiles();

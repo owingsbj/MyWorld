@@ -15,11 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.gallantrealm.android.Translator;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.zeemote.zc.event.ButtonEvent;
 import com.zeemote.zc.event.IButtonListener;
 
 public class InputDialog extends Dialog implements IButtonListener {
-	AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	TextView titleText;
 	TextView messageText;

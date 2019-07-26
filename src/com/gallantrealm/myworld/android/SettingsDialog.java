@@ -13,11 +13,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.zeemote.zc.event.ButtonEvent;
 import com.zeemote.zc.event.IButtonListener;
 
 public class SettingsDialog extends Dialog implements IButtonListener {
-	AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	TextView titleText;
 	TextView messageText;

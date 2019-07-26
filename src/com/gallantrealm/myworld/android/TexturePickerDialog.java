@@ -1,5 +1,7 @@
 package com.gallantrealm.myworld.android;
 
+import com.gallantrealm.myworld.client.model.ClientModel;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -114,7 +116,7 @@ public class TexturePickerDialog extends Dialog {
 				intent.setAction(Intent.ACTION_GET_CONTENT);
 				context.startActivityForResult(Intent.createChooser(intent, "Complete action using"), 0);
 
-				AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+				ClientModel clientModel = AndroidClientModel.getClientModel();
 				clientModel.lastTexturePickerDialog = TexturePickerDialog.this;
 			}
 		});

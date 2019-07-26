@@ -1,6 +1,7 @@
 package com.gallantrealm.myworld.android;
 
 import com.gallantrealm.android.Translator;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.zeemote.zc.event.ButtonEvent;
 import com.zeemote.zc.event.IButtonListener;
 import android.content.Context;
@@ -12,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MessageDialog extends GallantDialog implements IButtonListener {
-	AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	public TextView titleText;
 	public TextView messageText;

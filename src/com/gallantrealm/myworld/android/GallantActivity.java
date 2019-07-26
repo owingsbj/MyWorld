@@ -1,5 +1,7 @@
 package com.gallantrealm.myworld.android;
 
+import com.gallantrealm.myworld.client.model.ClientModel;
+
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -16,7 +18,7 @@ import android.widget.RadioButton;
  */
 public class GallantActivity extends Activity implements com.bda.controller.ControllerListener {
 
-	public AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	public ClientModel clientModel = AndroidClientModel.getClientModel();
 	public int songId = 0;
 
 	/** Moga support. */

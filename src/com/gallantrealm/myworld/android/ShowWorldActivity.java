@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
 import com.gallantrealm.myworld.client.model.AlertListener;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
 import com.gallantrealm.myworld.client.model.ClientModelChangedListener;
 import com.gallantrealm.myworld.client.model.InputResponseHandler;
@@ -65,7 +66,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 	Sensor accelerometerSensor;
 	Sensor magneticFieldSensor;
 
-	private final AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	private final ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	private TextView titleText;
 	private TextView statusText;
@@ -107,7 +108,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 	TimerTask dPadTimerTask;
 
 	/** Moga support. */
-	com.bda.controller.Controller mogaController;
+	public com.bda.controller.Controller mogaController;
 
 	/** Called when the activity is first created. */
 	@SuppressLint("NewApi")

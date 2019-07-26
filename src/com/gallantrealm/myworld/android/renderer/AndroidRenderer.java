@@ -15,6 +15,7 @@ import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.android.R;
 import com.gallantrealm.myworld.android.renderer.neu.NewAndroidRenderer;
 import com.gallantrealm.myworld.android.renderer.old.OldAndroidRenderer;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.renderer.IRenderer;
 import com.gallantrealm.myworld.client.renderer.ISoundGenerator;
 import com.gallantrealm.myworld.model.WWObject;
@@ -64,7 +65,7 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 
 	public float stereoAmount = 1.0f; // 0.5 - 2.0 are good range
 
-	public final AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	public final ClientModel clientModel = AndroidClientModel.getClientModel();
 	public float lastLimitedCameraDistance = clientModel.getCameraDistance();
 	public static AndroidRenderer androidRenderer;
 

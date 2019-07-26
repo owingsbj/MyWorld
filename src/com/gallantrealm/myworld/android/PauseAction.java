@@ -2,6 +2,7 @@ package com.gallantrealm.myworld.android;
 
 import java.io.Serializable;
 
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
 import com.gallantrealm.myworld.model.WWAction;
 
@@ -28,7 +29,7 @@ public class PauseAction extends WWAction implements Serializable {
 
 	@Override
 	public void start() {
-		AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+		ClientModel clientModel = AndroidClientModel.getClientModel();
 		if (clientModel.paused) {
 			clientModel.resumeWorld();
 		} else {

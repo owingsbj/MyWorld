@@ -1,5 +1,7 @@
 package com.gallantrealm.myworld.android;
 
+import com.gallantrealm.myworld.client.model.ClientModel;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.view.KeyEvent;
@@ -9,7 +11,7 @@ import android.widget.CheckBox;
 import android.widget.RadioButton;
 
 public class GallantDialog extends Dialog {
-	AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	public GallantDialog(Context context) {
 		super(context);

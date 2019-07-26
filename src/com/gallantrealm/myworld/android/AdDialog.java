@@ -18,11 +18,12 @@ import com.amazon.device.ads.AdListener;
 import com.amazon.device.ads.AdProperties;
 import com.amazon.device.ads.AdRegistration;
 import com.amazon.device.ads.AdTargetingOptions;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.zeemote.zc.event.ButtonEvent;
 import com.zeemote.zc.event.IButtonListener;
 
 public class AdDialog extends GallantDialog implements IButtonListener {
-	AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	TextView titleText;
 	FrameLayout adFrame;

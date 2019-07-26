@@ -6,6 +6,8 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Constructor;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
 import com.gallantrealm.myworld.client.model.ClientModelChangedListener;
 import com.gallantrealm.myworld.communication.Communications;
@@ -23,7 +25,7 @@ import android.widget.TextView;
 
 public class StartWorldActivity extends Activity {
 
-	private final AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	private final ClientModel clientModel = AndroidClientModel.getClientModel();
 	private TextView startMessage;
 	private TextView startupHintText;
 

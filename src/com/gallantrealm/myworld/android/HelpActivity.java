@@ -1,5 +1,7 @@
 package com.gallantrealm.myworld.android;
 
+import com.gallantrealm.myworld.client.model.ClientModel;
+
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -12,7 +14,7 @@ import android.widget.TextView;
 
 public class HelpActivity extends GallantActivity {
 
-	AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	View mainLayout;
 	TextView titleText;

@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.gallantrealm.myworld.FastMath;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
 import com.gallantrealm.myworld.client.model.ClientModelChangedListener;
 import com.gallantrealm.myworld.communication.Communications;
@@ -35,7 +36,7 @@ import com.gallantrealm.myworld.server.MyWorldServer;
 
 public class ConnectToWorldActivity extends Activity {
 
-	private AndroidClientModel clientModel;
+	private ClientModel clientModel;
 	EditText urlText;
 	Button connectButton;
 	TextView messagesText;

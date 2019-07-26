@@ -8,12 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
 import com.gallantrealm.myworld.client.model.ClientModelChangedListener;
 
 public class SelectWorldActivity extends GallantActivity implements View.OnClickListener, ClientModelChangedListener {
 
-	private final AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	private final ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	View mainLayout;
 	TextView titleText;

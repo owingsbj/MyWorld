@@ -1,6 +1,7 @@
 package com.gallantrealm.myworld.android;
 
 import com.gallantrealm.android.Translator;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.zeemote.zc.event.ButtonEvent;
 import com.zeemote.zc.event.IButtonListener;
 import android.annotation.SuppressLint;
@@ -23,7 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class SelectItemDialog extends Dialog implements IButtonListener {
-	AndroidClientModel clientModel = AndroidClientModel.getClientModel();
+	ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	TextView messageText;
 	GridView itemsView;
