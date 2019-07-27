@@ -2,6 +2,8 @@ package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
+
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
@@ -20,6 +22,7 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 	public long createTime;
 	public long lastModifyTime;
 	public boolean deleted;
+	public HashMap<String, Serializable> properties;
 
 	public void setWorld(WWWorld world) {
 		this.world = world;
@@ -108,6 +111,24 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public final Serializable getProperty(String key, Serializable defaultValue) {
+		if (properties == null) {
+			return defaultValue;
+		}
+		Serializable value = properties.get(key);
+		if (value == null) {
+			return defaultValue;
+		}
+		return value;
+	}
+	
+	public final void setProperty(String key, Serializable value) {
+		if (properties == null) {
+			properties = new HashMap<String, Serializable>();
+		}
+		properties.put(key, value);
 	}
 
 	@Override
