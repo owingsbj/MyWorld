@@ -682,40 +682,47 @@ public abstract class ClientModel {
 	 * Make camera see from avatar's vantage
 	 */
 	public void cameraToViewpoint(WWObject avatar) {
-		if (viewpoint == 0) { // behind avatar
+		if (customizeMode) { // ignore viewpoint and place camera in front of avatar
 			setCameraObject(avatar);
 			setCameraDistance(behindDistance);
 			setCameraTilt(behindTilt);
-			setCameraPan(0.0f);
-		} else if (viewpoint == 1) { // focus object or top of avatar
-			WWObject focus = avatar.getDescendant("focus");
-			if (focus != null) {
-				setCameraObject(focus);
-				setCameraDistance(0.0f);
-				setCameraPoint(new WWVector(0, 0, 0));
-				setCameraTilt(0);
-				setCameraPan(0.0f);
-			} else {
+			setCameraPan(180.0f);
+		} else {
+			if (viewpoint == 0) { // behind avatar
 				setCameraObject(avatar);
-				setCameraDistance(0.0f);
-				setCameraTilt(topOfTilt);
+				setCameraDistance(behindDistance);
+				setCameraTilt(behindTilt);
+				setCameraPan(0.0f);
+			} else if (viewpoint == 1) { // focus object or top of avatar
+				WWObject focus = avatar.getDescendant("focus");
+				if (focus != null) {
+					setCameraObject(focus);
+					setCameraDistance(0.0f);
+					setCameraPoint(new WWVector(0, 0, 0));
+					setCameraTilt(0);
+					setCameraPan(0.0f);
+				} else {
+					setCameraObject(avatar);
+					setCameraDistance(0.0f);
+					setCameraTilt(topOfTilt);
+					setCameraPan(0.0f);
+				}
+			} else if (viewpoint == 2) { // birds eye
+				setCameraObject(avatar);
+				setCameraDistance(birdsEyeHeight);
+				setCameraTilt(90.0f);
+				setCameraPan(0.0f);
+			} else if (viewpoint == 3) { // way behind avatar
+				setCameraObject(avatar);
+				setCameraDistance(wayBehindDistance);
+				setCameraTilt(wayBehindTilt);
+				setCameraPan(0.0f);
+			} else { // behind as default
+				setCameraObject(avatar);
+				setCameraDistance(behindDistance);
+				setCameraTilt(behindTilt);
 				setCameraPan(0.0f);
 			}
-		} else if (viewpoint == 2) { // birds eye
-			setCameraObject(avatar);
-			setCameraDistance(birdsEyeHeight);
-			setCameraTilt(90.0f);
-			setCameraPan(0.0f);
-		} else if (viewpoint == 3) { // way behind avatar
-			setCameraObject(avatar);
-			setCameraDistance(wayBehindDistance);
-			setCameraTilt(wayBehindTilt);
-			setCameraPan(0.0f);
-		} else { // behind as default
-			setCameraObject(avatar);
-			setCameraDistance(behindDistance);
-			setCameraTilt(behindTilt);
-			setCameraPan(0.0f);
 		}
 	}
 
