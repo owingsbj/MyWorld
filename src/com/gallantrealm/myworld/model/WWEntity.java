@@ -3,7 +3,6 @@ package com.gallantrealm.myworld.model;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
-
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
@@ -113,7 +112,11 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 		this.description = description;
 	}
 	
-	public final Serializable getProperty(String key, Serializable defaultValue) {
+	public final Serializable getCustomProperty(String key) {
+		return getCustomProperty(key, null);
+	}
+	
+	public final Serializable getCustomProperty(String key, Serializable defaultValue) {
 		if (properties == null) {
 			return defaultValue;
 		}
@@ -124,7 +127,7 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 		return value;
 	}
 	
-	public final void setProperty(String key, Serializable value) {
+	public final void setCustomProperty(String key, Serializable value) {
 		if (properties == null) {
 			properties = new HashMap<String, Serializable>();
 		}
