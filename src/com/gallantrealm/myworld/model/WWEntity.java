@@ -127,7 +127,7 @@ public abstract class WWEntity extends WWConstant implements Serializable, Clone
 		return value;
 	}
 	
-	public final void setCustomProperty(String key, Serializable value) {
+	public void setCustomProperty(String key, Serializable value) {
 		if (properties == null) {
 			properties = new HashMap<String, Serializable>();
 		}
