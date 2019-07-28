@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
 import com.gallantrealm.myworld.client.model.ClientModelChangedListener;
 import com.gallantrealm.myworld.client.renderer.IRenderable;
@@ -105,6 +106,11 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		this.saveWorldFileName = saveWorldFileName;
 		this.iterationTime = iterationTime;
 		this.onClient = onClient;
+		if (onClient) {
+			ClientModel.getClientModel().setLocalWorld(this);
+		} else {
+			ClientModel.getClientModel().setWorld(this);
+		}
 		// if (createPhysicsThread) {
 		// physicsThread = new PhysicsThread(this, iterationTime);
 		// physicsThread.start();

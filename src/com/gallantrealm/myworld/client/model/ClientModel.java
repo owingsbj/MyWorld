@@ -17,7 +17,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-
 import com.amazon.device.ads.AdRegistration;
 import com.example.android.trivialdrivesample.util.IabHelper;
 import com.example.android.trivialdrivesample.util.IabHelper.OnIabPurchaseFinishedListener;
@@ -28,7 +27,6 @@ import com.gallantrealm.myworld.android.AdDialog;
 import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.android.BuildConfig;
 import com.gallantrealm.myworld.android.GallantActivity;
-import com.gallantrealm.myworld.android.InputDialog;
 import com.gallantrealm.myworld.android.MessageDialog;
 import com.gallantrealm.myworld.android.PauseAction;
 import com.gallantrealm.myworld.android.R;
@@ -66,11 +64,9 @@ import com.zeemote.zc.DeviceFactory;
 import com.zeemote.zc.IDeviceSearch;
 import com.zeemote.zc.IProgressMonitor;
 import com.zeemote.zc.IStreamConnector;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ConfigurationInfo;
@@ -86,7 +82,6 @@ import android.media.MediaPlayer;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Looper;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -152,7 +147,7 @@ public abstract class ClientModel {
 
 	public final ArrayList<ClientModelChangedListener> listeners;
 	public WWWorld world;
-	public WWWorld localWorld;
+	public boolean localWorld;
 	public String worldAddressField = "";
 	public String locationField = "";
 	public String userNameField = "";
@@ -233,7 +228,7 @@ public abstract class ClientModel {
 	}
 
 	public boolean isLocalWorld() {
-		return localWorld != null;
+		return localWorld;
 	}
 
 	public Communications getCommunications() {
@@ -323,6 +318,7 @@ public abstract class ClientModel {
 	}
 
 	public void setWorld(WWWorld world) {
+		System.out.println("ClientModel.setWorld - " + world.hashCode());
 		this.world = world;
 		testedOpenGL = false; // need to retest if world is changed
 		// initializeCameraPosition();
@@ -368,9 +364,9 @@ public abstract class ClientModel {
 
 	// Model action methods
 
-	public void setLocalWorld(WWWorld localWorld) {
-		this.localWorld = localWorld;
-		setWorld(localWorld);
+	public void setLocalWorld(WWWorld world) {
+		this.localWorld = true;
+		setWorld(world);
 	}
 
 	public void connect() {
@@ -409,7 +405,7 @@ public abstract class ClientModel {
 	}
 
 	public boolean isConnected() {
-		if (localWorld != null) {
+		if (world != null) {
 			return true;
 		}
 		return requestConnection != null;
@@ -462,7 +458,7 @@ public abstract class ClientModel {
 
 	/** Unlike other requests to the server, this will wait until the object is created. */
 	public int createObject(WWObject object) {
-		if (localWorld != null) {
+		if (isLocalWorld()) {
 			// TODO
 		} else {
 			lastCreatedObjectId = 0;
@@ -479,7 +475,7 @@ public abstract class ClientModel {
 	}
 
 	public void updateObject(int objectId, WWObject object) {
-		if (localWorld != null) {
+		if (isLocalWorld()) {
 			// TODO
 		} else {
 			if (requestThread != null) {
@@ -490,7 +486,7 @@ public abstract class ClientModel {
 	}
 
 	public void updateEntity(int entityId, WWEntity entity) {
-		if (localWorld != null) {
+		if (isLocalWorld()) {
 			// TODO
 		} else {
 			if (requestThread != null) {
@@ -501,7 +497,7 @@ public abstract class ClientModel {
 	}
 
 	public void updateWorldProperties(WWWorld updatedWorld) {
-		if (localWorld != null) {
+		if (isLocalWorld()) {
 			// TODO
 		} else {
 			if (requestThread != null) {
@@ -513,7 +509,7 @@ public abstract class ClientModel {
 	}
 
 	public void moveObject(int objectId, WWObject object) {
-		if (localWorld != null) {
+		if (isLocalWorld()) {
 			// TODO
 		} else {
 			if (requestThread != null) {
@@ -525,8 +521,8 @@ public abstract class ClientModel {
 	}
 
 	public void thrustObject(int objectId, WWObject object) {
-		if (localWorld != null) {
-			localWorld.thrustObject(objectId, object);
+		if (isLocalWorld()) {
+			world.thrustObject(objectId, object);
 		} else {
 			if (requestThread != null) {
 				object.setLastMoveTime(world.getWorldTime());
@@ -541,7 +537,7 @@ public abstract class ClientModel {
 	}
 
 	public void deleteObject(int objectId) {
-		if (localWorld != null) {
+		if (isLocalWorld()) {
 			world.removeObject(objectId);
 		} else {
 			if (requestThread != null) {
@@ -751,7 +747,7 @@ public abstract class ClientModel {
 			cameraToViewpoint();
 
 			// move and turn avatar
-			if (localWorld != null) {
+			if (isLocalWorld()) {
 				avatar.setThrust(new WWVector(slideVelocity * 10, -thrustVelocity * 10, liftVelocity * 10));
 				avatar.setThrustVelocity(new WWVector(slideVelocity, -thrustVelocity, liftVelocity));
 				avatar.setTorque(new WWVector(tiltVelocity * 100, leanVelocity * 100, turnVelocity * 100));
