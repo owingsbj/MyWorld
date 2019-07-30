@@ -62,6 +62,16 @@ public class StartWorldActivity extends Activity {
 		} else {
 			worldClassName = clientModel.getWorldName();
 		}
+		
+		final String worldName;
+		if (getIntent().getAction() != null) {
+			worldName = getIntent().getAction();
+		} else if (clientModel.getWorldName() != null) {
+			worldName = clientModel.getWorldName();
+		} else {
+			worldName = clientModel.getWorldClassName();
+		}
+		
 
 		AsyncTask.execute(new Runnable() {
 			public void run() {
@@ -84,7 +94,7 @@ public class StartWorldActivity extends Activity {
 					clientModel.setWorldAddressField("localhost:8880");
 
 					if (clientModel.getAlwaysStartAsNew()) {
-						newWorld(worldClassName);
+						newWorld(worldClassName, worldName);
 					} else if (clientModel.getAlwaysStartAsOld()) {
 						File tfile;
 						if (worldClassName.startsWith("file://")) {
@@ -96,7 +106,7 @@ public class StartWorldActivity extends Activity {
 						System.out.println(tfile.toString() + " length: " + tfile.length());
 						restoreWorld(worldClassName, worldFile);
 					} else {
-						startupTheWorld(worldClassName, false);
+						startupTheWorld(worldClassName, worldName, false);
 					}
 
 				} catch (Exception e) {
@@ -108,14 +118,14 @@ public class StartWorldActivity extends Activity {
 		System.out.println("<StartWorldActivity.onStart");
 	}
 		
-	public void startupTheWorld(final String worldClassName, boolean reset) {
+	public void startupTheWorld(final String worldClassName, final String worldName, boolean reset) {
 		System.out.println(">StartWorldActivity.startupTheWorld");
 		try {
 
 			clientModel.initializeCameraPosition(); // doing it here so world can override initial camera position
 
 			// Create or restore the world
-			final File worldFile = new File(getFilesDir(), worldClassName);
+			final File worldFile = new File(getFilesDir(), worldName);
 			if (worldFile.exists() && !clientModel.isCustomizeMode() && !reset) {
 
 				this.runOnUiThread(new Runnable() {
@@ -132,7 +142,7 @@ public class StartWorldActivity extends Activity {
 										if (rc == 0) {
 											restoreWorld(worldClassName, worldFile);
 										} else {
-											newWorld(worldClassName);
+											newWorld(worldClassName, worldName);
 										}
 									}
 								});
@@ -143,7 +153,7 @@ public class StartWorldActivity extends Activity {
 				});
 
 			} else {
-				newWorld(worldClassName);
+				newWorld(worldClassName, worldName);
 			}
 
 		} catch (Exception e) {
@@ -214,11 +224,11 @@ public class StartWorldActivity extends Activity {
 		System.out.println("<StartWorldActivity.restoreWorld");
 	}
 
-	public void newWorld(String worldClassName) {
+	public void newWorld(String worldClassName, String worldName) {
 		System.out.println(">StartWorldActivity.newWorld");
 		clientModel.initializeCameraPosition(); // doing it here so world can override initial camera position
 		try {
-			String saveWorldFileName = (new File(getFilesDir(), worldClassName)).getAbsolutePath();
+			String saveWorldFileName = (new File(getFilesDir(), worldName)).getAbsolutePath();
 			Class<WWWorld> worldClass = (Class<WWWorld>) this.getClass().getClassLoader().loadClass(worldClassName);
 			Constructor<WWWorld> constructor = worldClass.getConstructor(String.class, String.class);
 			WWWorld world = constructor.newInstance(saveWorldFileName, clientModel.getAvatarName());
