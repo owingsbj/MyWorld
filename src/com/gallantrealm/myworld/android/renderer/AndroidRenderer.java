@@ -457,17 +457,17 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 	 * @param selectedImage
 	 * @return
 	 */
-	public final Bitmap readImageTexture(Uri selectedImage) {
+	public static final Bitmap readImageTexture(Uri selectedImage) {
 		if (selectedImage.getScheme() != null && selectedImage.getScheme().startsWith("http")) {
 			// from the web
 			Bitmap bm = null;
 			try {
-				HttpURLConnection connection = (HttpURLConnection) (new URL(selectedImage.toString())).openConnection();
+				HttpURLConnection connection = (HttpURLConnection) (new URL(selectedImage.toString()).openConnection());
 				InputStream instream = connection.getInputStream();
 				bm = BitmapFactory.decodeStream(instream);
 				return bm;
 			} catch (Exception e) {
-				System.err.println("AndroidRenderer.readImageTexture: URL not found -- " + selectedImage);
+				System.err.println("AndroidRenderer.readImageTexture: " + e.getMessage());
 			}
 			return bm;
 		} else {
@@ -476,7 +476,7 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			AssetFileDescriptor fileDescriptor = null;
 			try {
-				fileDescriptor = context.getContentResolver().openAssetFileDescriptor(selectedImage, "r");
+				fileDescriptor = ClientModel.getClientModel().getContext().getContentResolver().openAssetFileDescriptor(selectedImage, "r");
 
 				// first, get the bitmap size
 				options.inJustDecodeBounds = true;

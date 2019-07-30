@@ -1,6 +1,7 @@
 package com.gallantrealm.myworld.android;
 
 import com.gallantrealm.android.Translator;
+import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
 import com.gallantrealm.myworld.client.model.ClientModel;
 import com.zeemote.zc.event.ButtonEvent;
 import com.zeemote.zc.event.IButtonListener;
@@ -8,7 +9,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -81,7 +85,6 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 			option3Button.setBackgroundResource(styleId);
 		}
 
-		
 		if (message != null) {
 			messageText.setText(message);
 		}
@@ -101,14 +104,14 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 //					row.setBackgroundColor(0x00ffffff);
 //				}
 				TextView label = (TextView) row.findViewById(R.id.item_row_label);
-				Class itemClass = availableItems[position];
+				final Class itemClass = availableItems[position];
 				try {
 					String name = (String) itemClass.getMethod("getStaticName").invoke(null);
 					label.setText(Translator.getTranslator().translate(name));
 				} catch (Exception e) {
 					label.setText(Translator.getTranslator().translate(itemClass.getSimpleName()));
 				}
-				ImageView image = (ImageView) row.findViewById(R.id.item_row_image);
+				final ImageView image = (ImageView) row.findViewById(R.id.item_row_image);
 				try {
 					int imageResource = (Integer) itemClass.getMethod("getStaticImageResource").invoke(null);
 					if (imageResource == 0) {
@@ -116,8 +119,23 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 					}
 					image.setImageResource(imageResource);
 				} catch (Exception e) {
-					int resid = getContext().getApplicationContext().getResources().getIdentifier(itemClass.getSimpleName().toLowerCase(), "drawable", getContext().getApplicationContext().getPackageName());
-					image.setImageResource(resid);
+					try {
+						Thread thread = new Thread() {
+							public void run() {
+								Bitmap bitmap;
+								try {
+									bitmap = AndroidRenderer.readImageTexture(Uri.parse((String) itemClass.getMethod("getStaticImageFileName").invoke(null)));
+									image.setImageDrawable(new BitmapDrawable(bitmap));
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						};
+						thread.start();
+					} catch (Exception e2) {
+						int resid = getContext().getApplicationContext().getResources().getIdentifier(itemClass.getSimpleName().toLowerCase(), "drawable", getContext().getApplicationContext().getPackageName());
+						image.setImageResource(resid);
+					}
 				}
 				TextView description = (TextView) row.findViewById(R.id.item_row_description);
 				try {
@@ -132,6 +150,7 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 		itemsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+				view.setSelected(true);
 				selectedItem = availableItems[position];
 				if (options == null) {
 					buttonPressed = 0;
@@ -198,7 +217,7 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 		if (clientModel.useZeemote() && clientModel.getZeeController() != null) {
 			clientModel.getZeeController().addButtonListener(this);
 		}
-		
+
 		Translator.getTranslator().translate(this.getWindow().getDecorView());
 
 	}
