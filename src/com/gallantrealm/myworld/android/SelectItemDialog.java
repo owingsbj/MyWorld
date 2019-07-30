@@ -133,8 +133,8 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 						};
 						thread.start();
 					} catch (Exception e2) {
-						int resid = getContext().getApplicationContext().getResources().getIdentifier(itemClass.getSimpleName().toLowerCase(), "drawable", getContext().getApplicationContext().getPackageName());
-						image.setImageResource(resid);
+//						int resid = getContext().getApplicationContext().getResources().getIdentifier(itemClass.getSimpleName().toLowerCase(), "drawable", getContext().getApplicationContext().getPackageName());
+						image.setImageResource(0);
 					}
 				}
 				TextView description = (TextView) row.findViewById(R.id.item_row_description);
