@@ -709,8 +709,6 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 					clientModel.startWorldAction(5);
 				} else if (isPointInsideView(x, y, leftActionButton7)) {
 					clientModel.startWorldAction(6);
-				} else if (isPointInsideView(x, y, worldActionsView)) {
-				} else if (isPointInsideView(x, y, avatarActionsView)) {
 				} else if (isPointInsideView(x, y, worldView)) {
 					if (getViewX(x, worldView) < 0.5f) {
 						clientModel.startWorldAction(7);
@@ -801,13 +799,20 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 							WWObject pickedObject = worldRenderer.waitForPickingDraw(null, (int) (event.getX(i)), (int) (worldView.getHeight() - event.getY(i)));
 							if (pickedObject != null) {
 								if (pickedObject.isPickable()) {
+									WWObject previouslyPickedObject = clientModel.getSelectedObject();
 									clientModel.setSelectedObject(pickedObject);
 									WWObject avatar = clientModel.getAvatar();
-									if (avatar != null && clientModel.getCameraObject() == avatar && pickedObject != avatar) {
-										clientModel.setCameraPan(avatar.getRotation(clientModel.world.getWorldTime()).getZ());
+									if (avatar != null) {
+										if (avatar == previouslyPickedObject && avatar != pickedObject) {
+											clientModel.setCameraObject(pickedObject);
+											clientModel.setCameraDistance(FastMath.max(clientModel.getCameraDistance(), pickedObject.extent * 4));
+											clientModel.setCameraPan(clientModel.getCameraPan() + avatar.getRotation(clientModel.world.getWorldTime()).getZ());
+										} else if (avatar != previouslyPickedObject && avatar == pickedObject) {
+											clientModel.setCameraObject(pickedObject);
+											clientModel.setCameraDistance(FastMath.max(clientModel.getCameraDistance(), pickedObject.extent * 4));
+											clientModel.setCameraPan(clientModel.getCameraPan() - avatar.getRotation(clientModel.world.getWorldTime()).getZ());
+										}
 									}
-									clientModel.setCameraObject(pickedObject);
-									clientModel.setCameraDistance(FastMath.min(clientModel.getCameraDistance(), pickedObject.extent * 4));
 								}
 								clientModel.world.touchObject(pickedObject, worldRenderer.pickedSide, worldRenderer.pickedOffsetX, worldRenderer.pickedOffsetY, clientModel.world.getUser(clientModel.getUserId()));
 							}
