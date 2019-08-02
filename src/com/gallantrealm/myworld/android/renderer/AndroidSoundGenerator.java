@@ -103,7 +103,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 			soundMap.put(soundName, soundPool.load(context, soundId, 0));
 		}
 	}
-	
+
 	@Override
 	public void playSound(String sound, int priority, WWVector position, float volume, float pitch) {
 		if (paused) {
@@ -123,7 +123,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		} else {
 			distanceFrom = 1;
 		}
-		if (distanceFrom < 100.0f) {  // only play sounds fairly near (should be a world property)
+		if (distanceFrom < 100.0f) { // only play sounds fairly near (should be a world property)
 			Integer soundId = soundMap.get(sound);
 			if (soundId != null) {
 				AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -348,13 +348,22 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		stopPlayingSong();
 		if (AndroidClientModel.getClientModel().isPlayMusic()) {
 			try {
-				AssetFileDescriptor afd = context.getAssets().openFd(songname + ".ogg");
-				song = new MediaPlayer();
-				song.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-				song.prepare();
-				song.setLooping(true);
-				song.setVolume(volume, volume);
-				song.start();
+				if (songname.startsWith("file") || songname.startsWith("http")) { // an URL most likely
+					song = new MediaPlayer();
+					song.setDataSource(songname);
+					song.prepare();
+					song.setLooping(true);
+					song.setVolume(volume, volume);
+					song.start();
+				} else {
+					AssetFileDescriptor afd = context.getAssets().openFd(songname + ".ogg");
+					song = new MediaPlayer();
+					song.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+					song.prepare();
+					song.setLooping(true);
+					song.setVolume(volume, volume);
+					song.start();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
