@@ -97,11 +97,19 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		// soundGeneratorThread.start();
 	}
 
-	final void loadSound(String soundName, int soundId) {
+	final void loadSound(String soundName, int resId) {
 		String usedSounds = context.getString(R.string.usedSounds);
 		if (usedSounds.length() == 0 || usedSounds.contains(soundName)) {
-			soundMap.put(soundName, soundPool.load(context, soundId, 0));
+			soundMap.put(soundName, soundPool.load(context, resId, 0));
 		}
+	}
+	
+	final void loadSound(String soundName, String url) {
+		
+		// TODO
+		
+		int soundId = soundPool.load(context, 0, 0);
+		soundMap.put(soundName, soundId);
 	}
 
 	@Override
