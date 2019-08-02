@@ -730,6 +730,10 @@ public abstract class ClientModel {
 	 * Moves an avatar using the thrust velocity and torque velocity specified.
 	 */
 	public void forceAvatar(float thrustVelocity, float turnVelocity, float liftVelocity, float tiltVelocity, float leanVelocity, float slideVelocity) {
+		
+		if ((thrustVelocity != 0 || turnVelocity != 0 || liftVelocity != 0 || tiltVelocity != 0 || leanVelocity != 0 || slideVelocity != 0) && selectedObject != getAvatar()) {
+			setSelectedObject(getAvatar());
+		}
 
 		if (thrustVelocity == lastAvatarThrustVelocity && turnVelocity == lastAvatarTurnVelocity && liftVelocity == lastAvatarLiftVelocity && tiltVelocity == lastAvatarTiltVelocity && leanVelocity == lastAvatarLeanVelocity
 				&& slideVelocity == lastAvatarSlideVelocity) {
