@@ -9,6 +9,7 @@ import com.gallantrealm.myworld.model.WWObject;
 import com.gallantrealm.myworld.model.WWVector;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -45,7 +46,8 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		this.context = context;
 
 		// Initialize the sound pool
-		soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
+		AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
+		soundPool = new SoundPool.Builder().setMaxStreams(8).setAudioAttributes(audioAttributes).build();
 		soundMap = new HashMap<String, Integer>();
 
 		// load all the predefined sounds
