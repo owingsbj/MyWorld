@@ -51,7 +51,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	public float renderingThreshold = 1000.0f; // Note: not currently working right on Android
 	int nextGroup;
 	public WWAction[] actions;
-	boolean persistent;       // if true the world is saved by a background thread
+	boolean persistent; // if true the world is saved by a background thread
 
 	// Game related properties
 	int level;
@@ -737,11 +737,13 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			WWVector relativeVelocity = collision.firstObject.getVelocity();
 			WWVector secondVelocity = collision.secondObject.getVelocity();
 			relativeVelocity.subtract(secondVelocity);
-			WWVector perpendicular = collision.firstObject.getPosition(time);
-			WWVector secondPosition = collision.secondObject.getPosition(time);
-			perpendicular.subtract(secondPosition);
-			perpendicular.normalize();
-			relativeVelocity.cross(perpendicular);
+			if (collision.firstObject.solid) {
+				WWVector perpendicular = collision.firstObject.getPosition(time);
+				WWVector secondPosition = collision.secondObject.getPosition(time);
+				perpendicular.subtract(secondPosition);
+				perpendicular.normalize();
+				relativeVelocity.cross(perpendicular);
+			}
 			float volume = FastMath.min(1.0f, relativeVelocity.length() * 0.1f);
 			if (rendering != null) {
 				if (collision.firstSlidingStreamId > 0) {
@@ -761,11 +763,13 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			WWVector relativeVelocity = collision.firstObject.getVelocity();
 			WWVector secondVelocity = collision.secondObject.getVelocity();
 			relativeVelocity.subtract(secondVelocity);
-			WWVector perpendicular = collision.firstObject.getPosition(time);
-			WWVector secondPosition = collision.secondObject.getPosition(time);
-			perpendicular.subtract(secondPosition);
-			perpendicular.normalize();
-			relativeVelocity.cross(perpendicular);
+			if (collision.secondObject.solid) {
+				WWVector perpendicular = collision.firstObject.getPosition(time);
+				WWVector secondPosition = collision.secondObject.getPosition(time);
+				perpendicular.subtract(secondPosition);
+				perpendicular.normalize();
+				relativeVelocity.cross(perpendicular);
+			}
 			float volume = FastMath.min(1.0f, relativeVelocity.length() * 0.1f);
 			if (rendering != null) {
 				if (collision.secondSlidingStreamId > 0) {
@@ -976,8 +980,8 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 				object = AndroidClientModel.getClientModel().getAvatar();
 			}
 			WWUser user = getUsers()[AndroidClientModel.getClientModel().getUserId()];
-			behaviorThread.queue("startAvatarAction", null /*object*/, user, params);
-			// Note: currently behavior thread expects null for object of  action
+			behaviorThread.queue("startAvatarAction", null /* object */, user, params);
+			// Note: currently behavior thread expects null for object of action
 		}
 	}
 
@@ -990,8 +994,8 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 				object = AndroidClientModel.getClientModel().getAvatar();
 			}
 			WWUser user = getUsers()[AndroidClientModel.getClientModel().getUserId()];
-			behaviorThread.queue("stopAvatarAction", null /*object*/, user, params);
-			// Note: currently behavior thread expects null for object of  action
+			behaviorThread.queue("stopAvatarAction", null /* object */, user, params);
+			// Note: currently behavior thread expects null for object of action
 		}
 	}
 
@@ -1320,7 +1324,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	public void setPersistent(boolean save) {
 		persistent = save;
 	}
-	
+
 	public boolean isPersistent() {
 		return persistent;
 	}
