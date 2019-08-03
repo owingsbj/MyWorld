@@ -1509,44 +1509,44 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			return true; // overriding the standard action handling
 		}
 		// Keys to support Xperia PLAY and compatible (Gametel)
-		else if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || keyCode == KeyEvent.KEYCODE_MENU || keyCode == 50) { // "v" on keyboard
+		else if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || keyCode == KeyEvent.KEYCODE_MENU) {
 			clientModel.startWorldAction(1); // typically change view
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keyCode == 44) { // "p" on keyboard
+		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
 			clientModel.startWorldAction(0); // typically pause
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_W) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadUpDown = true;
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_S) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadDownDown = true;
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_A) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadLeftDown = true;
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_D) {
 			if (!clientModel.isMogaPocket()) { // ignore as pocket uses dpad and joystick overlapped, and we use the joystick
 				usingDPad = true;
 				dPadRightDown = true;
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_BUTTON_R2 || keyCode == 34) { // "f" on keyboard
+		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_BUTTON_R2) {
 			if (clientModel.getAvatarActionLabel(0) != null) {
 				clientModel.startAvatarAction(0, 0, 0);
 			} else {
 				clientModel.startAvatarAction(6, 0, 0); // for pinball
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_BUTTON_L2 || keyCode == 32) { // "d" on keyboard
+		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_BUTTON_L2) {
 			if (clientModel.getAvatarActionLabel(1) != null) {
 				clientModel.startAvatarAction(1, 0, 0);
 			} else {
@@ -1599,32 +1599,32 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			return true;
 		}
 		// Keys to support Xperia PLAY and compatible (Gametel)
-		else if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || keyCode == KeyEvent.KEYCODE_MENU || keyCode == 50) { // select key on gamepad, "v" on keyboard
+		else if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || keyCode == KeyEvent.KEYCODE_MENU || keyCode == KeyEvent.KEYCODE_V) { // select key on gamepad, "v" on keyboard
 			clientModel.stopWorldAction(1);
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == 44) { // start key on gamepad, "p" on keyboard
+		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_P) { // start key on gamepad, "p" on keyboard
 			clientModel.stopWorldAction(0);
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == 37) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_W) {
 			dPadUpDown = false;
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == 39) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_S) {
 			dPadDownDown = false;
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == 38) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_A) {
 			dPadLeftDown = false;
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == 40) {
+		} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_D) {
 			dPadRightDown = false;
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_BUTTON_R2 || keyCode == 34) {
+		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_R1 || keyCode == KeyEvent.KEYCODE_BUTTON_R2) {
 			if (clientModel.getAvatarActionLabel(0) != null) {
 				clientModel.stopAvatarAction(0);
 			} else {
 				clientModel.stopAvatarAction(6); // for pinball
 			}
 			return true;
-		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_BUTTON_L2 || keyCode == 32) {
+		} else if (keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_BUTTON_L2) {
 			if (clientModel.getAvatarActionLabel(1) != null) {
 				clientModel.stopAvatarAction(1);
 			} else {
