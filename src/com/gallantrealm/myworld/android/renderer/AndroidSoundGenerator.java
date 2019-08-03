@@ -51,6 +51,7 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		soundMap = new HashMap<String, Integer>();
 
 		// load all the predefined sounds
+		loadSound("wind", R.raw.sound_wind);
 		loadSound("trickle", R.raw.sound_trickle);
 		loadSound("splash", R.raw.sound_splash);
 		loadSound("rush", R.raw.sound_rush);
