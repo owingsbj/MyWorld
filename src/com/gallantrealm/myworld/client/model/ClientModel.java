@@ -318,7 +318,6 @@ public abstract class ClientModel {
 	}
 
 	public void setWorld(WWWorld world) {
-		System.out.println("ClientModel.setWorld - " + world.hashCode());
 		this.world = world;
 		testedOpenGL = false; // need to retest if world is changed
 		// initializeCameraPosition();
