@@ -1247,7 +1247,7 @@ public abstract class ClientModel {
 		useSensors = preferences.getBoolean("useSensors", false);
 		useZeemote = preferences.getBoolean("useZeemote", false);
 		useScreenControl = preferences.getBoolean("showScreenControls", true);
-		controlOnLeft = preferences.getBoolean("controlOnLeft", false);
+		controlOnLeft = preferences.getBoolean("controlOnLeft", true);
 		usingMoga = false; // this is determined dynamically now, by querying for a moga controller
 		controlSensitivity = preferences.getFloat("controlSensitivity", 0.5f);
 		stereoscopic = preferences.getBoolean("stereoscopic", false);
@@ -1529,6 +1529,14 @@ public abstract class ClientModel {
 
 	public void setVibration(boolean vibration) {
 		this.vibration = vibration;
+	}
+	
+	public boolean canUseScreenControl() {
+		if (context.getString(R.string.supportsScreenController).equals("true") && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public boolean canUseSensors() {
