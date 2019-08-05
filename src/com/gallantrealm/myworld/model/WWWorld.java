@@ -69,6 +69,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	public transient boolean onClient;
 	public transient boolean rendered;
 	public transient ArrayList<String> preloadedTextures;
+	public transient ArrayList<String> preloadedSounds;
 
 	/**
 	 * The current time in the world. When the world is created the time starts at zero. It is then updated whenever the physics thread is running.
@@ -434,6 +435,13 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		}
 		preloadedTextures.add(textureName);
 	}
+	
+	public void preloadSound(String soundName) {
+		if (preloadedSounds == null) {
+			preloadedSounds = new ArrayList<String>();
+		}
+		preloadedSounds.add(soundName);
+	}
 
 	@Override
 	public void createRendering(IRenderer renderer, long worldTime) {
@@ -449,6 +457,11 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 		if (preloadedTextures != null) {
 			for (int i = 0; i < preloadedTextures.size(); i++) {
 				((AndroidRenderer) renderer).getTexture(preloadedTextures.get(i), false);
+			}
+		}
+		if (preloadedSounds != null) {
+			for (int i = 0; i < preloadedSounds.size(); i++) {
+				((AndroidRenderer)renderer).getSoundGenerator().loadSound(preloadedSounds.get(i));
 			}
 		}
 	}
@@ -817,7 +830,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			}
 		}
 	}
-
+	
 	public void playSound(String soundName, float volume) {
 		if (getRendering() != null) {
 			rendering.getRenderer().getSoundGenerator().playSound(soundName, 1, null, volume, 1.0f);

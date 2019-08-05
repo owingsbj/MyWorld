@@ -6,10 +6,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.Buffer;
 import java.util.HashMap;
+import com.gallantrealm.android.HttpFileCache;
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.android.R;
@@ -462,9 +461,13 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 			// from the web
 			Bitmap bm = null;
 			try {
-				HttpURLConnection connection = (HttpURLConnection) (new URL(selectedImage.toString()).openConnection());
-				InputStream instream = connection.getInputStream();
-				bm = BitmapFactory.decodeStream(instream);
+//				HttpURLConnection connection = (HttpURLConnection) (new URL(selectedImage.toString()).openConnection());
+//				InputStream instream = connection.getInputStream();
+//				bm = BitmapFactory.decodeStream(instream);
+				File imageFile = HttpFileCache.getFile(selectedImage.toString(), ClientModel.getClientModel().getContext());
+				if (imageFile != null) {
+					bm = BitmapFactory.decodeFile(imageFile.getPath());
+				}
 				return bm;
 			} catch (Exception e) {
 				System.err.println("AndroidRenderer.readImageTexture: " + e.getMessage());

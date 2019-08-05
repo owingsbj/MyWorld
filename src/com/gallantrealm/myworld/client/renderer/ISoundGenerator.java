@@ -3,6 +3,8 @@ package com.gallantrealm.myworld.client.renderer;
 import com.gallantrealm.myworld.model.WWVector;
 
 public interface ISoundGenerator {
+	
+	void loadSound(String urlString);
 
 	void playSound(String sound, int priority, WWVector position, float volume, float pitch);
 
@@ -25,5 +27,4 @@ public interface ISoundGenerator {
 	void reset();
 
 	void destroy();
-
 }

@@ -1,6 +1,8 @@
 package com.gallantrealm.myworld.android.renderer;
 
+import java.io.File;
 import java.util.HashMap;
+import com.gallantrealm.android.HttpFileCache;
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.android.R;
@@ -17,7 +19,7 @@ import android.media.SoundPool;
 public final class AndroidSoundGenerator implements ISoundGenerator {
 
 	static MediaPlayer song;
-	final SoundPool soundPool;
+	SoundPool soundPool;
 	final HashMap<String, Integer> soundMap;
 	final HashMap<Integer, StreamInfo> playingStreams = new HashMap<Integer, StreamInfo>();
 
@@ -106,13 +108,12 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 			soundMap.put(soundName, soundPool.load(context, resId, 0));
 		}
 	}
-	
-	final void loadSound(String soundName, String url) {
-		
-		// TODO
-		
-		int soundId = soundPool.load(context, 0, 0);
-		soundMap.put(soundName, soundId);
+
+	public void loadSound(String urlString) {
+		System.out.println("loading sound " + urlString);
+		File soundFile = HttpFileCache.getFile(urlString, context);
+		int soundId = soundPool.load(soundFile.getPath(), 1);
+		soundMap.put(urlString, soundId);
 	}
 
 	@Override
@@ -319,6 +320,8 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		}
 		stopPlayingSong();
 		soundPool.release();
+		soundPool = null;
+		soundMap.clear();
 	}
 
 	// Need a thread because android drags on soundpool calls
