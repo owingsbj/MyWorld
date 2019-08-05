@@ -137,6 +137,10 @@ public final class AndroidSoundGenerator implements ISoundGenerator {
 		}
 		if (distanceFrom < 100.0f) { // only play sounds fairly near (should be a world property)
 			Integer soundId = soundMap.get(sound);
+			if (soundId == null) {
+				loadSound(sound);
+				soundId = soundMap.get(sound);
+			}
 			if (soundId != null) {
 				AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 				float currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC) / 15.0f;
