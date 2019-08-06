@@ -1,10 +1,6 @@
 package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import com.gallantrealm.myworld.FastMath;
-import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
 import com.gallantrealm.myworld.client.renderer.IRenderer;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
@@ -145,6 +141,9 @@ public class WWParticleEmitter extends WWObject {
 	public void updateAnimation(long worldTime) {
 		if (!animating) {
 			return;
+		}
+		if (particles == null) {
+			startAnimation(worldTime);
 		}
 		boolean particlesStillGoing = false;
 		for (int i = 0; i < particleCount; i++) {
