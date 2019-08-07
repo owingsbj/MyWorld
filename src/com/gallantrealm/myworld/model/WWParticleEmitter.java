@@ -49,6 +49,7 @@ public class WWParticleEmitter extends WWObject {
 
 	public final void setParticleCount(int count) {
 		this.particleCount = count;
+		particles = null;
 	}
 
 	@Override
@@ -130,7 +131,7 @@ public class WWParticleEmitter extends WWObject {
 		if (animation.getParticleRate() == 0) {
 			nstart = particleCount;
 		} else {
-			nstart = animation.getParticleRate();
+			nstart = Math.min(animation.getParticleRate(), particleCount);
 		}
 		for (int i = 0; i < nstart; i++) {
 			animation.startParticle(this, particles[i], worldTime);
