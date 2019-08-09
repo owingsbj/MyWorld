@@ -51,6 +51,22 @@ public class WWParticleEmitter extends WWObject {
 		this.particleCount = count;
 		particles = null;
 	}
+	
+	public int getParticleLifetime() {
+		return particleLifetime;
+	}
+
+	public void setParticleLifetime(int particleLifetime) {
+		this.particleLifetime = particleLifetime;
+	}
+
+	public int getParticleCount() {
+		return particleCount;
+	}
+
+	public float getParticleSize() {
+		return particleSize;
+	}
 
 	@Override
 	public void send(DataOutputStreamX os) throws IOException {
