@@ -1,6 +1,8 @@
 package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
+
+import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.client.renderer.IRenderer;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
@@ -136,6 +138,7 @@ public class WWParticleEmitter extends WWObject {
 
 	public boolean animating;
 	int nextParticle;
+	private float particlesToRecycle = 0.0f;
 
 	public void startAnimation(long worldTime) {
 		particles = new Particle[particleCount];
@@ -147,14 +150,14 @@ public class WWParticleEmitter extends WWObject {
 		if (animation.getParticleRate() == 0) {
 			nstart = particleCount;
 		} else {
-			nstart = Math.min(animation.getParticleRate(), particleCount);
+			nstart = (int)FastMath.min(animation.getParticleRate(), particleCount);
 		}
 		for (int i = 0; i < nstart; i++) {
 			animation.startParticle(this, particles[i], worldTime);
 		}
 		animating = true;
 	}
-
+	
 	public void updateAnimation(long worldTime) {
 		if (!animating) {
 			return;
@@ -175,7 +178,8 @@ public class WWParticleEmitter extends WWObject {
 				animation.updateParticle(this, particles[i], worldTime);
 			}
 		}
-		for (int i = 0; i < animation.getParticleRate(); i++) {
+		particlesToRecycle += animation.getParticleRate();
+		while (particlesToRecycle > 1.0f) {
 			animation.stopParticle(this, particles[nextParticle], worldTime);
 			if (animating) {
 				particles[nextParticle].age = 0;
@@ -189,6 +193,7 @@ public class WWParticleEmitter extends WWObject {
 			if (nextParticle >= particleCount) {
 				nextParticle = 0;
 			}
+			particlesToRecycle -= 1.0f;
 		}
 		if (!particlesStillGoing) {
 			animating = false;

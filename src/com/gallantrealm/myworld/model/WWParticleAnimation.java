@@ -17,7 +17,7 @@ public abstract class WWParticleAnimation implements Serializable, Sendable {
 	 * Number of particles to create/recycle each iteration.  A rate of zero is an explosion.
 	 * @return
 	 */
-	public abstract int getParticleRate();
+	public abstract float getParticleRate();
 	
 	public abstract void startParticle(WWParticleEmitter emitter, WWParticleEmitter.Particle particle, long worldTime);
 	
