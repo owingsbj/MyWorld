@@ -1344,7 +1344,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 	}
 
 	@Override
-	public void onSelectAlert(final String message, final Class[] availableItems, final String[] options, final SelectResponseHandler handler) {
+	public void onSelectAlert(final String message, final Object[] availableItems, final String[] options, final SelectResponseHandler handler) {
 		ShowWorldActivity.this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {

@@ -1191,7 +1191,7 @@ public abstract class ClientModel {
 	public boolean usingMoga;
 	private float controlSensitivity = 1.0f;
 
-	public void selectAlert(final String message, final Class[] availableItems, final String[] options, SelectResponseHandler handler) {
+	public void selectAlert(final String message, final Object[] availableItems, final String[] options, SelectResponseHandler handler) {
 		if (alertListener != null) {
 			alertListener.onSelectAlert(message, availableItems, options, handler);
 		}

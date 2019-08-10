@@ -44,10 +44,10 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 	float score;
 	String scoreMsg;
 	Activity activity;
-	Class[] availableItems;
-	Class selectedItem;
+	Object[] availableItems;
+	Object selectedItem;
 
-	public SelectItemDialog(Context context, String message, Class[] availableItems, String[] options) {
+	public SelectItemDialog(Context context, String message, Object[] availableItems, String[] options) {
 		super(context, R.style.Theme_Dialog);
 		activity = (Activity) context;
 		this.availableItems = availableItems;
@@ -88,7 +88,7 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 		if (message != null) {
 			messageText.setText(message);
 		}
-		itemsView.setAdapter(new ArrayAdapter<Class>(activity, R.layout.select_item_row, availableItems) {
+		itemsView.setAdapter(new ArrayAdapter<Object>(activity, R.layout.select_item_row, availableItems) {
 			@SuppressLint("NewApi")
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
@@ -104,45 +104,59 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 //					row.setBackgroundColor(0x00ffffff);
 //				}
 				TextView label = (TextView) row.findViewById(R.id.item_row_label);
-				final Class itemClass = availableItems[position];
+				final Object item = availableItems[position];
+				final Class itemClass = item instanceof Class ? (Class) item : item.getClass();
 				try {
-					String name = (String) itemClass.getMethod("getStaticName").invoke(null);
+					String name = (String) (itemClass.getMethod("getName").invoke(item));
 					label.setText(Translator.getTranslator().translate(name));
 				} catch (Exception e) {
-					label.setText(Translator.getTranslator().translate(itemClass.getSimpleName()));
+					try {
+						String name = (String) itemClass.getMethod("getStaticName").invoke(null);
+						label.setText(Translator.getTranslator().translate(name));
+					} catch (Exception e2) {
+						label.setText(Translator.getTranslator().translate(itemClass.getSimpleName()));
+					}
 				}
 				final ImageView image = (ImageView) row.findViewById(R.id.item_row_image);
 				try {
-					int imageResource = (Integer) itemClass.getMethod("getStaticImageResource").invoke(null);
-					if (imageResource == 0) {
-						image.setVisibility(View.INVISIBLE);
-					}
-					image.setImageResource(imageResource);
+					Bitmap bitmap = AndroidRenderer.readImageTexture(Uri.parse((String) itemClass.getMethod("getImageFileName").invoke(item)));
+					image.setImageDrawable(new BitmapDrawable(bitmap));
 				} catch (Exception e) {
 					try {
-						Thread thread = new Thread() {
-							public void run() {
-								Bitmap bitmap;
-								try {
-									bitmap = AndroidRenderer.readImageTexture(Uri.parse((String) itemClass.getMethod("getStaticImageFileName").invoke(null)));
-									image.setImageDrawable(new BitmapDrawable(bitmap));
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						};
-						thread.start();
+						int imageResource = (Integer) itemClass.getMethod("getStaticImageResource").invoke(null);
+						if (imageResource == 0) {
+							image.setVisibility(View.INVISIBLE);
+						}
+						image.setImageResource(imageResource);
 					} catch (Exception e2) {
-//						int resid = getContext().getApplicationContext().getResources().getIdentifier(itemClass.getSimpleName().toLowerCase(), "drawable", getContext().getApplicationContext().getPackageName());
-						image.setImageResource(0);
+						try {
+							Thread thread = new Thread() {
+								public void run() {
+									try {
+										Bitmap bitmap = AndroidRenderer.readImageTexture(Uri.parse((String) itemClass.getMethod("getStaticImageFileName").invoke(null)));
+										image.setImageDrawable(new BitmapDrawable(bitmap));
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+							};
+							thread.start();
+						} catch (Exception e3) {
+							image.setImageResource(0);
+						}
 					}
 				}
 				TextView description = (TextView) row.findViewById(R.id.item_row_description);
 				try {
-					String text = (String) itemClass.getMethod("getStaticDescription").invoke(null);
+					String text = (String) itemClass.getMethod("getDescription").invoke(item);
 					description.setText(Translator.getTranslator().translate(text));
 				} catch (Exception e) {
-					description.setText("");
+					try {
+						String text = (String) itemClass.getMethod("getStaticDescription").invoke(null);
+						description.setText(Translator.getTranslator().translate(text));
+					} catch (Exception e2) {
+						description.setText("");
+					}
 				}
 				return row;
 			}
@@ -239,7 +253,7 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 		return buttonPressed;
 	}
 
-	public Class getItemSelected() {
+	public Object getItemSelected() {
 		return selectedItem;
 	}
 
