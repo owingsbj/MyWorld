@@ -1017,7 +1017,7 @@ public class ShowWorldActivity extends Activity implements OnTouchListener, Clie
 			lean = clientModel.getAvatarLean();
 		}
 		if (world.getMoveXType() == WWWorld.MOVE_TYPE_SLIDE) {
-			float[] moveX = world.getMoveXLean();
+			float[] moveX = world.getMoveXSlide();
 			float deltaXtrunced = Math.min(Math.max(deltaX, -xrange), xrange);
 			int deltaXindex = (int) ((deltaXtrunced + xrange) * moveX.length / (xrange * 2 + 1));
 			slide = moveX[deltaXindex];
