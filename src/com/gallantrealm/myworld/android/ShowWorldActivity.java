@@ -1456,55 +1456,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 		if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_BUTTON_A || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) { // OK
 			clientModel.startAvatarAction(0, 0, 0); // typically start game or fire
 		} else if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_BUTTON_B) { // CANCEL/BACK
-			if (clientModel != null && clientModel.world != null && clientModel.world.needsSaving()) {
-				final MessageDialog dialog;
-				if (clientModel.world.supportsSaveAndQuit()) {
-					dialog = new MessageDialog(this, null, "Do you want to save and quit?", new String[] { "Save and Quit", "Quit", "Cancel" }, null);
-				} else {
-					dialog = new MessageDialog(this, null, "Do you want to save?", new String[] { "Save", "Quit (no Save)", "Cancel" }, null);
-				}
-				currentDialog = dialog;
-				dialog.show();
-				dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-
-					@Override
-					public void onDismiss(DialogInterface d) {
-						int rc = dialog.getButtonPressed();
-						if (rc == 0) {
-							clientModel.world.save();
-							if (clientModel.world.supportsSaveAndQuit()) {
-								MainMenuActivity.showPopupAd = true;
-								finish();
-							}
-						} else if (rc == 1) {
-							MainMenuActivity.showPopupAd = true;
-							finish();
-						} else {
-							clientModel.resumeWorld();
-						}
-						currentDialog = null;
-					}
-				});
-			} else {
-				final MessageDialog dialog = new MessageDialog(this, null, "Are you sure you want to quit?", new String[] { "Yes", "No" }, null);
-				currentDialog = dialog;
-				dialog.show();
-				dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-
-					@Override
-					public void onDismiss(DialogInterface d) {
-						int rc = dialog.getButtonPressed();
-						if (rc == 0) {
-							MainMenuActivity.showPopupAd = true;
-							finish();
-						} else {
-							clientModel.resumeWorld();
-						}
-						currentDialog = null;
-					}
-				});
-			}
-			clientModel.pauseWorld();
+			doQuit();
 			return true; // overriding the standard action handling
 		}
 		// Keys to support Xperia PLAY and compatible (Gametel)
@@ -1833,5 +1785,57 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 		} else {
 			return super.onGenericMotionEvent(event);
 		}
+	}
+	
+	public void doQuit() {
+		if (clientModel != null && clientModel.world != null && clientModel.world.needsSaving()) {
+			final MessageDialog dialog;
+			if (clientModel.world.supportsSaveAndQuit()) {
+				dialog = new MessageDialog(this, null, "Do you want to save and quit?", new String[] { "Save and Quit", "Quit", "Cancel" }, null);
+			} else {
+				dialog = new MessageDialog(this, null, "Do you want to save?", new String[] { "Save", "Quit (no Save)", "Cancel" }, null);
+			}
+			currentDialog = dialog;
+			dialog.show();
+			dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+				@Override
+				public void onDismiss(DialogInterface d) {
+					int rc = dialog.getButtonPressed();
+					if (rc == 0) {
+						clientModel.world.save();
+						if (clientModel.world.supportsSaveAndQuit()) {
+							MainMenuActivity.showPopupAd = true;
+							finish();
+						}
+					} else if (rc == 1) {
+						MainMenuActivity.showPopupAd = true;
+						finish();
+					} else {
+						clientModel.resumeWorld();
+					}
+					currentDialog = null;
+				}
+			});
+		} else {
+			final MessageDialog dialog = new MessageDialog(this, null, "Are you sure you want to quit?", new String[] { "Yes", "No" }, null);
+			currentDialog = dialog;
+			dialog.show();
+			dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+				@Override
+				public void onDismiss(DialogInterface d) {
+					int rc = dialog.getButtonPressed();
+					if (rc == 0) {
+						MainMenuActivity.showPopupAd = true;
+						finish();
+					} else {
+						clientModel.resumeWorld();
+					}
+					currentDialog = null;
+				}
+			});
+		}
+		clientModel.pauseWorld();
 	}
 }
