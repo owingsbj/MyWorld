@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -119,8 +120,20 @@ public class SelectItemDialog extends Dialog implements IButtonListener {
 				}
 				final ImageView image = (ImageView) row.findViewById(R.id.item_row_image);
 				try {
-					Bitmap bitmap = AndroidRenderer.readImageTexture(Uri.parse((String) itemClass.getMethod("getImageFileName").invoke(item)));
-					image.setImageDrawable(new BitmapDrawable(bitmap));
+					final String imageFileName = (String) itemClass.getMethod("getImageFileName").invoke(item);
+					if (imageFileName != null) {
+						AsyncTask.execute(new Runnable() {
+							   @Override
+							   public void run() {
+									final Bitmap bitmap = AndroidRenderer.readImageTexture(Uri.parse(imageFileName));
+									SelectItemDialog.this.activity.runOnUiThread(new Runnable() {
+										public void run() {
+											image.setImageDrawable(new BitmapDrawable(bitmap));
+										}
+									});
+							   }
+							});
+					}
 				} catch (Exception e) {
 					try {
 						int imageResource = (Integer) itemClass.getMethod("getStaticImageResource").invoke(null);
