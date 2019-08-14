@@ -21,7 +21,6 @@ import com.zeemote.zc.event.IButtonListener;
 import com.zeemote.zc.event.IJoystickListener;
 import com.zeemote.zc.event.JoystickEvent;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.Instrumentation;
 import android.content.Context;
@@ -58,7 +57,7 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 //import com.google.android.gms.common.ConnectionResult;
 //import com.google.android.gms.common.GooglePlayServicesUtil;
 
-public class ShowWorldActivity extends Activity implements OnTouchListener, ClientModelChangedListener, AlertListener, SensorEventListener, IButtonListener, IJoystickListener, com.bda.controller.ControllerListener {
+public class ShowWorldActivity extends GallantActivity implements OnTouchListener, ClientModelChangedListener, AlertListener, SensorEventListener, IButtonListener, IJoystickListener, com.bda.controller.ControllerListener {
 
 	PowerManager.WakeLock wakelock;
 	SensorManager sensorManager;

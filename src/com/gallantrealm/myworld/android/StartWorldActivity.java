@@ -6,7 +6,6 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Constructor;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
 import com.gallantrealm.myworld.client.model.ClientModelChangedListener;
@@ -14,7 +13,6 @@ import com.gallantrealm.myworld.communication.Communications;
 import com.gallantrealm.myworld.communication.TCPCommunications;
 import com.gallantrealm.myworld.model.WWWorld;
 import com.gallantrealm.myworld.server.MyWorldServer;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -23,7 +21,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-public class StartWorldActivity extends Activity {
+public class StartWorldActivity extends GallantActivity {
 
 	private final ClientModel clientModel = AndroidClientModel.getClientModel();
 	private TextView startMessage;

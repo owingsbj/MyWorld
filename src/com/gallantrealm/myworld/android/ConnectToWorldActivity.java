@@ -6,15 +6,6 @@ import java.io.ObjectInputStream;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.client.model.ClientModelChangedEvent;
@@ -33,8 +24,14 @@ import com.gallantrealm.myworld.model.WWUser;
 import com.gallantrealm.myworld.model.WWVector;
 import com.gallantrealm.myworld.model.WWWorld;
 import com.gallantrealm.myworld.server.MyWorldServer;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
-public class ConnectToWorldActivity extends Activity {
+public class ConnectToWorldActivity extends GallantActivity {
 
 	private ClientModel clientModel;
 	EditText urlText;
