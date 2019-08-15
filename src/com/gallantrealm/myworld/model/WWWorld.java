@@ -52,6 +52,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	int nextGroup;
 	public WWAction[] actions;
 	boolean persistent; // if true the world is saved by a background thread
+	boolean confrontMode;  // the world's avatar turns automatically on camera pan
 
 	// Game related properties
 	int level;
@@ -1340,5 +1341,13 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 
 	public boolean isPersistent() {
 		return persistent;
+	}
+	
+	public boolean isConfrontMode() {
+		return confrontMode;
+	}
+	
+	public void setConfrontMode(boolean confrontMode) {
+		this.confrontMode = confrontMode;
 	}
 }

@@ -919,7 +919,12 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 										startingCameraTilt = clientModel.getCameraTilt();
 										dragging = true;
 									}
-									clientModel.setCameraPan(startingCameraPan + (startingX - x) / 2.5f);
+									if (clientModel.world.isConfrontMode() && clientModel.getAvatar() == clientModel.getCameraObject()) {
+										clientModel.getAvatar().setRotation(0, 0, startingCameraPan + (startingX - x) / 2.5f);
+										clientModel.setCameraPan(0);
+									} else {
+										clientModel.setCameraPan(startingCameraPan + (startingX - x) / 2.5f);
+									}
 									clientModel.setCameraTilt(Math.max(startingCameraTilt - (startingY - y) / 2.5f, -30.0f));
 								}
 							}
@@ -978,8 +983,10 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 	/**
 	 * All forms of avatar control funnel into this method.
 	 * 
-	 * @param deltaX the movement in the x dimension, from -50 to 50
-	 * @param deltaY the movement in the y dimension, from -50 to 50
+	 * @param deltaX
+	 *            the movement in the x dimension, from -50 to 50
+	 * @param deltaY
+	 *            the movement in the y dimension, from -50 to 50
 	 */
 	public void controller(float deltaX, float deltaY) {
 		updateJoyThumb((int) deltaX, (int) deltaY);
@@ -1053,9 +1060,12 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 	/**
 	 * Determines if given points are inside view
 	 * 
-	 * @param x    - x coordinate of point
-	 * @param y    - y coordinate of point
-	 * @param view - view object to compare
+	 * @param x
+	 *            - x coordinate of point
+	 * @param y
+	 *            - y coordinate of point
+	 * @param view
+	 *            - view object to compare
 	 * @return true if the points are within view bounds, false otherwise
 	 */
 	private boolean isPointInsideView(float x, float y, View view) {
@@ -1786,7 +1796,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 			return super.onGenericMotionEvent(event);
 		}
 	}
-	
+
 	public void doQuit() {
 		if (clientModel != null && clientModel.world != null && clientModel.world.needsSaving()) {
 			final MessageDialog dialog;
