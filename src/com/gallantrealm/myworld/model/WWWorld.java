@@ -1231,11 +1231,11 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	 * 
 	 * @return
 	 */
-	public boolean allowCameraPositioning() {
+	public boolean isAllowCameraPositioning() {
 		return true;
 	}
 
-	public boolean allowPicking() {
+	public boolean isAllowPicking() {
 		return false;
 	}
 
@@ -1244,7 +1244,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	 * 
 	 * @return
 	 */
-	public boolean allowObjectMoving() {
+	public boolean isAllowObjectMoving() {
 		return false;
 	}
 

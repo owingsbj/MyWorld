@@ -714,7 +714,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 					} else {
 						clientModel.startAvatarAction(7, getViewX(x, worldView), getViewY(y, worldView));
 					}
-					if (clientModel.world.allowPicking()) {
+					if (clientModel.world.isAllowPicking()) {
 						WWObject pickedObject = worldRenderer.waitForPickingDraw(null, (int) (event.getX(i)), (int) (worldView.getHeight() - event.getY(i)));
 						if (pickedObject != null) {
 							clientModel.world.pressObject(pickedObject, worldRenderer.pickedSide, worldRenderer.pickedOffsetX, worldRenderer.pickedOffsetY, clientModel.world.getUser(clientModel.getUserId()));
@@ -784,7 +784,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 						if (event.getActionMasked() == MotionEvent.ACTION_UP) {
 							zooming = false;
 						}
-						if (clientModel.world.allowPicking()) {
+						if (clientModel.world.isAllowPicking()) {
 							WWObject pickedObject = worldRenderer.waitForPickingDraw(null, (int) (event.getX(i)), (int) (worldView.getHeight() - event.getY(i)));
 							if (pickedObject != null) {
 								clientModel.world.releaseObject(pickedObject, worldRenderer.pickedSide, worldRenderer.pickedOffsetX, worldRenderer.pickedOffsetY, clientModel.world.getUser(clientModel.getUserId()));
@@ -794,7 +794,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 						if (movingObject) {
 							clientModel.world.doneMovingObject(lastPressedObject);
 							movingObject = false;
-						} else if (clientModel.world.allowPicking()) {
+						} else if (clientModel.world.isAllowPicking()) {
 							WWObject pickedObject = worldRenderer.waitForPickingDraw(null, (int) (event.getX(i)), (int) (worldView.getHeight() - event.getY(i)));
 							if (pickedObject != null) {
 								if (pickedObject.isPickable()) {
@@ -856,7 +856,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 				} else if (isPointInsideView(x, y, leftActionButton7)) {
 					// nothing
 				} else if (isPointInsideView(x, y, worldView)) {
-					if (clientModel.world.allowPicking()) {
+					if (clientModel.world.isAllowPicking()) {
 						WWObject pickedObject = worldRenderer.waitForPickingDraw(null, (int) (event.getX(i)), (int) (worldView.getHeight() - event.getY(i)));
 						if (pickedObject != null) {
 							// deactivated as it causes issues with zooming/panning
@@ -873,7 +873,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 						}
 					}
 					clientModel.world.touch((x - worldView.getLeft() - (worldView.getWidth() - worldView.getHeight()) / 2) / worldView.getHeight(), (y - worldView.getTop()) / worldView.getHeight());
-					if (!pinching && !zooming && clientModel.world.allowObjectMoving() && lastPressedObject == clientModel.getSelectedObject()) {
+					if (!pinching && !zooming && clientModel.world.isAllowObjectMoving() && lastPressedObject == clientModel.getSelectedObject()) {
 						WWObject newObject = (WWObject) lastPressedObject.clone();
 						WWVector position = initialPressedObjectPosition;
 						float deltaX = x - startingX;
@@ -895,7 +895,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 						newObject.setPosition(position);
 						clientModel.world.moveObject(lastPressedObject.getId(), newObject);
 						movingObject = true;
-					} else if (clientModel.world.allowCameraPositioning()) {
+					} else if (clientModel.world.isAllowCameraPositioning()) {
 						if (pinching) {
 							if (!zooming) {
 								startingCameraDistance = clientModel.getCameraDistance();
