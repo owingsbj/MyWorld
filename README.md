@@ -17,4 +17,8 @@ MyWorld contains modified versions of the following open source:
 
 - _aFileChooser_ by Paul Burke.  The original is at https://github.com/iPaulPro/aFileChooser.  Apache License.
 
+- _Base64_ by Rober Harder and modified by Google.  http://iharder.sourceforge.net/base64.  Apache 2.0 license.
+
+- Sample code for billing from Google.  Apache 2.0 license.
+
 I've left the original package names should you want to compare and update.  I highly appreciate the efforts of these developers and their generous donation to the open source community.
