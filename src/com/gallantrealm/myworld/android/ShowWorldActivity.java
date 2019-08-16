@@ -920,8 +920,9 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 										dragging = true;
 									}
 									if (clientModel.world.isConfrontMode() && clientModel.getAvatar() == clientModel.getCameraObject()) {
-										clientModel.getAvatar().setRotation(0, 0, startingCameraPan + (startingX - x) / 2.5f);
-										clientModel.setCameraPan(0);
+										WWVector avatarRotation = clientModel.getAvatar().getRotation();
+										clientModel.getAvatar().setRotation(avatarRotation.x, avatarRotation.y, avatarRotation.z + (startingX - x) / 2.5f / 10.0f);
+										// TODO the above won't work with remote worlds
 									} else {
 										clientModel.setCameraPan(startingCameraPan + (startingX - x) / 2.5f);
 									}
