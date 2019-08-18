@@ -1351,7 +1351,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 		ShowWorldActivity.this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				final SelectItemDialog selectItemDialog = new SelectItemDialog(ShowWorldActivity.this, message, availableItems, options);
+				final Select3dObjectDialog selectItemDialog = new Select3dObjectDialog(ShowWorldActivity.this, message, availableItems, options);
 				currentDialog = selectItemDialog;
 				selectItemDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 					@Override
