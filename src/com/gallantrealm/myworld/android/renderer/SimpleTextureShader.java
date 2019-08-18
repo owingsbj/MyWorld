@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 public class SimpleTextureShader extends Shader {
 	

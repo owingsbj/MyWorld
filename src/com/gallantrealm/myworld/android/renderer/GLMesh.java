@@ -1,6 +1,6 @@
-package com.gallantrealm.myworld.android.renderer.old;
+package com.gallantrealm.myworld.android.renderer;
 
-import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
+import com.gallantrealm.myworld.android.renderer.GLSurface;
 import com.gallantrealm.myworld.model.WWMesh;
 import com.gallantrealm.myworld.model.WWObject;
 
@@ -10,7 +10,7 @@ import com.gallantrealm.myworld.model.WWObject;
  * surfaces. Cylindrical is useful for "carved" objects such as statues and limbs of an avatar. Spherical meshes can
  * simulate round objects like the head of an avatar or a model of a planet.
  */
-public final class GLMesh extends GLObject  {
+public class GLMesh extends GLObject {
 
 	public static final int BASE_SHAPE_BOX = 0;
 	public static final int BASE_SHAPE_CYLINDER = 1;
@@ -27,7 +27,7 @@ public final class GLMesh extends GLObject  {
 		}
 	}
 
-	void createBoxMesh(float sizeX, float sizeY, float sizeZ, int cellsX, int cellsY, float[][] mesh) {
+	private void createBoxMesh(float sizeX, float sizeY, float sizeZ, int cellsX, int cellsY, float[][] mesh) {
 
 		// Some common values used in calculations
 		float sizeXPerCell = sizeX / cellsX;
@@ -41,8 +41,8 @@ public final class GLMesh extends GLObject  {
 				//topGeometry.setTextureCoordinate(0, i, new float[] { cx / (float) cellsX - 0.5f, cy / (float) cellsY - 0.5f });
 			}
 		}
-		adjustTextureCoords(topGeometry, WWObject.SIDE_TOP);
 		topGeometry.generateNormals();
+		adjustTextureCoords(topGeometry, WWObject.SIDE_TOP);
 		setSide(WWObject.SIDE_TOP, topGeometry);
 
 		// Create each of the sides. These "edge" the sides of the mesh
@@ -55,8 +55,8 @@ public final class GLMesh extends GLObject  {
 			side1Geometry.setVertex(cellsX - cx, 1, cx * sizeXPerCell - sizeX / 2, sizeZ * mesh[cx][cellsY] - sizeZ / 2, sizeY / 2);
 			//side1Geometry.setTextureCoordinate(0, i, new float[] { (cx) / (float) cellsX - 0.5f, mesh[cx][cellsY] - 0.5f });
 		}
-		adjustTextureCoords(side1Geometry, WWObject.SIDE_SIDE1);
 		side1Geometry.generateNormals();
+		adjustTextureCoords(topGeometry, WWObject.SIDE_SIDE1);
 		setSide(WWObject.SIDE_SIDE1, side1Geometry);
 
 		// - side2 (right)
@@ -67,8 +67,8 @@ public final class GLMesh extends GLObject  {
 			side2Geometry.setVertex(cy, 1, sizeX / 2, sizeZ * mesh[cellsX][cy] - sizeZ / 2, cy * sizeYPerCell - sizeY / 2);
 			//side2Geometry.setTextureCoordinate(0, i, new float[] { (cellsY - cy) / (float) cellsY - 0.5f, mesh[cellsX][cy] - 0.5f });
 		}
-		adjustTextureCoords(side2Geometry, WWObject.SIDE_SIDE2);
 		side2Geometry.generateNormals();
+		adjustTextureCoords(topGeometry, WWObject.SIDE_SIDE2);
 		setSide(WWObject.SIDE_SIDE2, side2Geometry);
 
 		// - side3 (back)
@@ -79,8 +79,8 @@ public final class GLMesh extends GLObject  {
 			side3Geometry.setVertex(cx, 1, (cx) * sizeXPerCell - sizeX / 2, sizeZ * mesh[cx][0] - sizeZ / 2, -sizeY / 2);
 			//side3Geometry.setTextureCoordinate(0, i, new float[] { (cellsX - cx) / (float) cellsX - 0.5f, mesh[cx][0] - 0.5f });
 		}
-		adjustTextureCoords(side3Geometry, WWObject.SIDE_SIDE3);
 		side3Geometry.generateNormals();
+		adjustTextureCoords(topGeometry, WWObject.SIDE_SIDE3);
 		setSide(WWObject.SIDE_SIDE3, side3Geometry);
 
 		// - side4 (left)
@@ -91,8 +91,8 @@ public final class GLMesh extends GLObject  {
 			side4Geometry.setVertex(cellsY - cy, 1, -sizeX / 2, sizeZ * mesh[0][cy] - sizeZ / 2, cy * sizeYPerCell - sizeY / 2);
 			//side4Geometry.setTextureCoordinate(0, i, new float[] { cy / (float) cellsY - 0.5f, mesh[0][cy] - 0.5f });
 		}
-		adjustTextureCoords(side4Geometry, WWObject.SIDE_SIDE4);
 		side4Geometry.generateNormals();
+		adjustTextureCoords(topGeometry, WWObject.SIDE_SIDE4);
 		setSide(WWObject.SIDE_SIDE4, side4Geometry);
 
 		// Create the bottom. This is simply a rectangle to close the shape
@@ -105,8 +105,9 @@ public final class GLMesh extends GLObject  {
 		//bottomGeometry.setTextureCoordinate(0, i, new float[] { 0.5f, 0.5f });
 		bottomGeometry.setVertex(1, 1, sizeX / 2, -sizeZ / 2, sizeY / 2);
 		//bottomGeometry.setTextureCoordinate(0, i, new float[] { -0.5f, 0.5f });
-		adjustTextureCoords(bottomGeometry, WWObject.SIDE_BOTTOM);
+
 		bottomGeometry.generateNormals();
+		adjustTextureCoords(topGeometry, WWObject.SIDE_BOTTOM);
 		setSide(WWObject.SIDE_BOTTOM, bottomGeometry);
 
 	}
@@ -140,7 +141,7 @@ public final class GLMesh extends GLObject  {
 
 	}
 
-	void createCylinderMesh(float sizeX, float sizeY, float sizeZ, int cellsX, int cellsY, float[][] mesh) {
+	private void createCylinderMesh(float sizeX, float sizeY, float sizeZ, int cellsX, int cellsY, float[][] mesh) {
 
 //		int i;
 //		float x;
@@ -234,7 +235,7 @@ public final class GLMesh extends GLObject  {
 
 	}
 
-	void createSphereMesh(float sizeX, float sizeY, float sizeZ, int cellsX, int cellsY, float[][] mesh) {
+	private void createSphereMesh(float sizeX, float sizeY, float sizeZ, int cellsX, int cellsY, float[][] mesh) {
 
 //		int i;
 //		float x;

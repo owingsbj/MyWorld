@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,10 +18,10 @@ import com.gallantrealm.myworld.model.WWWorld;
 
 public class GLWorld implements IRendering {
 
-	private final NewAndroidRenderer renderer;
+	private final AndroidRenderer renderer;
 	private final WWWorld world;
 
-	public GLWorld(NewAndroidRenderer renderer, WWWorld world, long worldTime) {
+	public GLWorld(AndroidRenderer renderer, WWWorld world, long worldTime) {
 		this.renderer = renderer;
 		this.world = world;
 	}

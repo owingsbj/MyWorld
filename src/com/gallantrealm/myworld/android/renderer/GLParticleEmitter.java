@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import com.gallantrealm.myworld.model.SideAttributes;
 import com.gallantrealm.myworld.model.WWObject;
@@ -15,7 +15,7 @@ public class GLParticleEmitter extends GLObject {
 
 	WWParticleEmitter emitter;
 
-	public GLParticleEmitter(NewAndroidRenderer renderer, WWParticleEmitter emitter, long worldTime) {
+	public GLParticleEmitter(AndroidRenderer renderer, WWParticleEmitter emitter, long worldTime) {
 		super(renderer, emitter, worldTime);
 		this.emitter = emitter;
 

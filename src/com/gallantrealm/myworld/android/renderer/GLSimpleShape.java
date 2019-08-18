@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import com.gallantrealm.myworld.model.WWBox;
 import com.gallantrealm.myworld.model.WWCylinder;
@@ -59,7 +59,7 @@ public class GLSimpleShape extends GLObject {
 	 * @param cutEnd
 	 *            the ending point of cutout
 	 */
-	public GLSimpleShape(NewAndroidRenderer renderer, WWSimpleShape object, long worldTime) {
+	public GLSimpleShape(AndroidRenderer renderer, WWSimpleShape object, long worldTime) {
 		super(renderer, object, worldTime);
 
 		float sizeX = object.sizeX;

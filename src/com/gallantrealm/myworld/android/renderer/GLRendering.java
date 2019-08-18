@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import com.gallantrealm.myworld.client.renderer.IRendering;
 

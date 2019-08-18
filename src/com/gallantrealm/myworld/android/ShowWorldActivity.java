@@ -125,18 +125,11 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 		wakelock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "My Tag");
 
 		worldView = (GLSurfaceView) findViewById(R.id.worldView);
-		if (clientModel.isSimpleRendering() || !clientModel.supportsOpenGLES20()) {
-			System.out.println("Using old OpenGLES1.1");
-			worldRenderer = AndroidRenderer.createAndroidRenderer(this, worldView, false);
-		} else {
-			// New GLES20 rendering (shader based)
-			System.out.println("Using OpenGLES2.0");
-			worldView.setEGLContextClientVersion(2);
+		worldView.setEGLContextClientVersion(2);
 			// Note: setEGLConfigChooser fails on different systems, no matter what I do. So going with defaults (usually 8,8,8,16 but not necessarily)
 //			worldView.setEGLConfigChooser(new MyWorldConfigChooser());
 //			worldView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-			worldRenderer = AndroidRenderer.createAndroidRenderer(this, worldView, true);
-		}
+		worldRenderer = AndroidRenderer.createAndroidRenderer(this, worldView, clientModel.isSimpleRendering());
 		worldView.setRenderer(worldRenderer);
 		worldRenderer.initializeCameraPosition();
 

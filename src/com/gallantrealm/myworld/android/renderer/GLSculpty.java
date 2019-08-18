@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import com.gallantrealm.myworld.model.WWSculpty;
 
@@ -14,7 +14,7 @@ public class GLSculpty extends GLObject {
 	public static final int BASE_SHAPE_CYLINDER = 1;
 	public static final int BASE_SHAPE_SPHERE = 2;
 
-	public GLSculpty(NewAndroidRenderer renderer, WWSculpty sculpty, long worldTime) {
+	public GLSculpty(AndroidRenderer renderer, WWSculpty sculpty, long worldTime) {
 		super(renderer, sculpty, worldTime);
 	}
 

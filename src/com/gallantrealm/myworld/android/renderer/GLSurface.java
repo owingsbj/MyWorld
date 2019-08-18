@@ -1,10 +1,10 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import com.gallantrealm.myworld.android.renderer.AndroidRenderer;
+
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
@@ -36,7 +36,7 @@ public final class GLSurface {
 	private static int textureCoordsBufferId;
 	private static int indicesBufferId;
 	static boolean needsBufferBinding;
-	static NewAndroidRenderer renderer = ((NewAndroidRenderer) AndroidRenderer.androidRenderer);
+	static AndroidRenderer renderer = ((AndroidRenderer) AndroidRenderer.androidRenderer);
 	
 	public float[] firstVertex = new float[4];
 	public float[] sortVec = new float[4];

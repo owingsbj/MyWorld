@@ -69,9 +69,6 @@ public class SettingsActivity extends GallantActivity implements View.OnClickLis
 		
 		// only need to show option for simple rendering when there is GLES20
 		clientModel.setWorld(null);
-		if (!clientModel.supportsOpenGLES20()) {
-			simpleRenderingCheckBox.setVisibility(View.GONE);
-		}
 		
 		// power saver no longer featured
 		powerSaverCheckBox.setVisibility(View.GONE);

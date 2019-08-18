@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import com.gallantrealm.myworld.android.AndroidClientModel;
 import com.gallantrealm.myworld.model.WWColor;
@@ -29,7 +29,7 @@ public class GLTranslucency extends GLObject  {
 	float layerTransparency;
 	int layerColor;
 
-	public GLTranslucency(NewAndroidRenderer renderer, WWObject object, long worldTime) {
+	public GLTranslucency(AndroidRenderer renderer, WWObject object, long worldTime) {
 		super(renderer, object, worldTime);
 		this.sizeX = object.sizeX;
 		this.sizeY = object.sizeY;
@@ -98,8 +98,8 @@ public class GLTranslucency extends GLObject  {
 		// Create an inside shape to box the camera. This shape is only shown when the object is clipped by the camera frustrum.
 		// It provides a (crude) illusion of the translucency even when the translucency is penetrated. Mapped to CUTOUT1
 		GLSurface insideXGeometry = new GLSurface(2, 3, false);
-		float maskWidth = 3.0f * NewAndroidRenderer.CLOSENESS;
-		float maskDistance = 1.5f * NewAndroidRenderer.CLOSENESS;
+		float maskWidth = 3.0f * AndroidRenderer.CLOSENESS;
+		float maskDistance = 1.5f * AndroidRenderer.CLOSENESS;
 		insideXGeometry.setVertex(0, 0, maskWidth, -sizeZ / 2, -maskDistance * 1.2f);
 		insideXGeometry.setVertex(1, 0, -maskWidth, -sizeZ / 2, -maskDistance * 1.2f);
 		insideXGeometry.setVertex(0, 1, maskWidth, sizeZ / 2, -maskDistance);

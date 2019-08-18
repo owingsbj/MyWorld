@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.client.renderer.IRenderer;
@@ -17,11 +17,11 @@ public abstract class GLObject extends GLRendering {
 	static int lastBumpTextureId;
 
 	protected final WWObject object;
-	protected final NewAndroidRenderer renderer;
+	protected final AndroidRenderer renderer;
 
 	protected GLSurface[] sides = new GLSurface[WWObject.NSIDES];
 
-	protected GLObject(NewAndroidRenderer renderer, WWObject object, long worldTime) {
+	protected GLObject(AndroidRenderer renderer, WWObject object, long worldTime) {
 		this.renderer = renderer;
 		this.object = object;
 	}

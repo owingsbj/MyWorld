@@ -1,4 +1,4 @@
-package com.gallantrealm.myworld.android.renderer.old;
+package com.gallantrealm.myworld.android.renderer;
 
 public final class Point3f {
 

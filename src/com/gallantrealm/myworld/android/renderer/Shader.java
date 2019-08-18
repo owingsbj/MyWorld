@@ -2,7 +2,7 @@
  * Represents a shader object
  */
 
-package com.gallantrealm.myworld.android.renderer.neu;
+package com.gallantrealm.myworld.android.renderer;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;

@@ -1252,9 +1252,9 @@ public abstract class ClientModel {
 		controlSensitivity = preferences.getFloat("controlSensitivity", 0.5f);
 		stereoscopic = preferences.getBoolean("stereoscopic", false);
 		if (preferencesVersion == 0) {
-			simpleRendering = !supportsOpenGLES20();
+			simpleRendering = false;
 		} else {
-			simpleRendering = preferences.getBoolean("simpleRendering", !supportsOpenGLES20());
+			simpleRendering = preferences.getBoolean("simpleRendering", false);
 		}
 		fullVersion = preferences.getBoolean("fullVersion", "true".equals(context.getString(R.string.fullVersion)));
 		powerSaver = preferences.getBoolean("powerSaver", false);
@@ -1336,60 +1336,6 @@ public abstract class ClientModel {
 
 	MediaPlayer songPlayer;
 	private Controller zeeController;
-
-	public boolean supportsOpenGLES20() {
-		if (!testedOpenGL) {
-
-			// check to see if settings indicate it can be supported
-			if (context.getString(R.string.supports_new_graphics).equals("false")) {
-				System.out.println("supports_new_graphics is false");
-				supportsOpenGLES20 = false;
-			} else {
-
-				// first, check android
-				ActivityManager am = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-				ConfigurationInfo info = am.getDeviceConfigurationInfo();
-				if (info.reqGlEsVersion < 0x20000) {
-					System.out.println("deviceConfigurationInfo has reqGLESVersion < 0x20000");
-					supportsOpenGLES20 = false;
-				} else {
-
-					// Don't trust older android levels (anything below 4.1: Jelly Bean)
-					if (Build.VERSION.SDK_INT < 16) {
-						System.out.println("Build.VERSION.SDK_INT < 16");
-						supportsOpenGLES20 = false;
-					} else {
-
-						// Not going to perform well on single cpu devices
-						if (Runtime.getRuntime().availableProcessors() < 2) {
-							System.out.println("availableProcessors < 2");
-							supportsOpenGLES20 = false;
-						} else {
-
-							// Likely not going to perform if it can't handle >= 4096 texture sizes
-							int[] maxTextureSize = new int[1];
-							GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
-							if (maxTextureSize[0] > 0 && maxTextureSize[0] < 4096) {
-								System.out.println("maxTextureSize < 4096");
-								supportsOpenGLES20 = false;
-							} else {
-
-								// The world still might not be ready for it
-								if (world != null && !world.supportsOpenGLES20()) {
-									System.out.println("!world.supportsOpenGLES20");
-									supportsOpenGLES20 = false;
-								} else {
-									supportsOpenGLES20 = true;
-								}
-							}
-						}
-					}
-				}
-			}
-			testedOpenGL = true;
-		}
-		return supportsOpenGLES20;
-	}
 
 	public int getPlayCount() {
 		return playCount;
