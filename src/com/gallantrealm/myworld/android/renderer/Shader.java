@@ -155,23 +155,23 @@ public abstract class Shader {
 		}
 		if (modelMatrixLocation >= 0) {
 			GLES20.glUniformMatrix4fv(modelMatrixLocation, 1, false, modelMatrix, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (mvMatrixLocation >= 0) {
 			GLES20.glUniformMatrix4fv(mvMatrixLocation, 1, false, mvMatrix, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (sunMvMatrixLocation >= 0) {
 			GLES20.glUniformMatrix4fv(sunMvMatrixLocation, 1, false, sunMvMatrix, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (colorTextureMatrixLocation >= 0) {
 			GLES20.glUniformMatrix4fv(colorTextureMatrixLocation, 1, false, textureMatrix, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (colorLocation >= 0) {
 			GLES20.glUniform4fv(colorLocation, 1, color, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (shininessLocation >= 0) {
 			GLES20.glUniform1f(shininessLocation, shininess);
@@ -213,7 +213,7 @@ public abstract class Shader {
 			lastProgram = currentProgram;
 		}
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, nindices, GLES20.GL_UNSIGNED_SHORT, baseIndex * 2); // indices);
-		// NewAndroidRenderer.checkGlError();
+		// AndroidRenderer.checkGlError();
 	}
 
 	/**
@@ -254,23 +254,23 @@ public abstract class Shader {
 
 		if (modelMatrixLocation >= 0) {
 			GLES20.glUniformMatrix4fv(modelMatrixLocation, 1, false, modelMatrix, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (mvMatrixLocation >= 0) {
 			GLES20.glUniformMatrix4fv(mvMatrixLocation, 1, false, mvMatrix, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (sunMvMatrixLocation >= 0) {
 			GLES20.glUniformMatrix4fv(sunMvMatrixLocation, 1, false, sunMvMatrix, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (colorTextureMatrixLocation >= 0) {
 			GLES20.glUniformMatrix4fv(colorTextureMatrixLocation, 1, false, textureMatrix, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (colorLocation >= 0) {
 			GLES20.glUniform4fv(colorLocation, 1, color, 0);
-			// NewAndroidRenderer.checkGlError();
+			// AndroidRenderer.checkGlError();
 		}
 		if (shininessLocation >= 0) {
 			GLES20.glUniform1f(shininessLocation, shininess);
@@ -283,7 +283,7 @@ public abstract class Shader {
 		}
 
 		GLES20.glDrawArrays(GLES20.GL_POINTS, 0, nindices);
-		// NewAndroidRenderer.checkGlError();
+		// AndroidRenderer.checkGlError();
 
 		// restore usual vertex and texture buffers
 		if (aPositionLocation >= 0) {
@@ -363,25 +363,25 @@ public abstract class Shader {
 		pointDrawLocation = GLES20.glGetUniformLocation(program, "pointDraw");
 
 		// Some of the glGetUniforms or glUniforms fail (expected)
-		NewAndroidRenderer.ignoreGlError();
+		AndroidRenderer.ignoreGlError();
 
 		GLES20.glUseProgram(alphaProgram);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 		GLES20.glUniform1i(colorTextureLocation, 0);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 		GLES20.glUniform1i(shadowMapTextureLocation, 1);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 		GLES20.glUniform1i(staticShadowMapTextureLocation, 2);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 		GLES20.glUniform1i(bumpMapTextureLocation, 3);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 
 		GLES20.glUseProgram(program);
 		GLES20.glUniform1i(colorTextureLocation, 0);
 		GLES20.glUniform1i(shadowMapTextureLocation, 1);
 		GLES20.glUniform1i(staticShadowMapTextureLocation, 2);
 		GLES20.glUniform1i(bumpMapTextureLocation, 3);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 
 	}
 
@@ -396,19 +396,19 @@ public abstract class Shader {
 
 		System.out.println(this.getClass().getSimpleName() + ": Loading vertex shader");
 		int _vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vs);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 
 		System.out.println(this.getClass().getSimpleName() + ": Loading fragment shader");
 		int _pixelShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fs);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 
 		// Create the program
 		System.out.println(this.getClass().getSimpleName() + ":  Linking shader ");
 		int program = GLES20.glCreateProgram();
 		GLES20.glAttachShader(program, _vertexShader);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 		GLES20.glAttachShader(program, _pixelShader);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 		GLES20.glLinkProgram(program);
 		int[] linkStatus = new int[1];
 		GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
@@ -417,7 +417,7 @@ public abstract class Shader {
 			System.err.println("Linking of " + this.getClass().getSimpleName() + " failed: " + GLES20.glGetProgramInfoLog(program));
 			GLES20.glDeleteProgram(program);
 		}
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 
 		return program;
 	}
@@ -433,16 +433,16 @@ public abstract class Shader {
 	 */
 	private final int loadShader(int shaderType, String source) {
 		int shader = GLES20.glCreateShader(shaderType);
-		NewAndroidRenderer.checkGlError();
+		AndroidRenderer.checkGlError();
 		if (shader != 0) {
 			GLES20.glShaderSource(shader, source);
 			GLES20.glCompileShader(shader);
-			NewAndroidRenderer.checkGlError();
+			AndroidRenderer.checkGlError();
 			int[] compiled = new int[1];
 			GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
 			if (compiled[0] == 0) {
 				System.err.println("Could not compile shader " + shaderType + ":" + GLES20.glGetShaderInfoLog(shader));
-				NewAndroidRenderer.checkGlError();
+				AndroidRenderer.checkGlError();
 			}
 		}
 		return shader;

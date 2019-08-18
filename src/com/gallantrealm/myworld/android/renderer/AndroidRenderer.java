@@ -59,7 +59,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
 
-public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
+public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 
 	// These values are used in the positionCamera to damp the positional movements
 	public float dampXCamera;
@@ -92,7 +92,7 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 	public static AndroidRenderer androidRenderer;
 
 	public static AndroidRenderer createAndroidRenderer(Context context, GLSurfaceView view, boolean simpleRendering) {
-		androidRenderer = new NewAndroidRenderer(context, view, simpleRendering);
+		androidRenderer = new AndroidRenderer(context, view, simpleRendering);
 		return androidRenderer;
 	}
 
@@ -172,9 +172,9 @@ public abstract class AndroidRenderer implements IRenderer, GLSurfaceView.Render
 	public Shader simpleTextureShader;
 	public Shader shadowingTextureShader;
 
-	protected float[] projectionMatrix;
-	protected float[] viewMatrix;
-	protected float[] sunViewMatrix;
+	protected float[] projectionMatrix = new float[16];
+	protected float[] viewMatrix = new float[16];
+	protected float[] sunViewMatrix = new float[16];
 
 	Bitmap regenBitmap;
 	String regenTextureName;
