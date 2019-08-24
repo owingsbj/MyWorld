@@ -28,7 +28,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Select3dObjectDialog extends Dialog implements IButtonListener {
+public class SelectObjectDialog extends Dialog implements IButtonListener {
 	ClientModel clientModel = AndroidClientModel.getClientModel();
 
 	TextView messageText;
@@ -48,7 +48,7 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 	Object[] availableItems;
 	Object selectedItem;
 
-	public Select3dObjectDialog(Context context, String message, Object[] availableItems, String[] options) {
+	public SelectObjectDialog(Context context, String message, Object[] availableItems, String[] options) {
 		super(context, R.style.Theme_Dialog);
 		activity = (Activity) context;
 		this.availableItems = availableItems;
@@ -58,7 +58,7 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 		this.checkinMessage = null;
 		this.leaderboardId = null;
 		this.options = options;
-		setContentView(R.layout.select_3dobject_dialog);
+		setContentView(R.layout.select_object_dialog);
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 		if (message != null) {
 			messageText.setText(message);
 		}
-		itemsView.setAdapter(new ArrayAdapter<Object>(activity, R.layout.select_3dobject_row, availableItems) {
+		itemsView.setAdapter(new ArrayAdapter<Object>(activity, R.layout.select_object_row, availableItems) {
 			@SuppressLint("NewApi")
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
@@ -97,7 +97,7 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 				if (convertView != null) {
 					row = convertView;
 				} else {
-					row = LayoutInflater.from(getContext()).inflate(R.layout.select_3dobject_row, parent, false);
+					row = LayoutInflater.from(getContext()).inflate(R.layout.select_object_row, parent, false);
 				}
 //				if (itemsView.isItemChecked(position)) {
 //					row.setBackgroundColor(0xff80c0ff);
@@ -126,7 +126,7 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 							   @Override
 							   public void run() {
 									final Bitmap bitmap = AndroidRenderer.readImageTexture(Uri.parse(imageFileName));
-									Select3dObjectDialog.this.activity.runOnUiThread(new Runnable() {
+									SelectObjectDialog.this.activity.runOnUiThread(new Runnable() {
 										public void run() {
 											image.setImageDrawable(new BitmapDrawable(bitmap));
 										}
@@ -181,8 +181,8 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 				selectedItem = availableItems[position];
 				if (options == null) {
 					buttonPressed = 0;
-					Select3dObjectDialog.this.dismiss();
-					Select3dObjectDialog.this.cancel();
+					SelectObjectDialog.this.dismiss();
+					SelectObjectDialog.this.cancel();
 				}
 			}
 		});
@@ -212,8 +212,8 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				buttonPressed = 0;
-				Select3dObjectDialog.this.dismiss();
-				Select3dObjectDialog.this.cancel();
+				SelectObjectDialog.this.dismiss();
+				SelectObjectDialog.this.cancel();
 				return true;
 			}
 
@@ -223,8 +223,8 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				buttonPressed = 1;
-				Select3dObjectDialog.this.dismiss();
-				Select3dObjectDialog.this.cancel();
+				SelectObjectDialog.this.dismiss();
+				SelectObjectDialog.this.cancel();
 				return true;
 			}
 
@@ -234,8 +234,8 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				buttonPressed = 2;
-				Select3dObjectDialog.this.dismiss();
-				Select3dObjectDialog.this.cancel();
+				SelectObjectDialog.this.dismiss();
+				SelectObjectDialog.this.cancel();
 				return true;
 			}
 
@@ -283,12 +283,12 @@ public class Select3dObjectDialog extends Dialog implements IButtonListener {
 			controllerWasPressed = false;
 			if (buttonEvent.getButtonGameAction() == ButtonEvent.BUTTON_A) {
 				buttonPressed = 0;
-				Select3dObjectDialog.this.dismiss();
-				Select3dObjectDialog.this.cancel();
+				SelectObjectDialog.this.dismiss();
+				SelectObjectDialog.this.cancel();
 			} else if (buttonEvent.getButtonGameAction() == ButtonEvent.BUTTON_B) {
 				buttonPressed = options.length - 1;
-				Select3dObjectDialog.this.dismiss();
-				Select3dObjectDialog.this.cancel();
+				SelectObjectDialog.this.dismiss();
+				SelectObjectDialog.this.cancel();
 			}
 		}
 	}
