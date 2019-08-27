@@ -959,8 +959,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final void setFreedomMove(boolean[] freedoms) {
 		this.freedomMoveX = freedoms[0];
-		this.freedomMoveX = freedoms[1];
-		this.freedomMoveX = freedoms[2];
+		this.freedomMoveY = freedoms[1];
+		this.freedomMoveZ = freedoms[2];
 	}
 
 	public final boolean isFreedomRotateX() {
