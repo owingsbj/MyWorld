@@ -184,9 +184,25 @@ public class NewPhysicsThread extends PhysicsThread {
 								if (object2.solid) {
 
 									// Adjust the position of the objects so that they are not overlapping
-									position.x -= overlapVector.x;
-									position.y -= overlapVector.y;
-									position.z -= overlapVector.z;
+									if (!object.freedomMoveX || !object.freedomMoveY || !object.freedomMoveZ) {
+										WWObject.antiRotate(position, rotation, worldTime);
+										WWObject.antiRotate(overlapVector, rotation, worldTime);
+										if (object.freedomMoveX) {
+											position.x -= overlapVector.x;
+										}
+										if (object.freedomMoveY) {
+											position.y -= overlapVector.y;
+										}
+										if (object.freedomMoveZ) {
+											position.z -= overlapVector.z;
+										}
+										WWObject.rotate(position, rotation, worldTime);
+										WWObject.rotate(overlapVector, rotation, worldTime);
+									} else {
+										position.x -= overlapVector.x;
+										position.y -= overlapVector.y;
+										position.z -= overlapVector.z;
+									}
 
 									// If the object is moving toward object2, stop or repell it (according to elasticity)
 									WWVector unitOverlapVector;
@@ -279,9 +295,9 @@ public class NewPhysicsThread extends PhysicsThread {
 										// Friction is a force acting opposite of relative velocity/amomentum of the two items colliding.
 										WWVector frictionVForce = object2.getVelocity(); // TODO include object2 amomentum (if object2 is large)
 										frictionVForce.subtract(velocity);
-										frictionVForce.scale(10* friction / FastMath.range(frictionVForce.length(), 0.01f, 1f));
+										frictionVForce.scale(10 * friction / FastMath.range(frictionVForce.length(), 0.01f, 1f));
 										totalForce.add(frictionVForce);
-										
+
 										WWVector frictionAForce = object2.getAMomentum(); // TODO include object2 position (if object2 is large)
 										frictionAForce.subtract(aMomentum);
 										frictionAForce.scale(10 * friction / FastMath.range(frictionAForce.length() / 10.0f, 0.01f, 1f));
@@ -310,17 +326,19 @@ public class NewPhysicsThread extends PhysicsThread {
 				velocity.z += totalForce.z * deltaTime;
 
 				// Limit velocity according to freedom
-				WWObject.antiRotate(velocity, rotation, worldTime);
-				if (!object.freedomMoveX) {
-					velocity.x = 0.0f;
+				if (!object.freedomMoveX || !object.freedomMoveY || !object.freedomMoveZ) {
+					WWObject.antiRotate(velocity, rotation, worldTime);
+					if (!object.freedomMoveX) {
+						velocity.x = 0.0f;
+					}
+					if (!object.freedomMoveY) {
+						velocity.y = 0.0f;
+					}
+					if (!object.freedomMoveZ) {
+						velocity.z = 0.0f;
+					}
+					WWObject.rotate(velocity, rotation, worldTime);
 				}
-				if (!object.freedomMoveY) {
-					velocity.y = 0.0f;
-				}
-				if (!object.freedomMoveZ) {
-					velocity.z = 0.0f;
-				}
-				WWObject.rotate(velocity, rotation, worldTime);
 
 				aMomentum.x += totalTorque.x * deltaTime;
 				aMomentum.y += totalTorque.y * deltaTime;
