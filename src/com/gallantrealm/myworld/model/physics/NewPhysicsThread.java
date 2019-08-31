@@ -266,6 +266,9 @@ public class NewPhysicsThread extends PhysicsThread {
 
 									// Adjust angular momentum as well
 									// TODO implement angular momentum adjustment
+									// take cross product of unitoverlapvector and vector of overlappoint->centerpoint
+									// then combine with velocity in some way to form an addition to the torque
+									totalTorque.add(position.clone().subtract(overlapPoint).cross(unitOverlapVector).scale(1000f));
 
 								} // solid
 
