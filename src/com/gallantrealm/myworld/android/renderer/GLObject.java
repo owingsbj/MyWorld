@@ -147,23 +147,24 @@ public abstract class GLObject extends GLRendering {
 
 	public void snap(long worldTime) {
 		if (modelMatrix == null || !object.fixed) {
-			// To snap the object we'll create the model matrix
-			modelMatrix = new float[16];
-			Matrix.setIdentityM(modelMatrix, 0);
-			object.getAnimatedPosition(position, worldTime);
-			Matrix.translateM(modelMatrix, 0, position.x, position.z, position.y);
-			Matrix.translateM(modelMatrix, 0, object.rotationPoint.x, object.rotationPoint.z, object.rotationPoint.y);
-			object.getAnimatedRotation(rotation, worldTime);
-			if (rotation.z != 0) {
-				Matrix.rotateM(modelMatrix, 0, rotation.z, 0, 1, 0);
-			}
-			if (rotation.y != 0) {
-				Matrix.rotateM(modelMatrix, 0, rotation.y, 0, 0, 1);
-			}
-			if (rotation.x != 0) {
-				Matrix.rotateM(modelMatrix, 0, rotation.x, 1, 0, 0);
-			}
-			Matrix.translateM(modelMatrix, 0, -object.rotationPoint.x, -object.rotationPoint.z, -object.rotationPoint.y);
+			modelMatrix = object.modelMatrix;
+//			// To snap the object we'll create the model matrix
+//			modelMatrix = new float[16];
+//			Matrix.setIdentityM(modelMatrix, 0);
+//			object.getAnimatedPosition(position, worldTime);
+//			Matrix.translateM(modelMatrix, 0, position.x, position.z, position.y);
+//			Matrix.translateM(modelMatrix, 0, object.rotationPoint.x, object.rotationPoint.z, object.rotationPoint.y);
+//			object.getAnimatedRotation(rotation, worldTime);
+//			if (rotation.z != 0) {
+//				Matrix.rotateM(modelMatrix, 0, rotation.z, 0, 1, 0);
+//			}
+//			if (rotation.y != 0) {
+//				Matrix.rotateM(modelMatrix, 0, rotation.y, 0, 0, 1);
+//			}
+//			if (rotation.x != 0) {
+//				Matrix.rotateM(modelMatrix, 0, rotation.x, 1, 0, 0);
+//			}
+//			Matrix.translateM(modelMatrix, 0, -object.rotationPoint.x, -object.rotationPoint.z, -object.rotationPoint.y);
 			object.lastRenderingTime = worldTime;
 		}
 	}

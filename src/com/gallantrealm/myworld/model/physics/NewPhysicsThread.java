@@ -17,8 +17,6 @@ import com.gallantrealm.myworld.model.WWWorld;
  */
 public class NewPhysicsThread extends PhysicsThread {
 
-	private static final boolean queueUpdates = false;
-
 	ArrayList<ObjectCollision> previousPreviousCollidedObjects = new ArrayList<ObjectCollision>();
 	ArrayList<ObjectCollision> previousCollidedObjects = new ArrayList<ObjectCollision>();
 	ArrayList<ObjectCollision> newCollidedObjects = new ArrayList<ObjectCollision>();
@@ -30,21 +28,6 @@ public class NewPhysicsThread extends PhysicsThread {
 		this.slideStyle = slideStyle;
 	}
 
-	class QueuedUpdate {
-		public WWObject object;
-		public WWVector position, rotation, velocity, aMomentum;
-		public long worldTime;
-
-		public QueuedUpdate(WWObject object, WWVector position, WWVector rotation, WWVector velocity, WWVector aMomentum, long worldTime) {
-			this.object = object;
-			this.position = position;
-			this.rotation = rotation;
-			this.velocity = velocity;
-			this.aMomentum = aMomentum;
-			this.worldTime = worldTime;
-		}
-	}
-
 	@Override
 	public void performIteration(long timeIncrement) {
 		if (timeIncrement <= 0) {
@@ -53,10 +36,6 @@ public class NewPhysicsThread extends PhysicsThread {
 		long worldTime = world.getWorldTime() + timeIncrement;
 		float deltaTime = timeIncrement / 1000.0f;
 
-		ArrayList<QueuedUpdate> queuedUpdates = null;
-		if (queueUpdates) {
-			queuedUpdates = new ArrayList<QueuedUpdate>();
-		}
 		previousPreviousCollidedObjects = previousCollidedObjects;
 		previousCollidedObjects = newCollidedObjects;
 		newCollidedObjects = new ArrayList<ObjectCollision>();
@@ -378,12 +357,7 @@ public class NewPhysicsThread extends PhysicsThread {
 //							position.z = originalPosition.z - 0.5f;
 //						}
 
-					if (queueUpdates) {
-						queuedUpdates.add(new QueuedUpdate(object, position.clone().subtract(originalPosition), rotation.clone().subtract(originalRotation), velocity.clone().subtract(originalVelocity),
-								aMomentum.clone().subtract(originalAMomentum), worldTime));
-					} else {
-						object.setOrientation(position, rotation, velocity, aMomentum, worldTime);
-					}
+					object.setOrientation(position, rotation, velocity, aMomentum, worldTime);
 				}
 
 //				} // synchronize object
@@ -393,27 +367,6 @@ public class NewPhysicsThread extends PhysicsThread {
 		} // for object
 
 		world.updateWorldTime(timeIncrement);
-
-		// performed queued updates. This done with world locked so that the updates are "instantaneous"
-		if (queueUpdates) {
-			synchronized (world) {
-				WWVector tposition = new WWVector();
-				WWVector trotation = new WWVector();
-				WWVector tvelocity = new WWVector();
-				WWVector tmomentum = new WWVector();
-				int qsize = queuedUpdates.size();
-				for (int i = 0; i < qsize; i++) {
-					QueuedUpdate queuedUpdate = queuedUpdates.get(i);
-					if (queuedUpdate.worldTime > queuedUpdate.object.lastMoveTime) { // don't update if changed externally
-						queuedUpdate.object.getPosition(tposition, worldTime);
-						queuedUpdate.object.getRotation(trotation, worldTime);
-						queuedUpdate.object.getVelocity(tvelocity);
-						queuedUpdate.object.getAMomentum(tmomentum);
-						queuedUpdate.object.setOrientation(queuedUpdate.position.add(tposition), queuedUpdate.rotation.add(trotation), queuedUpdate.velocity.add(tvelocity), queuedUpdate.aMomentum.add(tmomentum), queuedUpdate.worldTime);
-					}
-				}
-			}
-		}
 
 		// fire collide and slide events
 		int ncosize = newCollidedObjects.size();

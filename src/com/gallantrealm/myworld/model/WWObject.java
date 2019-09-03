@@ -10,6 +10,8 @@ import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
 
+import android.opengl.Matrix;
+
 /**
  * This is the base class for all objects in the world. Note that not all fields of this class are shared with clients -- only those that are needed for rendering the client. An editor for the object may expose other fields as well via
  * editing, and fields are available for object behaviors (which run on the server).
@@ -26,6 +28,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	// Positioning properties
 	public long lastMoveTime;
+	public float[] modelMatrix;
 	float positionX;
 	float positionY;
 	float positionZ;
@@ -125,6 +128,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		for (int i = 0; i < NSIDES; i++) {
 			sideAttributes[i] = SideAttributes.getDefaultSideAttributes();
 		}
+		modelMatrix = new float[16];
+		Matrix.setIdentityM(modelMatrix, 0);
 	}
 
 	public WWObject(float sizeX, float sizeY, float sizeZ) {
@@ -189,6 +194,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	final void sendPositionPrivate(DataOutputStreamX os) throws IOException {
+		for (int i = 0; i < 16; i++) {
+			os.writeFloat(modelMatrix[i]);
+		}
 		os.writeFloat(positionX);
 		os.writeFloat(positionY);
 		os.writeFloat(positionZ);
@@ -279,6 +287,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	final void receivePositionPrivate(DataInputStreamX is) throws IOException {
+		for (int i = 0; i < 16; i++) {
+			modelMatrix[i] = is.readFloat();
+		}
 		positionX = is.readFloat();
 		positionY = is.readFloat();
 		positionZ = is.readFloat();
@@ -815,50 +826,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * internally call this method.
 	 */
 	public final void setOrientation(WWVector newPosition, WWVector newRotation, WWVector newVelocity, WWVector newAMomentum, long newMoveTime) {
-
-		/*
-		 * ignoring glue behavior from child to parent // If this is a child and the child is glued to the parent, orient the parent // instead. It will move all of its children accordingly. if (parentId != 0 && gluedToParent && world !=
-		 * null) { WWVector deltaPosition = newPosition.clone(); deltaPosition.subtract(getPosition(lastMoveTime)); WWVector deltaVelocity = newVelocity.clone(); deltaVelocity.subtract(getVelocity()); WWVector deltaRotation =
-		 * newRotation.clone(); deltaRotation.subtract(getRotation(lastMoveTime)); WWVector deltaAMomentum = newAMomentum.clone(); deltaAMomentum.subtract(getAMomentum()); WWObject parent = world.objects[parentId]; WWVector
-		 * newParentPosition = parent.getPosition(lastMoveTime); newParentPosition.add(deltaPosition); WWVector newParentVelocity = parent.getVelocity(); // TODO rotate/position parent relative to child delta rotate
-		 * parent.setOrientation(newParentPosition, newRotation, newParentVelocity, newAMomentum, newMoveTime); // TODO determine if some dynamic properties should be ignored for glued children return; }
-		 */
-
-//		WWVector[] savedChildPositions = null;
-//		if (childrenIds != null && world != null) {
-//
-//			// Remember the position of the contained objects relative to the old
-//			// parent's position. The child positions will be updated later after the parent
-//			// has been moved
-//			savedChildPositions = new WWVector[childrenIds.length];
-//			for (int i = 0; i < childrenIds.length; i++) {
-//				WWObject child = world.objects[childrenIds[i]];
-//				if (child != null) {
-//					// adjust the child position based on the rotation of the parent
-//					WWVector childPosition = child.getPosition(lastMoveTime);
-//					antiTransform(childPosition, getPosition(lastMoveTime), getRotation(lastMoveTime), lastMoveTime);
-//					savedChildPositions[i] = childPosition;
-//				}
-//			}
-//
-//			// Rotate the contained objects
-//			WWVector deltaRotation = newRotation.clone();
-//			deltaRotation.subtract(getRotation(lastMoveTime));
-//			for (int i = 0; i < childrenIds.length; i++) {
-//				WWObject child = world.objects[childrenIds[i]];
-//				if (child != null) {
-//					// adjust the child rotation to match the amount that the parent will rotate
-//					WWVector newChildRotation = child.getRotation(lastMoveTime);
-//					newChildRotation.add(deltaRotation);
-//					child.rotationX = newChildRotation.x;
-//					child.rotationY = newChildRotation.y;
-//					child.rotationZ = newChildRotation.z;
-//					child.lastMoveTime = newMoveTime;
-//				}
-//			}
-//
-//		}
-
 		this.positionX = newPosition.x;
 		this.positionY = newPosition.y;
 		this.positionZ = newPosition.z;
@@ -878,22 +845,21 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		}
 		this.lastMoveTime = newMoveTime;
 
-//		if (childrenIds != null && world != null) {
-//			// Update the position of the contained objects relative to the new
-//			// parent's position.
-//			for (int i = 0; i < childrenIds.length; i++) {
-//				WWObject child = world.objects[childrenIds[i]];
-//				if (child != null) {
-//					// adjust the child position based on the rotation of the parent
-//					WWVector childPosition = savedChildPositions[i];
-//					transform(childPosition, getPosition(newMoveTime), getRotation(newMoveTime), newMoveTime);
-//					child.positionX = childPosition.x;
-//					child.positionY = childPosition.y;
-//					child.positionZ = childPosition.z;
-//					child.lastMoveTime = newMoveTime;
-//				}
-//			}
-//		}
+		// Update the model matrix
+		modelMatrix = new float[16];
+		Matrix.setIdentityM(modelMatrix, 0);
+		Matrix.translateM(modelMatrix, 0, positionX, positionZ, positionY);
+		Matrix.translateM(modelMatrix, 0, rotationPoint.x, rotationPoint.z, rotationPoint.y);
+		if (rotationZ != 0) {
+			Matrix.rotateM(modelMatrix, 0, rotationZ, 0, 1, 0);
+		}
+		if (rotationY != 0) {
+			Matrix.rotateM(modelMatrix, 0, rotationY, 0, 0, 1);
+		}
+		if (rotationX != 0) {
+			Matrix.rotateM(modelMatrix, 0, rotationX, 1, 0, 0);
+		}
+		Matrix.translateM(modelMatrix, 0, -rotationPoint.x, -rotationPoint.z, -rotationPoint.y);
 
 		// Since extents for fixed objects are tuned to current rotation, recalculate them
 		if (fixed && !phantom) {
