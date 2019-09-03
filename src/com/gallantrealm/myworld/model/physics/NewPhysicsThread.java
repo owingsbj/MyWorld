@@ -339,24 +339,6 @@ public class NewPhysicsThread extends PhysicsThread {
 				// Update the position, rotation, velocity and angular momentum values on the object if any have changed due to
 				// physical interaction with another object, but only if the object has not been moved by some other thread
 				if (object.lastMoveTime == originalLastMoveTime && (!position.equals(originalPosition) || !rotation.equals(originalRotation) || !velocity.equals(originalVelocity) || !aMomentum.equals(originalAMomentum))) {
-
-//						// Cap the movements, to cure possible physics ills
-//						if (position.x - originalPosition.x > 1f) {
-//							position.x = originalPosition.x + 1f;
-//						} else if (position.x - originalPosition.x < -0.5f) {
-//							position.x = originalPosition.x - 0.5f;
-//						}
-//						if (position.y - originalPosition.y > 0.5f) {
-//							position.y = originalPosition.y + 0.5f;
-//						} else if (position.y - originalPosition.y < -0.5f) {
-//							position.y = originalPosition.y - 0.5f;
-//						}
-//						if (position.z - originalPosition.z > 0.5f) {
-//							position.z = originalPosition.z + 0.5f;
-//						} else if (position.z - originalPosition.z < -0.5f) {
-//							position.z = originalPosition.z - 0.5f;
-//						}
-
 					object.setOrientation(position, rotation, velocity, aMomentum, worldTime);
 				}
 
