@@ -846,7 +846,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		this.lastMoveTime = newMoveTime;
 
 		// Update the model matrix
-		modelMatrix = new float[16];
 		Matrix.setIdentityM(modelMatrix, 0);
 		Matrix.translateM(modelMatrix, 0, positionX, positionZ, positionY);
 		Matrix.translateM(modelMatrix, 0, rotationPoint.x, rotationPoint.z, rotationPoint.y);
@@ -865,6 +864,27 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		if (fixed && !phantom) {
 			calculateExtents();
 		}
+	}
+	
+	/**
+	 * A newer method to set the position and rotation using a matrix.  Velocity and angular momentum are still specified using vectors.
+	 */
+	public final void setOrientation(float[] newMatrix, WWVector newVelocity, WWVector newAMomentum, long newMoveTime) {
+		for (int i = 0; i < 16; i++) {
+			modelMatrix = newMatrix;
+		}
+		this.lastGetAbsolutePositionTime = -1;
+		if (newVelocity != null) {
+			this.velocityX = newVelocity.x;
+			this.velocityY = newVelocity.y;
+			this.velocityZ = newVelocity.z;
+		}
+		if (newAMomentum != null) {
+			this.aMomentumX = newAMomentum.x;
+			this.aMomentumY = newAMomentum.y;
+			this.aMomentumZ = newAMomentum.z;
+		}
+		this.lastMoveTime = newMoveTime;
 	}
 
 	public final float getDensity() {

@@ -63,8 +63,6 @@ public class NewPhysicsThread extends PhysicsThread {
 			// by being tested in the inner loop below).
 			if (object != null && object.physical && object.solid && !object.deleted) {
 
-//				synchronized (object) { // to keep it from being modified
-
 				long originalLastMoveTime = object.lastMoveTime;
 
 				// Get current orientation and momentum values.
@@ -341,8 +339,6 @@ public class NewPhysicsThread extends PhysicsThread {
 				if (object.lastMoveTime == originalLastMoveTime && (!position.equals(originalPosition) || !rotation.equals(originalRotation) || !velocity.equals(originalVelocity) || !aMomentum.equals(originalAMomentum))) {
 					object.setOrientation(position, rotation, velocity, aMomentum, worldTime);
 				}
-
-//				} // synchronize object
 
 			} // if physical
 
