@@ -9,7 +9,6 @@ import com.gallantrealm.myworld.client.renderer.IVideoTextureRenderer;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.communication.Sendable;
-
 import android.opengl.Matrix;
 
 /**
@@ -604,6 +603,52 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			}
 		}
 	}
+	
+	public final void getPositionMatrix(float[] matrix, long worldTime) {
+		if (fixed) {
+			System.arraycopy(modelMatrix, 0, matrix, 0, matrix.length);
+		} else {
+			// Determine position based on delta time since it was set and the velocity and acceleration
+			System.arraycopy(modelMatrix, 0, matrix, 0, matrix.length);
+			float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
+			Matrix.translateM(matrix, 0, deltaTime * velocityX, deltaTime * velocityZ, deltaTime * velocityY);
+			// Apply start and stop position limits if any
+//			if (startPosition != null) {
+//				if (positionX > startPosition.x && position.x < startPosition.x) {
+//					position.x = startPosition.x;
+//				} else if (positionX < startPosition.x && position.x > startPosition.x) {
+//					position.x = startPosition.x;
+//				}
+//				if (positionY > startPosition.y && position.y < startPosition.y) {
+//					position.y = startPosition.y;
+//				} else if (positionY < startPosition.y && position.y > startPosition.y) {
+//					position.y = startPosition.y;
+//				}
+//				if (positionZ > startPosition.z && position.z < startPosition.z) {
+//					position.z = startPosition.z;
+//				} else if (positionZ < startPosition.z && position.z > startPosition.z) {
+//					position.z = startPosition.z;
+//				}
+//			}
+//			if (stopPosition != null) {
+//				if (positionX > stopPosition.x && position.x < stopPosition.x) {
+//					position.x = stopPosition.x;
+//				} else if (positionX < stopPosition.x && position.x > stopPosition.x) {
+//					position.x = stopPosition.x;
+//				}
+//				if (positionY > stopPosition.y && position.y < stopPosition.y) {
+//					position.y = stopPosition.y;
+//				} else if (positionY < stopPosition.y && position.y > stopPosition.y) {
+//					position.y = stopPosition.y;
+//				}
+//				if (positionZ > stopPosition.z && position.z < stopPosition.z) {
+//					position.z = stopPosition.z;
+//				} else if (positionZ < stopPosition.z && position.z > stopPosition.z) {
+//					position.z = stopPosition.z;
+//				}
+//			}
+		}
+	}
 
 	transient long lastGetAbsolutePositionTime = -1;
 	transient float lastGetAbsolutePositionX, lastGetAbsolutePositionY, lastGetAbsolutePositionZ;
@@ -635,6 +680,25 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			lastGetAbsolutePositionX = position.x;
 			lastGetAbsolutePositionY = position.y;
 			lastGetAbsolutePositionZ = position.z;
+			lastGetAbsolutePositionTime = worldTime;
+		}
+	}
+	
+	transient float[] lastAbsolutePositionMatrix = new float[16];
+
+	public final void getAbsolutePositionMatrix(float[] matrix, long worldTime) {
+		if (lastGetAbsolutePositionTime == worldTime) {
+			System.arraycopy(lastAbsolutePositionMatrix, 0, matrix, 0, matrix.length);
+		} else {
+			getPositionMatrix(matrix, worldTime);
+			// if this is a member of a collection, adjust position according to parent's position/rotation
+			if (parentId != 0) {
+				WWObject parent = world.objects[parentId];
+				float[] tmatrix = new float[16];
+				parent.getAbsolutePositionMatrix(tmatrix, worldTime);
+				Matrix.multiplyMM(matrix, 0, tmatrix, 0, matrix, 0);
+			}
+			System.arraycopy(matrix, 0, lastAbsolutePositionMatrix, 0, lastAbsolutePositionMatrix.length);
 			lastGetAbsolutePositionTime = worldTime;
 		}
 	}
@@ -1363,6 +1427,22 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		point.y = y;
 		point.z = z;
 
+		return point;
+	}
+
+	/**
+	 * Transform a point according to a matrix
+	 */
+	static float[] vec1 = new float[4];
+	static float[] vec2 = new float[4];
+	public static final WWVector transform(WWVector point, float[] matrix) {
+		vec1[0] = point.x;
+		vec1[1] = point.z;
+		vec1[2] = point.y;
+		Matrix.multiplyMV(vec2,  0,  matrix,  0,  vec1,  0);
+		point.x = vec2[0];
+		point.z = vec2[1];
+		point.y = vec2[2];
 		return point;
 	}
 
