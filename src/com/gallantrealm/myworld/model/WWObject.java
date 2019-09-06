@@ -1329,6 +1329,21 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		point.z = z;
 		return point;
 	}
+	
+	/**
+	 * Rotate a vector according to a matrix.  This treats the vector as a direction, not a position.
+	 */
+	public static final WWVector rotate(WWVector direction, float[] matrix) {
+		vec1[0] = direction.x;
+		vec1[1] = direction.z;
+		vec1[2] = direction.y;
+		vec1[3] = 0;
+		Matrix.multiplyMV(vec2,  0,  matrix,  0,  vec1,  0);
+		direction.x = vec2[0];
+		direction.z = vec2[1];
+		direction.y = vec2[2];
+		return direction;
+	}
 
 	/**
 	 * Anti-rotate a point, removing a given rotation. Note that this is mainly useful to perform on velocity/force vectors.
@@ -1439,6 +1454,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		vec1[0] = point.x;
 		vec1[1] = point.z;
 		vec1[2] = point.y;
+		vec1[3] = 1;
 		Matrix.multiplyMV(vec2,  0,  matrix,  0,  vec1,  0);
 		point.x = vec2[0];
 		point.z = vec2[1];
