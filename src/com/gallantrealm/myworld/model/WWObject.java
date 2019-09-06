@@ -1259,10 +1259,70 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		// I've tried just about everything else. Keep in mind that with enough speed, any object can quantum-jump!
 	}
 
+	public float[] lastOverlapPositionMatrix;
+
+	public final void getOverlap(WWObject object, float[] positionMatrix, float[] objectPositionMatrix, long worldTime, WWVector tempPoint, WWVector tempPoint2,
+			WWVector overlapPoint, WWVector overlapVector) {
+		// To simplify overlap testing, check several key points. These are the eight corners, twelve
+		// half edge points, and six center side points of the box. Test each of these.
+
+		// First, transform the edge points by current rotation and position. These points are cached just in case
+		// they are needed on the next overlap
+		WWVector[] transformedEdgePoints;
+		int edgePointsLength;
+		if (parentId == 0 && lastTransformedEdgePoints != null && (fixed || (lastOverlapPositionMatrix == positionMatrix))) {
+			transformedEdgePoints = lastTransformedEdgePoints;
+			edgePointsLength = edgePoints.length;
+		} else {
+			WWVector[] constEdgePoints = getEdgePoints();
+			edgePointsLength = constEdgePoints.length;
+			transformedEdgePoints = lastTransformedEdgePoints;
+			if (transformedEdgePoints == null) {
+				transformedEdgePoints = new WWVector[edgePointsLength];
+			}
+			for (int i = 0; i < edgePointsLength; i++) {
+				WWVector edgePoint = transformedEdgePoints[i];
+				if (edgePoint == null) {
+					edgePoint = constEdgePoints[i].clone();
+				} else {
+					constEdgePoints[i].copyInto(edgePoint);
+				}
+				transform(edgePoint, positionMatrix);
+				transformedEdgePoints[i] = edgePoint;
+			}
+			lastTransformedEdgePoints = transformedEdgePoints;
+			lastOverlapPositionMatrix = positionMatrix;
+		}
+
+		overlapVector.zero();
+		for (int i = 0; i < edgePointsLength; i++) {
+			WWVector edgePoint = transformedEdgePoints[i];
+			// first test point with extents to avoid a costlier penetration calculation
+			if (object.extentx + objectPositionMatrix[12] > edgePoint.x && -object.extentx + objectPositionMatrix[12] < edgePoint.x && //
+					object.extenty + objectPositionMatrix[14] > edgePoint.y && -object.extenty + objectPositionMatrix[14] < edgePoint.y && //
+					object.extentz + objectPositionMatrix[13] > edgePoint.z && -object.extentz + objectPositionMatrix[13] < edgePoint.z) {
+				object.getPenetration(edgePoint, objectPositionMatrix, worldTime, tempPoint, tempPoint2);
+				if (tempPoint2.isLongerThan(overlapVector)) {
+					tempPoint2.copyInto(overlapVector);
+					transformedEdgePoints[i].copyInto(overlapPoint);
+					return; // less accurate but faster
+				}
+			}
+		}
+
+		// Note: If objects still penetrate walls, the only thing to do is to speed up the physics thread and iterate more often.
+		// I've tried just about everything else. Keep in mind that with enough speed, any object can quantum-jump!
+	}
+
 	/**
 	 * Returns a vector giving the amount of penetration of a point within the object, or null if the point does not penetrate.
 	 */
 	public abstract void getPenetration(WWVector point, WWVector position, WWVector rotation, long worldTime, WWVector tempPoint, WWVector penetrationVector);
+
+	/**
+	 * Returns a vector giving the amount of penetration of a point within the object, or null if the point does not penetrate.
+	 */
+	public abstract void getPenetration(WWVector point, float[] positionMatrix, long worldTime, WWVector tempPoint, WWVector penetrationVector);
 
 	/**
 	 * Returns an array of points describing the edges of the object
@@ -1392,6 +1452,23 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
+	 * Anti-rotate a vector according to a matrix.  This treats the vector as a direction, not a position.
+	 */
+	public static final WWVector antiRotate(WWVector direction, float[] matrix) {
+		vec1[0] = direction.x;
+		vec1[1] = direction.z;
+		vec1[2] = direction.y;
+		vec1[3] = 0;
+		float[] tmatrix = new float[16];
+		Matrix.invertM(tmatrix, 0, matrix, 0);
+		Matrix.multiplyMV(vec2,  0,  tmatrix,  0,  vec1,  0);
+		direction.x = vec2[0];
+		direction.z = vec2[1];
+		direction.y = vec2[2];
+		return direction;
+	}
+
+	/**
 	 * Transform a point according to a rotation and position at a given time.
 	 */
 	public static final WWVector transform(WWVector point, WWVector position, WWVector rotation, WWVector rotationPoint, long worldTime) {
@@ -1507,6 +1584,23 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		point.y = y;
 		point.z = z;
 
+		return point;
+	}
+
+	/**
+	 * Anti-transform a point according to a matrix
+	 */
+	public static final WWVector antiTransform(WWVector point, float[] matrix) {
+		vec1[0] = point.x;
+		vec1[1] = point.z;
+		vec1[2] = point.y;
+		vec1[3] = 1;
+		float[] tmatrix = new float[16];
+		Matrix.invertM(tmatrix, 0, matrix, 0);
+		Matrix.multiplyMV(vec2,  0,  tmatrix,  0,  vec1,  0);
+		point.x = vec2[0];
+		point.z = vec2[1];
+		point.y = vec2[2];
 		return point;
 	}
 

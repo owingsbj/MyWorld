@@ -1,7 +1,6 @@
 package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
-
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.client.renderer.IRenderer;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
@@ -206,6 +205,12 @@ public class WWParticleEmitter extends WWObject {
 			particles[i].stopped = true;
 		}
 		animating = false;
+	}
+
+	@Override
+	public void getPenetration(WWVector point, float[] positionMatrix, long worldTime, WWVector tempPoint, WWVector penetrationVector) {
+		// particle emitters can always be penetrated (always phantom)
+		penetrationVector.zero();
 	}
 
 }

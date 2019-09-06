@@ -2,7 +2,6 @@ package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
 import java.io.Serializable;
-
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.client.renderer.IRenderer;
 import com.gallantrealm.myworld.communication.DataInputStreamX;
@@ -143,5 +142,74 @@ public class WWCylinder extends WWSimpleShape implements Serializable, Cloneable
 		}
 //		penetration.scale(getSizeX(), getSizeY(), getSizeZ());   // the original scaling, distorted penetration vector
 		rotate(penetration, rotation, worldTime);
+	}
+
+	@Override
+	public void getPenetration(WWVector point, float[] positionMatrix, long worldTime, WWVector tempPoint, WWVector penetration) {
+
+		// Anti-transform
+		tempPoint.x = point.x;
+		tempPoint.y = point.y;
+		tempPoint.z = point.z;
+		antiTransform(tempPoint, positionMatrix);
+
+		// Scale the point down to unit scale, just to make it easier
+		tempPoint.scale(1.0f / sizeX, 1.0f / sizeY, 1.0f / sizeZ);
+
+		// Determine the radius distance. This is the distance to the center of the cylinder
+		float radiusDistanceSquared = tempPoint.x * tempPoint.x + tempPoint.y * tempPoint.y;
+
+		// Doesn't overlap if x,y is > 0.5 from center or z is > 0.5 from center
+		if (radiusDistanceSquared >= 0.25 || tempPoint.z >= 0.5 || tempPoint.z <= -0.5) {
+			penetration.zero();
+			return;
+		}
+
+		float radiusDistance = (float) Math.sqrt(radiusDistanceSquared);
+
+		// Doesnt overlap if x,y is < hollow point
+		if (radiusDistance < hollow / 2) {
+			penetration.zero();
+			return;
+		}
+
+		// Doesnt overlap if x,y is in cutout area
+		if (cutoutStart != 0 || cutoutEnd != 1) {
+			float theta = FastMath.atan2(tempPoint.x, tempPoint.y);
+			float cutPoint = (1.0f - TODEGREES * theta / 360.0f) % 1.0f;
+			if (cutPoint < cutoutStart || cutPoint > cutoutEnd) {
+				penetration.zero();
+				return;
+			}
+		}
+
+		// Choose either the z (top/bottom) or x,y (sides) as the closest side.
+		float insidePenetration = noInsidePenetration ? 100 : radiusDistance - hollow / 2;
+		float outsidePenetration = noOutsidePenetration ? 100 : 0.5f - radiusDistance;
+		float topPenetration = noTopPenetration ? 100 : 0.5f - tempPoint.z;
+		float bottomPenetration = noBottomPenetration ? 100 : tempPoint.z + 0.5f;
+		if (FastMath.min(insidePenetration, outsidePenetration) * FastMath.min(sizeX, sizeY) < FastMath.min(topPenetration, bottomPenetration) * sizeZ) { // side
+
+			// Choose inside or outside
+			if (insidePenetration < outsidePenetration) { // inside
+				penetration.set(tempPoint.x, tempPoint.y, 0);
+				penetration.scale(insidePenetration);
+				penetration.scale(FastMath.min(sizeX, sizeY)); // alternate scaling that doesn't distort penetration
+			} else { // outside
+//			penetration.set(-tempPoint.x * (0.5 - tempPoint.length()), -tempPoint.y * (0.5 - tempPoint.length()), 0);
+				penetration.set(tempPoint.x, tempPoint.y, 0);
+				penetration.scale(-outsidePenetration);
+				penetration.scale(FastMath.min(sizeX, sizeY)); // alternate scaling that doesn't distort penetration
+			}
+		} else { // top/bottom
+			if (topPenetration < bottomPenetration) { // top
+				penetration.set(0.0f, 0.0f, -topPenetration);
+			} else { // bottom
+				penetration.set(0.0f, 0.0f, bottomPenetration);
+			}
+			penetration.scale(sizeZ); // alternate scaling that doesn't distort penetration
+		}
+//		penetration.scale(getSizeX(), getSizeY(), getSizeZ());   // the original scaling, distorted penetration vector
+		rotate(penetration, positionMatrix);
 	}
 }

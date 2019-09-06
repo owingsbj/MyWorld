@@ -28,4 +28,10 @@ public class WWPlant extends WWObject {
 		penetrationVector.zero();
 	}
 
+	@Override
+	public void getPenetration(WWVector point, float[] positionMatrix, long worldTime, WWVector tempPoint, WWVector penetrationVector) {
+		// plants can always be penetrated (always phantom)
+		penetrationVector.zero();
+	}
+
 }
