@@ -16,7 +16,6 @@ import com.gallantrealm.myworld.communication.DataInputStreamX;
 import com.gallantrealm.myworld.communication.DataOutputStreamX;
 import com.gallantrealm.myworld.model.behavior.BehaviorThread;
 import com.gallantrealm.myworld.model.persistence.SaveWorldThread;
-import com.gallantrealm.myworld.model.physics.NewPhysicsThread;
 import com.gallantrealm.myworld.model.physics.ObjectCollision;
 import com.gallantrealm.myworld.model.physics.PhysicsThread;
 import android.opengl.GLES20;
@@ -1180,7 +1179,7 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 	}
 
 	public PhysicsThread makePhysicsThread() {
-		return new NewPhysicsThread(this, iterationTime, 2);
+		return new PhysicsThread(this, iterationTime, 2);
 	}
 
 	/**
