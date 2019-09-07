@@ -937,6 +937,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		for (int i = 0; i < 16; i++) {
 			modelMatrix = newMatrix;
 		}
+		positionX = modelMatrix[12];
+		positionY = modelMatrix[14];
+		positionZ = modelMatrix[13];
 		this.lastGetAbsolutePositionTime = -1;
 		if (newVelocity != null) {
 			this.velocityX = newVelocity.x;
