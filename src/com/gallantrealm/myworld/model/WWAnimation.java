@@ -40,5 +40,8 @@ public abstract class WWAnimation extends WWBehavior {
 	 * child of the owner. The rotation vector is modified to reflect adjustment by the animation.
 	 */
 	public abstract void getAnimatedRotation(WWObject object, WWVector rotation, long time);
+	
+	public void animatePositionMatrix(WWObject object, float[] matrix, long time) {
+	}
 
 }

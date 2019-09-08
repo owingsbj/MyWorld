@@ -10,10 +10,8 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashMap;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
 import com.gallantrealm.android.HttpFileCache;
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.android.AndroidClientModel;
@@ -40,13 +38,11 @@ import com.gallantrealm.myworld.model.WWWorld;
 import com.htc.view.DisplaySetting;
 import com.lge.real3d.Real3D;
 import com.lge.real3d.Real3DInfo;
-
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.opengl.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.opengl.ETC1;
@@ -58,6 +54,7 @@ import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
+import android.opengl.Matrix;
 
 public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 
@@ -1236,10 +1233,14 @@ public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 
 		// Adjust camera position based on tracking object
 		if (cameraObject != null) {
-			cameraObject.getAbsoluteAnimatedPosition(cameraPoint, time);
+			float[] matrix = new float[16];
+			cameraPoint.x = matrix[12];
+			cameraPoint.y = matrix[14];
+			cameraPoint.z = matrix[13];
+			cameraObject.getAbsoluteAnimatedPositionMatrix(matrix, time);
 			if (avatar == cameraObject && cameraDistance < 10) {
 				WWVector point = new WWVector(0, 0, 0.75f);
-				cameraObject.rotate(point, cameraObjectRotation, time);
+				WWObject.rotate(point, cameraObjectRotation, time);
 				cameraPoint.add(point); // so avatar is in lower part of screen
 			}
 		}
@@ -1291,8 +1292,9 @@ public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 						object.getPosition(position, time);
 						float extent = object.extent;
 						if (object.parentId != 0 || (Math.abs(position.x - cameraLocation.x) < extent && Math.abs(position.y - cameraLocation.y) < extent && Math.abs(position.z - cameraLocation.z) < extent)) {
-							object.getRotation(rotation, time);
-							object.getPenetration(cameraLocation, position, rotation, time, tempPoint, penetrationVector);
+							float[] matrix = new float[16];
+							object.getPositionMatrix(matrix, time);
+							object.getPenetration(cameraLocation, matrix, time, tempPoint, penetrationVector);
 							if (penetrationVector != null && penetrationVector.length() > 0 && limitedCameraDistance > 0.25) {
 								if (Math.abs(penetrationVector.z) > FastMath.max(Math.abs(penetrationVector.x), Math.abs(penetrationVector.y)) && cameraTilt < 45.0) {
 									cameraTilt += 15.0;

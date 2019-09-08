@@ -65,11 +65,9 @@ import com.zeemote.zc.IDeviceSearch;
 import com.zeemote.zc.IProgressMonitor;
 import com.zeemote.zc.IStreamConnector;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -79,8 +77,6 @@ import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
-import android.opengl.GLES20;
-import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -916,15 +912,17 @@ public abstract class ClientModel {
 		float y;
 		float z;
 		if (cameraObject != null) {
-			WWVector pos = cameraObject.getAbsolutePosition(worldTime);
+			float[] cameraObjectPositionMatrix = new float[16];
+			cameraObject.getAbsolutePositionMatrix(cameraObjectPositionMatrix, worldTime);
 			if (cameraObject == getAvatar() || getAvatar().isDescendant(cameraObject)) {
-				x = xcamera + pos.x + cameraDistance * FastMath.sin(TORADIAN * cameraPan + cameraObject.getAbsoluteRotation(worldTime).getZ()) * FastMath.cos(TORADIAN * cameraTilt);
-				y = ycamera + pos.y + cameraDistance * FastMath.cos(TORADIAN * cameraPan + cameraObject.getAbsoluteRotation(worldTime).getZ()) * FastMath.cos(TORADIAN * cameraTilt);
-				z = zcamera + pos.z + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
+				float cameraObjectRotationZ = 0;
+				x = xcamera + cameraObjectPositionMatrix[12] + cameraDistance * FastMath.sin(TORADIAN * cameraPan + cameraObjectRotationZ) * FastMath.cos(TORADIAN * cameraTilt);
+				y = ycamera + cameraObjectPositionMatrix[14] + cameraDistance * FastMath.cos(TORADIAN * cameraPan + cameraObjectRotationZ) * FastMath.cos(TORADIAN * cameraTilt);
+				z = zcamera + cameraObjectPositionMatrix[13] + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
 			} else {
-				x = xcamera + pos.x + cameraDistance * FastMath.sin(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
-				y = ycamera + pos.y + cameraDistance * FastMath.cos(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
-				z = zcamera + pos.z + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
+				x = xcamera + cameraObjectPositionMatrix[12] + cameraDistance * FastMath.sin(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
+				y = ycamera + cameraObjectPositionMatrix[14] + cameraDistance * FastMath.cos(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
+				z = zcamera + cameraObjectPositionMatrix[13] + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
 			}
 		} else {
 			x = xcamera + cameraDistance * FastMath.sin(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);

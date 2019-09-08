@@ -349,35 +349,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Returns the rotation including contribution from parents
-	 */
-	public final WWVector getAbsoluteRotation(long worldTime) {
-		WWVector rotation = new WWVector();
-		getRotation(rotation, worldTime);
-		int p = parentId;
-		if (p != 0) {
-			WWObject parent = world.objects[p];
-			WWVector parentRotation = parent.getAbsoluteRotation(worldTime);
-			rotation.add(parentRotation);
-		}
-		return rotation;
-	}
-
-	/**
-	 * Returns the rotation including contribution from parents
-	 */
-	public final WWVector getAbsoluteRotation(WWVector rotation, long worldTime) {
-		getRotation(rotation, worldTime);
-		int p = parentId;
-		if (p != 0) {
-			WWObject parent = world.objects[p];
-			WWVector parentRotation = parent.getAbsoluteRotation(worldTime);
-			rotation.add(parentRotation);
-		}
-		return rotation;
-	}
-
-	/**
 	 * Returns the animation rotation including contribution from parents
 	 */
 	public final WWVector getAbsoluteAnimatedRotation(long worldTime) {
@@ -669,13 +640,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			// if this is a member of a collection, adjust position according to parent's position/rotation
 			if (parentId != 0) {
 				WWObject parent = world.objects[parentId];
-				WWVector parentPosition = new WWVector();
-				WWVector parentRotation = new WWVector();
-				parent.getAbsolutePosition(parentPosition, worldTime);
-				parent.getRotation(parentRotation, worldTime);
-				WWVector parentRotationPoint = parent.getRotationPoint();
-				// parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
-				transform(position, parentPosition, parentRotation, parentRotationPoint, worldTime);
+				float[] parentPositionMatrix = new float[16];
+				parent.getAbsolutePositionMatrix(parentPositionMatrix, worldTime);
+//				WWVector parentRotationPoint = parent.getRotationPoint();
+				transform(position, parentPositionMatrix);
 			}
 			lastGetAbsolutePositionX = position.x;
 			lastGetAbsolutePositionY = position.y;
@@ -710,47 +678,68 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * @param worldTime
 	 */
 	public final void getAbsoluteAnimatedPosition(WWVector position, long worldTime) {
-		getAnimatedPosition(position, worldTime);
+		float[] matrix = new float[16];
+		getAbsoluteAnimatedPositionMatrix(matrix, worldTime);
+		position.x = matrix[12];
+		position.y = matrix[14];
+		position.z = matrix[13];
+	}
+	
+	public final void getAbsoluteAnimatedPositionMatrix(float[] matrix, long worldTime) {
+		getAnimatedPositionMatrix(matrix, worldTime);
 		// if this is a member of a collection, adjust position according to parent's position/rotation
 		if (parentId != 0) {
 			WWObject parent = world.objects[parentId];
-			WWVector parentPosition = new WWVector();
-			WWVector parentRotation = new WWVector();
-			parent.getAbsoluteAnimatedPosition(parentPosition, worldTime);
-			parent.getAbsoluteAnimatedRotation(parentRotation, worldTime);
-			WWVector parentRotationPoint = parent.getRotationPoint();
-			// parent.antiTransform(position, parent.getPosition(lastMoveTime), parent.getRotation(lastMoveTime));
-			transform(position, parentPosition, parentRotation, parentRotationPoint, worldTime);
+			float[] parentMatrix = new float[16];
+			parent.getAbsoluteAnimatedPositionMatrix(parentMatrix, worldTime);
+			//WWVector parentRotationPoint = parent.getRotationPoint();
+			Matrix.multiplyMM(matrix,  0,  matrix, 0, parentMatrix, 0);
 		}
 	}
 
 	public final void getAnimatedPosition(WWVector position, long worldTime) {
-		getPosition(position, worldTime);
-		processPositionAnimators(this, position, worldTime);
+		float[] matrix = new float[16];
+		getAnimatedPositionMatrix(matrix, worldTime);
+		position.x = matrix[12];
+		position.y = matrix[14];
+		position.z = matrix[13];
+	}
+	
+	public final void getAnimatedPositionMatrix(float[] matrix, long worldTime) {
+		getPositionMatrix(matrix, worldTime);
+		processAnimators(this, matrix, worldTime);
 	}
 
 	/** Invoke animators for position for this object and its parent(s). */
-	final void processPositionAnimators(WWObject object, WWVector position, long worldTime) {
+	final void processAnimators(WWObject object, float[] matrix, long worldTime) {
 		if (behaviors != null) {
 			for (int i = 0; i < behaviors.length; i++) {
 				WWBehavior behavior = behaviors[i].behavior;
 				if (behavior instanceof WWAnimation) {
 					WWAnimation animation = (WWAnimation) behavior;
-					animation.getAnimatedPosition(object, position, worldTime);
+					animation.animatePositionMatrix(object, matrix, worldTime);
 				}
 			}
 		}
 		if (parentId != 0) {
-			world.objects[parentId].processPositionAnimators(object, position, worldTime);
+			world.objects[parentId].processAnimators(object, matrix, worldTime);
 		}
 	}
 
 	public final void setPosition(WWVector position) {
-		setOrientation(position, getRotation(getWorldTime()), null, null, getWorldTime());
+		float[] matrix = new float[16];
+		getPositionMatrix(matrix, getWorldTime());
+		Matrix.translateM(matrix,  0, -matrix[12],  -matrix[14],  -matrix[13]);
+		Matrix.translateM(matrix, 0, position.x, position.z, position.y);
+		setOrientation(matrix, null, null, getWorldTime());
 	}
 
 	public final void setPosition(float x, float y, float z) {
-		setOrientation(new WWVector(x, y, z), getRotation(getWorldTime()), null, null, getWorldTime());
+		float[] matrix = new float[16];
+		getPositionMatrix(matrix, getWorldTime());
+		Matrix.translateM(matrix,  0, -matrix[12],  -matrix[14],  -matrix[13]);
+		Matrix.translateM(matrix, 0, x, z, y);
+		setOrientation(matrix, null, null, getWorldTime());
 	}
 
 	public final void setPosition(float[] pos) {
@@ -812,7 +801,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	public final void setVelocity(WWVector velocity) {
-		setOrientation(getPosition(getWorldTime()), getRotation(getWorldTime()), velocity, null, getWorldTime());
+		float[] matrix = new float[16];
+		getPositionMatrix(matrix, getWorldTime());
+		setOrientation(matrix, velocity, null, getWorldTime());
 	}
 
 	public final float getVelocityLength() {
@@ -824,7 +815,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	public final void setAngularVelocity(WWVector aVelocity) {
-		setOrientation(getPosition(getWorldTime()), getRotation(getWorldTime()), null, aVelocity, getWorldTime());
+		float[] matrix = new float[16];
+		getPositionMatrix(matrix, getWorldTime());
+		setOrientation(matrix, null, aVelocity, getWorldTime());
 	}
 
 	public final WWVector getAMomentum() {
@@ -838,7 +831,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	public final void setAMomentum(WWVector aMomentum) {
-		setOrientation(getPosition(getWorldTime()), getRotation(getWorldTime()), null, aMomentum, getWorldTime());
+		float[] matrix = new float[16];
+		getPositionMatrix(matrix, getWorldTime());
+		setOrientation(matrix, null, aMomentum, getWorldTime());
 	}
 
 	public final float getAMomentumLength() {
@@ -1175,33 +1170,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final WWVector getSize() {
 		return new WWVector(sizeX, sizeY, sizeZ);
-	}
-
-	/**
-	 * Determines if this object overlaps the give object. If so, return a vector pointing directly to the location of the overlap. The length of the vector depends on the depth of penetration of the object. This vector can be used to apply
-	 * physical properties to the object as a result of the two objects making contact.
-	 * <p>
-	 * For situations where the object is contained within another object, the vector's direction is taken from the velocity vector of the object. This is somewhat arbitrary, but hints to the physics thread as to the direction in which to
-	 * move the objects such that they are not overlapping.
-	 * <p>
-	 * Note: the world time is passed into this method to improve accuracy. The physics simulation depends on applying all physics for all objects in the world at exact points in time.
-	 */
-	public final WWVector getOverlapVector(WWObject object, long worldTime) {
-
-		WWVector position = getPosition(worldTime);
-		WWVector rotation = getRotation(worldTime);
-		WWVector rotationPoint = getRotationPoint();
-		WWVector objectPosition = object.getPosition(worldTime);
-		WWVector objectRotation = object.getRotation(worldTime);
-		WWVector tempPoint = new WWVector();
-		WWVector tempPoint2 = new WWVector();
-		WWVector overlapPoint = new WWVector();
-		WWVector overlapVector = new WWVector();
-
-		getOverlap(object, position, rotation, rotationPoint, objectPosition, objectRotation, worldTime, tempPoint, tempPoint2, overlapPoint, overlapVector);
-
-		return overlapVector;
-
 	}
 
 	private transient WWVector[] lastTransformedEdgePoints;
@@ -2953,7 +2921,5 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			rendering.getRenderer().getSoundGenerator().playSound(soundName, 1, this.getPosition(), volume, 1.0f);
 		}
 	}
-
-
 
 }

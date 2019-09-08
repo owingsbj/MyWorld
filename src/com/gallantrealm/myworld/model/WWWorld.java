@@ -343,15 +343,15 @@ public class WWWorld extends WWEntity implements IRenderable, ClientModelChanged
 			WWVector newThrustVelocity = newObject.getThrustVelocity();
 			WWVector newTorque = newObject.getTorque();
 			WWVector newTorqueVelocity = newObject.getTorqueVelocity();
-			WWVector newPosition = newObject.getPosition(time);
-			WWVector newRotation = newObject.getRotation(time);
+			float[] newPositionMatrix = new float[16];
+			newObject.getPositionMatrix(newPositionMatrix, time);
 			WWVector newVelocity = newObject.getVelocity();
 			WWVector newAMomentum = newObject.getAMomentum();
 			oldObject.setThrust(newThrust);
 			oldObject.setThrustVelocity(newThrustVelocity);
 			oldObject.setTorque(newTorque);
 			oldObject.setTorqueVelocity(newTorqueVelocity);
-			oldObject.setOrientation(newPosition, newRotation, newVelocity, newAMomentum, time);
+			oldObject.setOrientation(newPositionMatrix, newVelocity, newAMomentum, time);
 			// }
 		}
 	}

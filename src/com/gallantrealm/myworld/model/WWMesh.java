@@ -417,7 +417,9 @@ public class WWMesh extends WWObject {
 	public final float getMeshValue(WWVector point) {
 		// Anti-transform
 		WWVector tempPoint = point.clone();
-		antiTransform(tempPoint, getPosition(), getRotation(), getWorldTime());
+		float[] positionMatrix = new float[16];
+		getPositionMatrix(positionMatrix, getWorldTime());
+		antiTransform(tempPoint, positionMatrix);
 		tempPoint.z = 0;
 
 		float px = tempPoint.x;
