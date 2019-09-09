@@ -336,15 +336,35 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	public final void getRotation(WWVector rotation, long worldTime) {
-		if (fixed) {
-			rotation.x = rotationX;
-			rotation.y = rotationY;
-			rotation.z = rotationZ;
+		float yaw, pitch, roll;
+
+		// find yaw (around y-axis) first
+		yaw = FastMath.TODEGREES * (float) Math.asin(modelMatrix[8]);
+		if (modelMatrix[10] < 0) {
+			if (yaw >= 0)
+				yaw = 180.0f - yaw;
+			else
+				yaw = -180.0f - yaw;
+		}
+
+		// find roll (around z-axis) and pitch (around x-axis)
+		if (modelMatrix[0] > -0.00001f && modelMatrix[0] < 0.00001f) {
+			roll = 0; // @@ assume roll=0
+			pitch = FastMath.TODEGREES * (float) Math.atan2(modelMatrix[1], modelMatrix[5]);
 		} else {
+			roll = FastMath.TODEGREES * (float) Math.atan2(-modelMatrix[4], modelMatrix[0]);
+			pitch = FastMath.TODEGREES * (float) Math.atan2(-modelMatrix[9], modelMatrix[10]);
+		}
+
+		rotation.x = pitch;
+		rotation.y = roll;
+		rotation.z = yaw;
+
+		if (!fixed) {
 			float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
-			rotation.x = rotationX + deltaTime * aMomentumX;
-			rotation.y = rotationY + deltaTime * aMomentumY;
-			rotation.z = rotationZ + deltaTime * aMomentumZ;
+			rotation.x = rotation.x + deltaTime * aMomentumX;
+			rotation.y = rotation.y + deltaTime * aMomentumY;
+			rotation.z = rotation.z + deltaTime * aMomentumZ;
 			// Apply start and stop rotation limits if any
 			// TODO needs to be reworked for matrices somehow..
 //			if (startRotation != null) {
@@ -401,7 +421,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	public final boolean isAtRotationBounds() {
-		// TODO the logic below is broken with matrices.  Need a good idea..
+		// TODO the logic below is broken with matrices. Need a good idea..
 //		long worldTime = getWorldTime();
 //		float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
 //		float newRotationX = rotationX + deltaTime * aMomentumX;
@@ -528,7 +548,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			}
 		}
 	}
-	
+
 	public final void getPositionMatrix(float[] matrix, long worldTime) {
 		if (fixed) {
 			System.arraycopy(modelMatrix, 0, matrix, 0, matrix.length);
@@ -605,7 +625,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			lastGetAbsolutePositionTime = worldTime;
 		}
 	}
-	
+
 	transient float[] lastAbsolutePositionMatrix = new float[16];
 
 	public final void getAbsolutePositionMatrix(float[] matrix, long worldTime) {
@@ -638,7 +658,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		position.y = matrix[14];
 		position.z = matrix[13];
 	}
-	
+
 	public final void getAbsoluteAnimatedPositionMatrix(float[] matrix, long worldTime) {
 		getAnimatedPositionMatrix(matrix, worldTime);
 		// if this is a member of a collection, adjust position according to parent's position/rotation
@@ -646,8 +666,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			WWObject parent = world.objects[parentId];
 			float[] parentMatrix = new float[16];
 			parent.getAbsoluteAnimatedPositionMatrix(parentMatrix, worldTime);
-			//WWVector parentRotationPoint = parent.getRotationPoint();
-			Matrix.multiplyMM(matrix,  0,  matrix, 0, parentMatrix, 0);
+			// WWVector parentRotationPoint = parent.getRotationPoint();
+			Matrix.multiplyMM(matrix, 0, matrix, 0, parentMatrix, 0);
 		}
 	}
 
@@ -658,7 +678,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		position.y = matrix[14];
 		position.z = matrix[13];
 	}
-	
+
 	public final void getAnimatedPositionMatrix(float[] matrix, long worldTime) {
 		getPositionMatrix(matrix, worldTime);
 		processAnimators(this, matrix, worldTime);
@@ -683,7 +703,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setPosition(WWVector position) {
 		float[] matrix = new float[16];
 		getPositionMatrix(matrix, getWorldTime());
-		Matrix.translateM(matrix,  0, -matrix[12],  -matrix[14],  -matrix[13]);
+		Matrix.translateM(matrix, 0, -matrix[12], -matrix[14], -matrix[13]);
 		Matrix.translateM(matrix, 0, position.x, position.z, position.y);
 		setOrientation(matrix, null, null, getWorldTime());
 	}
@@ -691,7 +711,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void setPosition(float x, float y, float z) {
 		float[] matrix = new float[16];
 		getPositionMatrix(matrix, getWorldTime());
-		Matrix.translateM(matrix,  0, -matrix[12],  -matrix[14],  -matrix[13]);
+		Matrix.translateM(matrix, 0, -matrix[12], -matrix[14], -matrix[13]);
 		Matrix.translateM(matrix, 0, x, z, y);
 		setOrientation(matrix, null, null, getWorldTime());
 	}
@@ -872,9 +892,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			calculateExtents();
 		}
 	}
-	
+
 	/**
-	 * A newer method to set the position and rotation using a matrix.  Velocity and angular momentum are still specified using vectors.
+	 * A newer method to set the position and rotation using a matrix. Velocity and angular momentum are still specified using vectors.
 	 */
 	public final void setOrientation(float[] newMatrix, WWVector newVelocity, WWVector newAMomentum, long newMoveTime) {
 		for (int i = 0; i < 16; i++) {
@@ -1177,8 +1197,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public float[] lastOverlapPositionMatrix;
 
-	public final void getOverlap(WWObject object, float[] positionMatrix, float[] objectPositionMatrix, long worldTime, WWVector tempPoint, WWVector tempPoint2,
-			WWVector overlapPoint, WWVector overlapVector) {
+	public final void getOverlap(WWObject object, float[] positionMatrix, float[] objectPositionMatrix, long worldTime, WWVector tempPoint, WWVector tempPoint2, WWVector overlapPoint, WWVector overlapVector) {
 		// To simplify overlap testing, check several key points. These are the eight corners, twelve
 		// half edge points, and six center side points of the box. Test each of these.
 
@@ -1305,16 +1324,16 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		point.z = z;
 		return point;
 	}
-	
+
 	/**
-	 * Rotate a vector according to a matrix.  This treats the vector as a direction, not a position.
+	 * Rotate a vector according to a matrix. This treats the vector as a direction, not a position.
 	 */
 	public static final WWVector rotate(WWVector direction, float[] matrix) {
 		vec1[0] = direction.x;
 		vec1[1] = direction.z;
 		vec1[2] = direction.y;
 		vec1[3] = 0;
-		Matrix.multiplyMV(vec2,  0,  matrix,  0,  vec1,  0);
+		Matrix.multiplyMV(vec2, 0, matrix, 0, vec1, 0);
 		direction.x = vec2[0];
 		direction.z = vec2[1];
 		direction.y = vec2[2];
@@ -1368,7 +1387,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	/**
-	 * Anti-rotate a vector according to a matrix.  This treats the vector as a direction, not a position.
+	 * Anti-rotate a vector according to a matrix. This treats the vector as a direction, not a position.
 	 */
 	public static final WWVector antiRotate(WWVector direction, float[] matrix) {
 		vec1[0] = direction.x;
@@ -1377,7 +1396,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		vec1[3] = 0;
 		float[] tmatrix = new float[16];
 		Matrix.invertM(tmatrix, 0, matrix, 0);
-		Matrix.multiplyMV(vec2,  0,  tmatrix,  0,  vec1,  0);
+		Matrix.multiplyMV(vec2, 0, tmatrix, 0, vec1, 0);
 		direction.x = vec2[0];
 		direction.z = vec2[1];
 		direction.y = vec2[2];
@@ -1443,12 +1462,13 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 */
 	static float[] vec1 = new float[4];
 	static float[] vec2 = new float[4];
+
 	public static final WWVector transform(WWVector point, float[] matrix) {
 		vec1[0] = point.x;
 		vec1[1] = point.z;
 		vec1[2] = point.y;
 		vec1[3] = 1;
-		Matrix.multiplyMV(vec2,  0,  matrix,  0,  vec1,  0);
+		Matrix.multiplyMV(vec2, 0, matrix, 0, vec1, 0);
 		point.x = vec2[0];
 		point.z = vec2[1];
 		point.y = vec2[2];
@@ -1513,7 +1533,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		vec1[3] = 1;
 		float[] tmatrix = new float[16];
 		Matrix.invertM(tmatrix, 0, matrix, 0);
-		Matrix.multiplyMV(vec2,  0,  tmatrix,  0,  vec1,  0);
+		Matrix.multiplyMV(vec2, 0, tmatrix, 0, vec1, 0);
 		point.x = vec2[0];
 		point.z = vec2[1];
 		point.y = vec2[2];
@@ -2854,7 +2874,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public WWAction[] getActions() {
 		return actions;
 	}
-	
+
 	public void playSound(String soundName, float volume) {
 		if (getRendering() != null) {
 			rendering.getRenderer().getSoundGenerator().playSound(soundName, 1, this.getPosition(), volume, 1.0f);
