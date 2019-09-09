@@ -1199,11 +1199,12 @@ public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 		WWObject cameraObject = clientModel.getCameraObject();
 
 		WWObject avatar = clientModel.getAvatar();
-		WWVector cameraObjectRotation;
+		float cameraObjectRotationZ = 0;
+		float cameraObjectRotationX = 0;
+		float cameraObjectRotationY = 0;
 		if (cameraObject != null) {
-			cameraObjectRotation = cameraObject.getAbsoluteAnimatedRotation(time);
-		} else {
-			cameraObjectRotation = new WWVector();
+			//cameraObjectRotation = cameraObject.getAbsoluteAnimatedRotation(time);
+			// TODO need to figure out eulers for z and x and y
 		}
 		float cameraSlideX = clientModel.getCameraSlideX();
 		float cameraSlideY = clientModel.getCameraSlideY();
@@ -1240,7 +1241,7 @@ public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 			cameraObject.getAbsoluteAnimatedPositionMatrix(matrix, time);
 			if (avatar == cameraObject && cameraDistance < 10) {
 				WWVector point = new WWVector(0, 0, 0.75f);
-				WWObject.rotate(point, cameraObjectRotation, time);
+				WWObject.rotate(point, matrix);
 				cameraPoint.add(point); // so avatar is in lower part of screen
 			}
 		}
@@ -1274,9 +1275,9 @@ public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 					WWObject object = objects[i];
 					if (object != null && !object.deleted && !object.penetratable && object.solid && !object.phantom) {
 						if (cameraObject != null && avatar != null && (cameraObject == avatar || avatar.isDescendant(cameraObject))) {
-							cameraLocation.x = slideCameraPointX + limitedCameraDistance * (float) Math.sin(TORADIAN * (cameraPan + cameraObjectRotation.z)) * (float) Math.cos(TORADIAN * (cameraTilt + cameraObjectRotation.x));
+							cameraLocation.x = slideCameraPointX + limitedCameraDistance * (float) Math.sin(TORADIAN * (cameraPan + cameraObjectRotationZ)) * (float) Math.cos(TORADIAN * (cameraTilt + cameraObjectRotationX));
 							if (cameraDistance < 10) {
-								cameraLocation.y = slideCameraPointY + limitedCameraDistance * (float) Math.cos(TORADIAN * (cameraPan + cameraObjectRotation.z)) * (float) Math.cos(TORADIAN * (cameraTilt + cameraObjectRotation.x));
+								cameraLocation.y = slideCameraPointY + limitedCameraDistance * (float) Math.cos(TORADIAN * (cameraPan + cameraObjectRotationZ)) * (float) Math.cos(TORADIAN * (cameraTilt + cameraObjectRotationX));
 								cameraLocation.z = slideCameraPointZ + (float) Math.sin(TORADIAN * cameraTilt) * limitedCameraDistance;
 							} else {
 								cameraLocation.y = slideCameraPointY + limitedCameraDistance * (float) Math.cos(TORADIAN * cameraPan) * (float) Math.cos(TORADIAN * cameraTilt);
@@ -1341,14 +1342,14 @@ public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 		}
 
 		if (cameraObject != null && avatar != null && (avatar == cameraObject || avatar.isDescendant(cameraObject))) {
-			dampCameraPan = ((cameraPan + cameraObjectRotation.z) + clientModel.cameraDampRate * dampCameraPan) / (clientModel.cameraDampRate + 1);
+			dampCameraPan = ((cameraPan + cameraObjectRotationZ) + clientModel.cameraDampRate * dampCameraPan) / (clientModel.cameraDampRate + 1);
 			if (cameraDistance < 10) {
 				if (avatar == cameraObject) {
-					dampCameraTilt = ((cameraTilt - cameraObjectRotation.x) + 4 * clientModel.cameraDampRate * dampCameraTilt) / (4 * clientModel.cameraDampRate + 1);
-					dampCameraLean = ((cameraLean - cameraObjectRotation.y) + 4 * clientModel.cameraDampRate * dampCameraLean) / (4 * clientModel.cameraDampRate + 1);
+					dampCameraTilt = ((cameraTilt - cameraObjectRotationX) + 4 * clientModel.cameraDampRate * dampCameraTilt) / (4 * clientModel.cameraDampRate + 1);
+					dampCameraLean = ((cameraLean - cameraObjectRotationY) + 4 * clientModel.cameraDampRate * dampCameraLean) / (4 * clientModel.cameraDampRate + 1);
 				} else {
-					dampCameraTilt = cameraTilt - cameraObjectRotation.x;
-					dampCameraLean = cameraLean - cameraObjectRotation.y;
+					dampCameraTilt = cameraTilt - cameraObjectRotationX;
+					dampCameraLean = cameraLean - cameraObjectRotationY;
 				}
 			} else {
 				dampCameraTilt = (cameraTilt + clientModel.cameraDampRate * dampCameraTilt) / (clientModel.cameraDampRate + 1);

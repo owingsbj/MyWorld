@@ -2,6 +2,7 @@ package com.gallantrealm.myworld.model;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import com.gallantrealm.myworld.FastMath;
 import com.gallantrealm.myworld.client.renderer.IRenderable;
 import com.gallantrealm.myworld.client.renderer.IRendering;
@@ -28,12 +29,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	// Positioning properties
 	public long lastMoveTime;
 	public float[] modelMatrix;
-	float positionX;
-	float positionY;
-	float positionZ;
-	float rotationX; // degrees
-	float rotationY; // degrees
-	float rotationZ; // degrees
 	public WWVector rotationPoint = new WWVector();
 
 	// Grouping properties
@@ -196,12 +191,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		for (int i = 0; i < 16; i++) {
 			os.writeFloat(modelMatrix[i]);
 		}
-		os.writeFloat(positionX);
-		os.writeFloat(positionY);
-		os.writeFloat(positionZ);
-		os.writeFloat(rotationX);
-		os.writeFloat(rotationY);
-		os.writeFloat(rotationZ);
 		os.writeFloat(velocityX);
 		os.writeFloat(velocityY);
 		os.writeFloat(velocityZ);
@@ -289,12 +278,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		for (int i = 0; i < 16; i++) {
 			modelMatrix[i] = is.readFloat();
 		}
-		positionX = is.readFloat();
-		positionY = is.readFloat();
-		positionZ = is.readFloat();
-		rotationX = is.readFloat();
-		rotationY = is.readFloat();
-		rotationZ = is.readFloat();
 		velocityX = is.readFloat();
 		velocityY = is.readFloat();
 		velocityZ = is.readFloat();
@@ -348,32 +331,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		return rotation;
 	}
 
-	/**
-	 * Returns the animation rotation including contribution from parents
-	 */
-	public final WWVector getAbsoluteAnimatedRotation(long worldTime) {
-		WWVector rotation = new WWVector();
-		getAnimatedRotation(rotation, worldTime);
-		int p = parentId;
-		if (p != 0) {
-			WWObject parent = world.objects[p];
-			WWVector parentRotation = parent.getAbsoluteAnimatedRotation(worldTime);
-			rotation.add(parentRotation);
-		}
-		return rotation;
-	}
-
-	public final WWVector getAbsoluteAnimatedRotation(WWVector rotation, long worldTime) {
-		getAnimatedRotation(rotation, worldTime);
-		int p = parentId;
-		if (p != 0) {
-			WWObject parent = world.objects[p];
-			WWVector parentRotation = parent.getAbsoluteAnimatedRotation(worldTime);
-			rotation.add(parentRotation);
-		}
-		return rotation;
-	}
-
 	public final WWVector getRotation() {
 		return getRotation(getWorldTime());
 	}
@@ -389,46 +346,42 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			rotation.y = rotationY + deltaTime * aMomentumY;
 			rotation.z = rotationZ + deltaTime * aMomentumZ;
 			// Apply start and stop rotation limits if any
-			if (startRotation != null) {
-				if (rotationX > startRotation.x && rotation.x < startRotation.x) {
-					rotation.x = startRotation.x;
-				} else if (rotationX < startRotation.x && rotation.x > startRotation.x) {
-					rotation.x = startRotation.x;
-				}
-				if (rotationY > startRotation.y && rotation.y < startRotation.y) {
-					rotation.y = startRotation.y;
-				} else if (rotationY < startRotation.y && rotation.y > startRotation.y) {
-					rotation.y = startRotation.y;
-				}
-				if (rotationZ > startRotation.z && rotation.z < startRotation.z) {
-					rotation.z = startRotation.z;
-				} else if (rotationZ < startRotation.z && rotation.z > startRotation.z) {
-					rotation.z = startRotation.z;
-				}
-			}
-			if (stopRotation != null) {
-				if (rotationX > stopRotation.x && rotation.x < stopRotation.x) {
-					rotation.x = stopRotation.x;
-				} else if (rotationX < stopRotation.x && rotation.x > stopRotation.x) {
-					rotation.x = stopRotation.x;
-				}
-				if (rotationY > stopRotation.y && rotation.y < stopRotation.y) {
-					rotation.y = stopRotation.y;
-				} else if (rotationY < stopRotation.y && rotation.y > stopRotation.y) {
-					rotation.y = stopRotation.y;
-				}
-				if (rotationZ > stopRotation.z && rotation.z < stopRotation.z) {
-					rotation.z = stopRotation.z;
-				} else if (rotationZ < stopRotation.z && rotation.z > stopRotation.z) {
-					rotation.z = stopRotation.z;
-				}
-			}
+			// TODO needs to be reworked for matrices somehow..
+//			if (startRotation != null) {
+//				if (rotationX > startRotation.x && rotation.x < startRotation.x) {
+//					rotation.x = startRotation.x;
+//				} else if (rotationX < startRotation.x && rotation.x > startRotation.x) {
+//					rotation.x = startRotation.x;
+//				}
+//				if (rotationY > startRotation.y && rotation.y < startRotation.y) {
+//					rotation.y = startRotation.y;
+//				} else if (rotationY < startRotation.y && rotation.y > startRotation.y) {
+//					rotation.y = startRotation.y;
+//				}
+//				if (rotationZ > startRotation.z && rotation.z < startRotation.z) {
+//					rotation.z = startRotation.z;
+//				} else if (rotationZ < startRotation.z && rotation.z > startRotation.z) {
+//					rotation.z = startRotation.z;
+//				}
+//			}
+//			if (stopRotation != null) {
+//				if (rotationX > stopRotation.x && rotation.x < stopRotation.x) {
+//					rotation.x = stopRotation.x;
+//				} else if (rotationX < stopRotation.x && rotation.x > stopRotation.x) {
+//					rotation.x = stopRotation.x;
+//				}
+//				if (rotationY > stopRotation.y && rotation.y < stopRotation.y) {
+//					rotation.y = stopRotation.y;
+//				} else if (rotationY < stopRotation.y && rotation.y > stopRotation.y) {
+//					rotation.y = stopRotation.y;
+//				}
+//				if (rotationZ > stopRotation.z && rotation.z < stopRotation.z) {
+//					rotation.z = stopRotation.z;
+//				} else if (rotationZ < stopRotation.z && rotation.z > stopRotation.z) {
+//					rotation.z = stopRotation.z;
+//				}
+//			}
 		}
-	}
-
-	public final void getAnimatedRotation(WWVector rotation, long worldTime) {
-		getRotation(rotation, worldTime);
-		processRotationAnimators(this, rotation, worldTime);
 	}
 
 	/** Invoke animators for rotation for this object and its parent(s). */
@@ -448,45 +401,46 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	public final boolean isAtRotationBounds() {
-		long worldTime = getWorldTime();
-		float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
-		float newRotationX = rotationX + deltaTime * aMomentumX;
-		float newRotationY = rotationY + deltaTime * aMomentumY;
-		float newRotationZ = rotationZ + deltaTime * aMomentumZ;
-		if (startRotation != null) {
-			if (rotationX > startRotation.x && newRotationX < startRotation.x) {
-				return true;
-			} else if (rotationX < startRotation.x && newRotationX > startRotation.x) {
-				return true;
-			}
-			if (rotationY > startRotation.y && newRotationY < startRotation.y) {
-				return true;
-			} else if (rotationY < startRotation.y && newRotationY > startRotation.y) {
-				return true;
-			}
-			if (rotationZ > startRotation.z && newRotationZ < startRotation.z) {
-				return true;
-			} else if (rotationZ < startRotation.z && newRotationZ > startRotation.z) {
-				return true;
-			}
-		}
-		if (stopRotation != null) {
-			if (rotationX > stopRotation.x && newRotationX < stopRotation.x) {
-				return true;
-			} else if (rotationX < stopRotation.x && newRotationX > stopRotation.x) {
-				return true;
-			}
-			if (rotationY > stopRotation.y && newRotationY < stopRotation.y) {
-				return true;
-			} else if (rotationY < stopRotation.y && newRotationY > stopRotation.y) {
-				return true;
-			}
-			if (rotationZ > stopRotation.z && newRotationZ < stopRotation.z) {
-				return true;
-			} else if (rotationZ < stopRotation.z && newRotationZ > stopRotation.z) {
-				return true;
-			}
-		}
+		// TODO the logic below is broken with matrices.  Need a good idea..
+//		long worldTime = getWorldTime();
+//		float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
+//		float newRotationX = rotationX + deltaTime * aMomentumX;
+//		float newRotationY = rotationY + deltaTime * aMomentumY;
+//		float newRotationZ = rotationZ + deltaTime * aMomentumZ;
+//		if (startRotation != null) {
+//			if (rotationX > startRotation.x && newRotationX < startRotation.x) {
+//				return true;
+//			} else if (rotationX < startRotation.x && newRotationX > startRotation.x) {
+//				return true;
+//			}
+//			if (rotationY > startRotation.y && newRotationY < startRotation.y) {
+//				return true;
+//			} else if (rotationY < startRotation.y && newRotationY > startRotation.y) {
+//				return true;
+//			}
+//			if (rotationZ > startRotation.z && newRotationZ < startRotation.z) {
+//				return true;
+//			} else if (rotationZ < startRotation.z && newRotationZ > startRotation.z) {
+//				return true;
+//			}
+//		}
+//		if (stopRotation != null) {
+//			if (rotationX > stopRotation.x && newRotationX < stopRotation.x) {
+//				return true;
+//			} else if (rotationX < stopRotation.x && newRotationX > stopRotation.x) {
+//				return true;
+//			}
+//			if (rotationY > stopRotation.y && newRotationY < stopRotation.y) {
+//				return true;
+//			} else if (rotationY < stopRotation.y && newRotationY > stopRotation.y) {
+//				return true;
+//			}
+//			if (rotationZ > stopRotation.z && newRotationZ < stopRotation.z) {
+//				return true;
+//			} else if (rotationZ < stopRotation.z && newRotationZ > stopRotation.z) {
+//				return true;
+//			}
+//		}
 		return false;
 	}
 
@@ -528,47 +482,47 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 	public final void getPosition(WWVector position, long worldTime) {
 		if (fixed) {
-			position.x = positionX;
-			position.y = positionY;
-			position.z = positionZ;
+			position.x = modelMatrix[12];
+			position.y = modelMatrix[14];
+			position.z = modelMatrix[13];
 		} else {
 			// Determine position based on delta time since it was set and the velocity and acceleration
 			float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
-			position.x = positionX + deltaTime * velocityX;
-			position.y = positionY + deltaTime * velocityY;
-			position.z = positionZ + deltaTime * velocityZ;
+			position.x = modelMatrix[12] + deltaTime * velocityX;
+			position.y = modelMatrix[14] + deltaTime * velocityY;
+			position.z = modelMatrix[13] + deltaTime * velocityZ;
 			// Apply start and stop position limits if any
 			if (startPosition != null) {
-				if (positionX > startPosition.x && position.x < startPosition.x) {
+				if (position.x > startPosition.x && position.x < startPosition.x) {
 					position.x = startPosition.x;
-				} else if (positionX < startPosition.x && position.x > startPosition.x) {
+				} else if (position.x < startPosition.x && position.x > startPosition.x) {
 					position.x = startPosition.x;
 				}
-				if (positionY > startPosition.y && position.y < startPosition.y) {
+				if (position.y > startPosition.y && position.y < startPosition.y) {
 					position.y = startPosition.y;
-				} else if (positionY < startPosition.y && position.y > startPosition.y) {
+				} else if (position.y < startPosition.y && position.y > startPosition.y) {
 					position.y = startPosition.y;
 				}
-				if (positionZ > startPosition.z && position.z < startPosition.z) {
+				if (position.z > startPosition.z && position.z < startPosition.z) {
 					position.z = startPosition.z;
-				} else if (positionZ < startPosition.z && position.z > startPosition.z) {
+				} else if (position.z < startPosition.z && position.z > startPosition.z) {
 					position.z = startPosition.z;
 				}
 			}
 			if (stopPosition != null) {
-				if (positionX > stopPosition.x && position.x < stopPosition.x) {
+				if (position.x > stopPosition.x && position.x < stopPosition.x) {
 					position.x = stopPosition.x;
-				} else if (positionX < stopPosition.x && position.x > stopPosition.x) {
+				} else if (position.x < stopPosition.x && position.x > stopPosition.x) {
 					position.x = stopPosition.x;
 				}
-				if (positionY > stopPosition.y && position.y < stopPosition.y) {
+				if (position.y > stopPosition.y && position.y < stopPosition.y) {
 					position.y = stopPosition.y;
-				} else if (positionY < stopPosition.y && position.y > stopPosition.y) {
+				} else if (position.y < stopPosition.y && position.y > stopPosition.y) {
 					position.y = stopPosition.y;
 				}
-				if (positionZ > stopPosition.z && position.z < stopPosition.z) {
+				if (position.z > stopPosition.z && position.z < stopPosition.z) {
 					position.z = stopPosition.z;
-				} else if (positionZ < stopPosition.z && position.z > stopPosition.z) {
+				} else if (position.z < stopPosition.z && position.z > stopPosition.z) {
 					position.z = stopPosition.z;
 				}
 			}
@@ -885,13 +839,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * internally call this method.
 	 */
 	public final void setOrientation(WWVector newPosition, WWVector newRotation, WWVector newVelocity, WWVector newAMomentum, long newMoveTime) {
-		this.positionX = newPosition.x;
-		this.positionY = newPosition.y;
-		this.positionZ = newPosition.z;
 		this.lastGetAbsolutePositionTime = -1;
-		this.rotationX = newRotation.x;
-		this.rotationY = newRotation.y;
-		this.rotationZ = newRotation.z;
 		if (newVelocity != null) {
 			this.velocityX = newVelocity.x;
 			this.velocityY = newVelocity.y;
@@ -906,16 +854,16 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 		// Update the model matrix
 		Matrix.setIdentityM(modelMatrix, 0);
-		Matrix.translateM(modelMatrix, 0, positionX, positionZ, positionY);
+		Matrix.translateM(modelMatrix, 0, newPosition.x, newPosition.z, newPosition.y);
 		Matrix.translateM(modelMatrix, 0, rotationPoint.x, rotationPoint.z, rotationPoint.y);
-		if (rotationZ != 0) {
-			Matrix.rotateM(modelMatrix, 0, rotationZ, 0, 1, 0);
+		if (newRotation.z != 0) {
+			Matrix.rotateM(modelMatrix, 0, newRotation.z, 0, 1, 0);
 		}
-		if (rotationY != 0) {
-			Matrix.rotateM(modelMatrix, 0, rotationY, 0, 0, 1);
+		if (newRotation.y != 0) {
+			Matrix.rotateM(modelMatrix, 0, newRotation.y, 0, 0, 1);
 		}
-		if (rotationX != 0) {
-			Matrix.rotateM(modelMatrix, 0, rotationX, 1, 0, 0);
+		if (newRotation.x != 0) {
+			Matrix.rotateM(modelMatrix, 0, newRotation.x, 1, 0, 0);
 		}
 		Matrix.translateM(modelMatrix, 0, -rotationPoint.x, -rotationPoint.z, -rotationPoint.y);
 
@@ -932,9 +880,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		for (int i = 0; i < 16; i++) {
 			modelMatrix = newMatrix;
 		}
-		positionX = modelMatrix[12];
-		positionY = modelMatrix[14];
-		positionZ = modelMatrix[13];
 		this.lastGetAbsolutePositionTime = -1;
 		if (newVelocity != null) {
 			this.velocityX = newVelocity.x;
@@ -1581,9 +1526,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		if (world != null) {
 			long currenttime = getWorldTime();
 			clone.setLastModifyTime(currenttime);
-			// manually clone position and rotation as these change due to modified time
-			clone.setPosition(getPosition(currenttime));
-			clone.setRotation(getRotation(currenttime));
+			clone.modelMatrix = new float[16];
+			getPositionMatrix(clone.modelMatrix, currenttime);
 		}
 		sideAttributes = new SideAttributes[NSIDES];
 		for (int i = 0; i < NSIDES; i++) {
@@ -1616,9 +1560,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		if (world != null) {
 			long currenttime = getWorldTime();
 			clone.setLastModifyTime(currenttime);
-			// manually clone position and rotation as these change due to modified time
-			clone.setPosition(getPosition(currenttime));
-			clone.setRotation(getRotation(currenttime));
+			clone.modelMatrix = new float[16];
+			getPositionMatrix(clone.modelMatrix, currenttime);
 		}
 		clone.behaviors = null;
 		return clone;
@@ -1627,12 +1570,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public void copyFrom(WWObject newObject) {
 		// this.id = newObject.id;
 		this.lastMoveTime = newObject.lastMoveTime;
-		this.positionX = newObject.positionX;
-		this.positionY = newObject.positionY;
-		this.positionZ = newObject.positionZ;
-		this.rotationX = newObject.rotationX;
-		this.rotationY = newObject.rotationY;
-		this.rotationZ = newObject.rotationZ;
+		this.modelMatrix = Arrays.copyOf(newObject.modelMatrix, 16);
 
 		// Grouping properties
 		this.parentId = newObject.parentId;
@@ -2026,15 +1964,16 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		extenty = extent;
 		extentz = extent;
 		if (fixed && parentId == 0) {
-			if (rotationX == 0 && rotationY == 0) {
-				extentz = sizeZ / 2.0f;
-			}
-			if (rotationX == 0 && rotationZ == 0) {
-				extenty = sizeY / 2.0f;
-			}
-			if (rotationY == 0 && rotationZ == 0) {
-				extentx = sizeX / 2.0f;
-			}
+			// TODO improve extents with orientation info in matrix
+//			if (rotationX == 0 && rotationY == 0) {
+//				extentz = sizeZ / 2.0f;
+//			}
+//			if (rotationX == 0 && rotationZ == 0) {
+//				extenty = sizeY / 2.0f;
+//			}
+//			if (rotationY == 0 && rotationZ == 0) {
+//				extentx = sizeX / 2.0f;
+//			}
 		}
 	}
 

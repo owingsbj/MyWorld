@@ -33,6 +33,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -795,14 +796,17 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 									clientModel.setSelectedObject(pickedObject);
 									WWObject avatar = clientModel.getAvatar();
 									if (avatar != null) {
+										float[] matrix = new float[16];
+										avatar.getPositionMatrix(matrix, clientModel.world.getWorldTime());
+										float heading = FastMath.TODEGREES * (float)Math.atan2(matrix[2], matrix[10]);
 										if (avatar == previouslyPickedObject && avatar != pickedObject) {
 											clientModel.setCameraObject(pickedObject);
 											clientModel.setCameraDistance(FastMath.max(clientModel.getCameraDistance(), pickedObject.extent * 4));
-											clientModel.setCameraPan(clientModel.getCameraPan() + avatar.getRotation(clientModel.world.getWorldTime()).getZ());
+											clientModel.setCameraPan(clientModel.getCameraPan() + heading);
 										} else if (avatar != previouslyPickedObject && avatar == pickedObject) {
 											clientModel.setCameraObject(pickedObject);
 											clientModel.setCameraDistance(FastMath.max(clientModel.getCameraDistance(), pickedObject.extent * 4));
-											clientModel.setCameraPan(clientModel.getCameraPan() - avatar.getRotation(clientModel.world.getWorldTime()).getZ());
+											clientModel.setCameraPan(clientModel.getCameraPan() - heading);
 										}
 									}
 								}
@@ -913,8 +917,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 										dragging = true;
 									}
 									if (clientModel.world.isConfrontMode() && clientModel.getAvatar() == clientModel.getCameraObject()) {
-										WWVector avatarRotation = clientModel.getAvatar().getRotation();
-										clientModel.getAvatar().setRotation(avatarRotation.x, avatarRotation.y, avatarRotation.z + (startingX - x) / 2.5f / 10.0f);
+										Matrix.rotateM(clientModel.getAvatar().modelMatrix, 0,  (startingX - x) / 2.5f / 10.0f, 0, 1, 0);
 										// TODO the above won't work with remote worlds
 									} else {
 										clientModel.setCameraPan(startingCameraPan + (startingX - x) / 2.5f);
