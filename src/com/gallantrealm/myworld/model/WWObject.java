@@ -338,7 +338,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final void getRotation(WWVector rotation, long worldTime) {
 		float yaw, pitch, roll;
 
-		// find yaw (around y-axis) first
+		// find yaw (around z-axis) first
 		yaw = FastMath.TODEGREES * (float) Math.asin(modelMatrix[8]);
 		if (modelMatrix[10] < 0) {
 			if (yaw >= 0)
@@ -347,9 +347,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				yaw = -180.0f - yaw;
 		}
 
-		// find roll (around z-axis) and pitch (around x-axis)
+		// find roll (around y-axis) and pitch (around x-axis)
 		if (modelMatrix[0] > -0.00001f && modelMatrix[0] < 0.00001f) {
-			roll = 0; // @@ assume roll=0
+			roll = 0; // assume roll=0
 			pitch = FastMath.TODEGREES * (float) Math.atan2(modelMatrix[1], modelMatrix[5]);
 		} else {
 			roll = FastMath.TODEGREES * (float) Math.atan2(-modelMatrix[4], modelMatrix[0]);
