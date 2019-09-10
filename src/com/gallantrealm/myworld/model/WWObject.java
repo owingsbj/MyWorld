@@ -334,7 +334,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final WWVector getRotation() {
 		return getRotation(getWorldTime());
 	}
-	
+
 	public final float getRotationZ(long worldTime) {
 		float yaw = FastMath.TODEGREES * (float) Math.asin(modelMatrix[8]);
 		if (modelMatrix[10] < 0) {
@@ -596,8 +596,20 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			// Determine position based on delta time since it was set and the velocity and acceleration
 			System.arraycopy(modelMatrix, 0, matrix, 0, matrix.length);
 			float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
-			Matrix.translateM(matrix, 0, deltaTime * velocityX, deltaTime * velocityZ, deltaTime * velocityY);
-			// Apply start and stop position limits if any
+			if (deltaTime > 0) {
+				Matrix.translateM(matrix, 0, deltaTime * velocityX, deltaTime * velocityZ, deltaTime * velocityY);
+				if (aMomentumZ != 0) {
+					Matrix.rotateM(matrix, 0, deltaTime * aMomentumZ, 0, 1, 0);
+				}
+				if (aMomentumY != 0) {
+					Matrix.rotateM(matrix, 0, deltaTime * aMomentumY, 0, 0, 1);
+				}
+				if (aMomentumX != 0) {
+					Matrix.rotateM(matrix, 0, deltaTime * aMomentumX, 1, 0, 0);
+				}
+				lastMoveTime = worldTime;
+				System.arraycopy(matrix, 0, modelMatrix, 0, matrix.length);
+				// Apply start and stop position limits if any
 //			if (startPosition != null) {
 //				if (positionX > startPosition.x && position.x < startPosition.x) {
 //					position.x = startPosition.x;
@@ -632,6 +644,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 //					position.z = stopPosition.z;
 //				}
 //			}
+			}
 		}
 	}
 
