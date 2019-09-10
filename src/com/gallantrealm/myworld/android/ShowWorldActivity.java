@@ -796,9 +796,7 @@ public class ShowWorldActivity extends GallantActivity implements OnTouchListene
 									clientModel.setSelectedObject(pickedObject);
 									WWObject avatar = clientModel.getAvatar();
 									if (avatar != null) {
-										float[] matrix = new float[16];
-										avatar.getPositionMatrix(matrix, clientModel.world.getWorldTime());
-										float heading = FastMath.TODEGREES * (float)Math.atan2(matrix[2], matrix[10]);
+										float heading = avatar.getRotationZ(clientModel.world.getWorldTime());
 										if (avatar == previouslyPickedObject && avatar != pickedObject) {
 											clientModel.setCameraObject(pickedObject);
 											clientModel.setCameraDistance(FastMath.max(clientModel.getCameraDistance(), pickedObject.extent * 4));

@@ -334,6 +334,46 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	public final WWVector getRotation() {
 		return getRotation(getWorldTime());
 	}
+	
+	public final float getRotationZ(long worldTime) {
+		float yaw = FastMath.TODEGREES * (float) Math.asin(modelMatrix[8]);
+		if (modelMatrix[10] < 0) {
+			if (yaw >= 0)
+				yaw = 180.0f - yaw;
+			else
+				yaw = -180.0f - yaw;
+		}
+		return yaw;
+	}
+
+	/**
+	 * Returns the rotation including contribution from parents
+	 */
+	public final WWVector getAbsoluteRotation(long worldTime) {
+		WWVector rotation = new WWVector();
+		getRotation(rotation, worldTime);
+		int p = parentId;
+		if (p != 0) {
+			WWObject parent = world.objects[p];
+			WWVector parentRotation = parent.getAbsoluteRotation(worldTime);
+			rotation.add(parentRotation);
+		}
+		return rotation;
+	}
+
+	/**
+	 * Returns the rotation including contribution from parents
+	 */
+	public final WWVector getAbsoluteRotation(WWVector rotation, long worldTime) {
+		getRotation(rotation, worldTime);
+		int p = parentId;
+		if (p != 0) {
+			WWObject parent = world.objects[p];
+			WWVector parentRotation = parent.getAbsoluteRotation(worldTime);
+			rotation.add(parentRotation);
+		}
+		return rotation;
+	}
 
 	public final void getRotation(WWVector rotation, long worldTime) {
 		float yaw, pitch, roll;

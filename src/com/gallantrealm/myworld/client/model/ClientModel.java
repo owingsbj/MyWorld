@@ -912,17 +912,15 @@ public abstract class ClientModel {
 		float y;
 		float z;
 		if (cameraObject != null) {
-			float[] cameraObjectPositionMatrix = new float[16];
-			cameraObject.getAbsolutePositionMatrix(cameraObjectPositionMatrix, worldTime);
+			WWVector pos = cameraObject.getAbsolutePosition(worldTime);
 			if (cameraObject == getAvatar() || getAvatar().isDescendant(cameraObject)) {
-				float cameraObjectRotationZ = 0;
-				x = xcamera + cameraObjectPositionMatrix[12] + cameraDistance * FastMath.sin(TORADIAN * cameraPan + cameraObjectRotationZ) * FastMath.cos(TORADIAN * cameraTilt);
-				y = ycamera + cameraObjectPositionMatrix[14] + cameraDistance * FastMath.cos(TORADIAN * cameraPan + cameraObjectRotationZ) * FastMath.cos(TORADIAN * cameraTilt);
-				z = zcamera + cameraObjectPositionMatrix[13] + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
+				x = xcamera + pos.x + cameraDistance * FastMath.sin(TORADIAN * cameraPan + cameraObject.getAbsoluteRotation(worldTime).getZ()) * FastMath.cos(TORADIAN * cameraTilt);
+				y = ycamera + pos.y + cameraDistance * FastMath.cos(TORADIAN * cameraPan + cameraObject.getAbsoluteRotation(worldTime).getZ()) * FastMath.cos(TORADIAN * cameraTilt);
+				z = zcamera + pos.z + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
 			} else {
-				x = xcamera + cameraObjectPositionMatrix[12] + cameraDistance * FastMath.sin(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
-				y = ycamera + cameraObjectPositionMatrix[14] + cameraDistance * FastMath.cos(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
-				z = zcamera + cameraObjectPositionMatrix[13] + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
+				x = xcamera + pos.x + cameraDistance * FastMath.sin(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
+				y = ycamera + pos.y + cameraDistance * FastMath.cos(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
+				z = zcamera + pos.z + FastMath.sin(TORADIAN * cameraTilt) * cameraDistance;
 			}
 		} else {
 			x = xcamera + cameraDistance * FastMath.sin(TORADIAN * cameraPan) * FastMath.cos(TORADIAN * cameraTilt);
