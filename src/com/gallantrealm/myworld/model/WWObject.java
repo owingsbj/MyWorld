@@ -950,9 +950,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * A newer method to set the position and rotation using a matrix. Velocity and angular momentum are still specified using vectors.
 	 */
 	public final void setOrientation(float[] newMatrix, WWVector newVelocity, WWVector newAMomentum, long newMoveTime) {
-		for (int i = 0; i < 16; i++) {
-			modelMatrix = newMatrix;
-		}
+		System.arraycopy(newMatrix,  0,  modelMatrix,  0,  16);
 		this.lastGetAbsolutePositionTime = -1;
 		if (newVelocity != null) {
 			this.velocityX = newVelocity.x;
