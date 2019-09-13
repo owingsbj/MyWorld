@@ -588,6 +588,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			}
 		}
 	}
+	
+	long lastPositionMatrixTime;
 
 	public final void getPositionMatrix(float[] matrix, long worldTime) {
 		if (fixed) {
@@ -595,8 +597,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		} else {
 			// Determine position based on delta time since it was set and the velocity and acceleration
 			System.arraycopy(modelMatrix, 0, matrix, 0, matrix.length);
-			float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
-			if (deltaTime > 0) {
+			if (worldTime != lastPositionMatrixTime) {
+				float deltaTime = (worldTime - lastPositionMatrixTime) / 1000.0f;
 				Matrix.translateM(matrix, 0, deltaTime * velocityX, deltaTime * velocityZ, deltaTime * velocityY);
 				if (aMomentumZ != 0) {
 					Matrix.rotateM(matrix, 0, deltaTime * aMomentumZ, 0, 1, 0);
@@ -607,7 +609,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				if (aMomentumX != 0) {
 					Matrix.rotateM(matrix, 0, deltaTime * aMomentumX, 1, 0, 0);
 				}
-				lastMoveTime = worldTime;
+				lastPositionMatrixTime = worldTime;
 				System.arraycopy(matrix, 0, modelMatrix, 0, matrix.length);
 				// Apply start and stop position limits if any
 //			if (startPosition != null) {
@@ -939,6 +941,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			Matrix.rotateM(modelMatrix, 0, newRotation.x, 1, 0, 0);
 		}
 		Matrix.translateM(modelMatrix, 0, -rotationPoint.x, -rotationPoint.z, -rotationPoint.y);
+		lastPositionMatrixTime = newMoveTime;
 
 		// Since extents for fixed objects are tuned to current rotation, recalculate them
 		if (fixed && !phantom) {
@@ -951,6 +954,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 */
 	public final void setOrientation(float[] newMatrix, WWVector newVelocity, WWVector newAMomentum, long newMoveTime) {
 		System.arraycopy(newMatrix,  0,  modelMatrix,  0,  16);
+		lastPositionMatrixTime = newMoveTime;
 		this.lastGetAbsolutePositionTime = -1;
 		if (newVelocity != null) {
 			this.velocityX = newVelocity.x;
