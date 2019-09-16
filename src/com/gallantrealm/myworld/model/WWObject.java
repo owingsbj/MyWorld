@@ -1339,7 +1339,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Rotate a point according to a given rotation.
 	 */
 	public static final WWVector rotate(WWVector point, WWVector rotation, long worldTime) {
-
 		float x = point.x;
 		float y = point.y;
 		float z = point.z;
@@ -1384,6 +1383,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Rotate a vector according to a matrix. This treats the vector as a direction, not a position.
 	 */
 	public static final WWVector rotate(WWVector direction, float[] matrix) {
+		float[] vec1 = new float[4];
+		float[] vec2 = new float[4];
 		vec1[0] = direction.x;
 		vec1[1] = direction.z;
 		vec1[2] = direction.y;
@@ -1399,7 +1400,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Anti-rotate a point, removing a given rotation. Note that this is mainly useful to perform on velocity/force vectors.
 	 */
 	public static final WWVector antiRotate(WWVector point, WWVector rotation, long worldTime) {
-
 		float x = point.x;
 		float y = point.y;
 		float z = point.z;
@@ -1445,6 +1445,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Anti-rotate a vector according to a matrix. This treats the vector as a direction, not a position.
 	 */
 	public static final WWVector antiRotate(WWVector direction, float[] matrix) {
+		float[] vec1 = new float[4];
+		float[] vec2 = new float[4];
 		vec1[0] = direction.x;
 		vec1[1] = direction.z;
 		vec1[2] = direction.y;
@@ -1462,7 +1464,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Transform a point according to a rotation and position at a given time.
 	 */
 	public static final WWVector transform(WWVector point, WWVector position, WWVector rotation, WWVector rotationPoint, long worldTime) {
-
 //		float x = point.x + rotationPoint.x;
 //		float y = point.y + rotationPoint.y;
 //		float z = point.z + rotationPoint.z;
@@ -1515,10 +1516,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	/**
 	 * Transform a point according to a matrix
 	 */
-	static float[] vec1 = new float[4];
-	static float[] vec2 = new float[4];
-
 	public static final WWVector transform(WWVector point, float[] matrix) {
+		float[] vec1 = new float[4];
+		float[] vec2 = new float[4];
 		vec1[0] = point.x;
 		vec1[1] = point.z;
 		vec1[2] = point.y;
@@ -1534,7 +1534,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Anti-transform a point, removing the a given position and rotation.
 	 */
 	public static final WWVector antiTransform(WWVector point, WWVector position, WWVector rotation, long time) {
-
 		float r;
 		float theta;
 		float newTheta;
@@ -1582,6 +1581,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * Anti-transform a point according to a matrix
 	 */
 	public static final WWVector antiTransform(WWVector point, float[] matrix) {
+		float[] vec1 = new float[4];
+		float[] vec2 = new float[4];
 		vec1[0] = point.x;
 		vec1[1] = point.z;
 		vec1[2] = point.y;
