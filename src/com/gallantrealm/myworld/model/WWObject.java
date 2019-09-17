@@ -599,7 +599,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			System.arraycopy(modelMatrix, 0, matrix, 0, matrix.length);
 			if (worldTime != lastPositionMatrixTime) {
 				float deltaTime = (worldTime - lastPositionMatrixTime) / 1000.0f;
-				Matrix.translateM(matrix, 0, deltaTime * velocityX, deltaTime * velocityZ, deltaTime * velocityY);
+//				Matrix.translateM(matrix, 0, deltaTime * velocityX, deltaTime * velocityZ, deltaTime * velocityY);
+				matrix[12] += deltaTime * velocityX;
+				matrix[14] += deltaTime * velocityY;
+				matrix[13] += deltaTime * velocityZ;
 				if (aMomentumZ != 0) {
 					Matrix.rotateM(matrix, 0, deltaTime * aMomentumZ, 0, 1, 0);
 				}
@@ -681,7 +684,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		}
 	}
 
-	transient float[] lastAbsolutePositionMatrix = new float[16];
+	transient float[] lastAbsolutePositionMatrix;
 
 	public final void getAbsolutePositionMatrix(float[] matrix, long worldTime) {
 		if (lastGetAbsolutePositionTime == worldTime) {
@@ -695,6 +698,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				parent.getAbsolutePositionMatrix(tmatrix, worldTime);
 				Matrix.multiplyMM(matrix, 0, tmatrix, 0, matrix, 0);
 			}
+			lastAbsolutePositionMatrix = new float[16];
 			System.arraycopy(matrix, 0, lastAbsolutePositionMatrix, 0, lastAbsolutePositionMatrix.length);
 			lastGetAbsolutePositionTime = worldTime;
 		}
