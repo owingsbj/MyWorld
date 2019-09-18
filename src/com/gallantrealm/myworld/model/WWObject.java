@@ -603,15 +603,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				matrix[12] += deltaTime * velocityX;
 				matrix[14] += deltaTime * velocityY;
 				matrix[13] += deltaTime * velocityZ;
-				if (aMomentumZ != 0) {
-					Matrix.rotateM(matrix, 0, deltaTime * aMomentumZ, 0, 1, 0);
-				}
-				if (aMomentumY != 0) {
-					Matrix.rotateM(matrix, 0, deltaTime * aMomentumY, 0, 0, 1);
-				}
-				if (aMomentumX != 0) {
-					Matrix.rotateM(matrix, 0, deltaTime * aMomentumX, 1, 0, 0);
-				}
+				float aMomentumLength = (float)Math.sqrt(aMomentumX*aMomentumX + aMomentumY*aMomentumY + aMomentumZ*aMomentumZ);
+				Matrix.rotateM(matrix, 0, deltaTime * aMomentumLength , aMomentumX, aMomentumZ, aMomentumY);
 				lastPositionMatrixTime = worldTime;
 				System.arraycopy(matrix, 0, modelMatrix, 0, matrix.length);
 				// Apply start and stop position limits if any
