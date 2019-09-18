@@ -339,9 +339,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		float yaw = FastMath.TODEGREES * (float) Math.asin(modelMatrix[8]);
 		if (modelMatrix[10] < 0) {
 			if (yaw >= 0)
-				yaw = 180.0f - yaw;
+				yaw = 360.0f - yaw;
 			else
-				yaw = -180.0f - yaw;
+				yaw = -360.0f - yaw;
 		}
 		return yaw;
 	}
@@ -382,9 +382,9 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		yaw = FastMath.TODEGREES * (float) Math.asin(modelMatrix[8]);
 		if (modelMatrix[10] < 0) {
 			if (yaw >= 0)
-				yaw = 180.0f - yaw;
+				yaw = 360.0f - yaw;
 			else
-				yaw = -180.0f - yaw;
+				yaw = -360.0f - yaw;
 		}
 
 		// find roll (around y-axis) and pitch (around x-axis)
