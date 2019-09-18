@@ -1341,23 +1341,29 @@ public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 		}
 
 		if (cameraObject != null && avatar != null && (avatar == cameraObject || avatar.isDescendant(cameraObject))) {
-			dampCameraPan = ((cameraPan + cameraObjectRotation.z) + clientModel.cameraDampRate * dampCameraPan) / (clientModel.cameraDampRate + 1);
-			if (cameraDistance < 10) {
-				if (avatar == cameraObject) {
-					dampCameraTilt = ((cameraTilt - cameraObjectRotation.x) + 4 * clientModel.cameraDampRate * dampCameraTilt) / (4 * clientModel.cameraDampRate + 1);
-					dampCameraLean = ((cameraLean - cameraObjectRotation.y) + 4 * clientModel.cameraDampRate * dampCameraLean) / (4 * clientModel.cameraDampRate + 1);
-				} else {
-					dampCameraTilt = cameraTilt - cameraObjectRotation.x;
-					dampCameraLean = cameraLean - cameraObjectRotation.y;
-				}
-			} else {
-				dampCameraTilt = (cameraTilt + clientModel.cameraDampRate * dampCameraTilt) / (clientModel.cameraDampRate + 1);
-				dampCameraLean = (cameraLean + clientModel.cameraDampRate * dampCameraLean) / (clientModel.cameraDampRate + 1);
-			}
+//			dampCameraPan = ((cameraPan + cameraObjectRotation.z) + clientModel.cameraDampRate * dampCameraPan) / (clientModel.cameraDampRate + 1);
+//			if (cameraDistance < 10) {
+//				if (avatar == cameraObject) {
+//					dampCameraTilt = ((cameraTilt - cameraObjectRotation.x) + 4 * clientModel.cameraDampRate * dampCameraTilt) / (4 * clientModel.cameraDampRate + 1);
+//					dampCameraLean = ((cameraLean - cameraObjectRotation.y) + 4 * clientModel.cameraDampRate * dampCameraLean) / (4 * clientModel.cameraDampRate + 1);
+//				} else {
+//					dampCameraTilt = cameraTilt - cameraObjectRotation.x;
+//					dampCameraLean = cameraLean - cameraObjectRotation.y;
+//				}
+//			} else {
+//				dampCameraTilt = (cameraTilt + clientModel.cameraDampRate * dampCameraTilt) / (clientModel.cameraDampRate + 1);
+//				dampCameraLean = (cameraLean + clientModel.cameraDampRate * dampCameraLean) / (clientModel.cameraDampRate + 1);
+//			}
+			dampCameraPan = cameraPan + cameraObjectRotation.z;
+			dampCameraTilt = cameraTilt - cameraObjectRotation.x;
+			dampCameraLean = cameraLean - cameraObjectRotation.y;
 		} else {
-			dampCameraPan = (cameraPan + clientModel.cameraDampRate * dampCameraPan) / (clientModel.cameraDampRate + 1);
-			dampCameraTilt = (cameraTilt + clientModel.cameraDampRate * dampCameraTilt) / (clientModel.cameraDampRate + 1);
-			dampCameraLean = (cameraLean + clientModel.cameraDampRate * dampCameraLean) / (clientModel.cameraDampRate + 1);
+			dampCameraPan = cameraPan;
+			dampCameraTilt = cameraTilt;
+			dampCameraLean = cameraLean;
+//			dampCameraPan = (cameraPan + clientModel.cameraDampRate * dampCameraPan) / (clientModel.cameraDampRate + 1);
+//			dampCameraTilt = (cameraTilt + clientModel.cameraDampRate * dampCameraTilt) / (clientModel.cameraDampRate + 1);
+//			dampCameraLean = (cameraLean + clientModel.cameraDampRate * dampCameraLean) / (clientModel.cameraDampRate + 1);
 		}
 		dampCameraDistance = (limitedCameraDistance + clientModel.cameraDampRate * dampCameraDistance) / (clientModel.cameraDampRate + 1);
 		clientModel.setDampedCameraLocation(dampXCamera, dampYCamera, dampZCamera);
@@ -1470,8 +1476,8 @@ public class AndroidRenderer implements IRenderer, GLSurfaceView.Renderer {
 		WWObject cameraObject = clientModel.getCameraObject();
 		if (cameraObject != null) {
 			lastShadowCameraViewPosition = cameraObject.getPosition();
-			lastShadowCameraViewPosition.x -= FastMath.sinDeg(clientModel.getCameraPan() + cameraObject.getRotation().z) * 20 * (1.0f - clientModel.getCameraTilt() / 90.0f);
-			lastShadowCameraViewPosition.y -= FastMath.cosDeg(clientModel.getCameraPan() + cameraObject.getRotation().z) * 20 * (1.0f - clientModel.getCameraTilt() / 90.0f);
+			lastShadowCameraViewPosition.x -= FastMath.sinDeg(clientModel.getCameraPan() + cameraObject.getRotationZ(time)) * 20 * (1.0f - clientModel.getCameraTilt() / 90.0f);
+			lastShadowCameraViewPosition.y -= FastMath.cosDeg(clientModel.getCameraPan() + cameraObject.getRotationZ(time)) * 20 * (1.0f - clientModel.getCameraTilt() / 90.0f);
 			Matrix.setLookAtM(sunViewMatrix, 0, //
 					lastShadowCameraViewPosition.x + sunPosition.x, sunPosition.z + lastShadowCameraViewPosition.z, lastShadowCameraViewPosition.y + sunPosition.y, // sun position
 					lastShadowCameraViewPosition.x, lastShadowCameraViewPosition.z, lastShadowCameraViewPosition.y, // center (where the light is looking at)
