@@ -261,6 +261,10 @@ public class PhysicsThread extends Thread {
 									WWObject.antiRotate(overlapVector, positionMatrix);
 									Matrix.translateM(positionMatrix, 0, -overlapVector.x, -overlapVector.z, -overlapVector.y);
 
+									// Adjust angular momentum based on force on object and point of impact 
+									WWVector position = new WWVector(positionMatrix[12], positionMatrix[14], positionMatrix[13]);
+									totalTorque.add(position.subtract(overlapPoint).cross(totalForce).scale(-10f));
+
 									// If the object is moving toward object2, stop or repell it (according to elasticity)
 									if (FastMath.avg(object.elasticity, object2.elasticity) > 0.0) { // bounce both objects off of each other
 										if (object2.physical) {
@@ -313,13 +317,6 @@ public class PhysicsThread extends Thread {
 										}
 
 									}
-
-									// Adjust angular momentum as well
-									// TODO implement angular momentum adjustment
-									// take cross product of unitoverlapvector and vector of overlappoint->centerpoint
-									// then combine with velocity in some way to form an addition to the torque
-									WWVector position = new WWVector(positionMatrix[12], positionMatrix[14], positionMatrix[13]);
-									totalTorque.add(position.subtract(overlapPoint).cross(unitOverlapVector).scale(1000f));
 
 								} // solid
 
