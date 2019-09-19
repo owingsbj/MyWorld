@@ -401,10 +401,11 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		rotation.z = yaw;
 
 		if (!fixed) {
-			float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
-			rotation.x = rotation.x + deltaTime * aMomentumX;
-			rotation.y = rotation.y + deltaTime * aMomentumY;
-			rotation.z = rotation.z + deltaTime * aMomentumZ;
+			// These physics no long work right
+//			float deltaTime = (worldTime - lastMoveTime) / 1000.0f;
+//			rotation.x = rotation.x + deltaTime * aMomentumX;
+//			rotation.y = rotation.y + deltaTime * aMomentumY;
+//			rotation.z = rotation.z + deltaTime * aMomentumZ;
 			// Apply start and stop rotation limits if any
 			// TODO needs to be reworked for matrices somehow..
 //			if (startRotation != null) {
@@ -588,7 +589,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			}
 		}
 	}
-	
+
 	long lastPositionMatrixTime;
 
 	public final void getPositionMatrix(float[] matrix, long worldTime) {
@@ -603,8 +604,10 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 				matrix[12] += deltaTime * velocityX;
 				matrix[14] += deltaTime * velocityY;
 				matrix[13] += deltaTime * velocityZ;
-				float aMomentumLength = (float)Math.sqrt(aMomentumX*aMomentumX + aMomentumY*aMomentumY + aMomentumZ*aMomentumZ);
-				Matrix.rotateM(matrix, 0, deltaTime * aMomentumLength , aMomentumX, aMomentumZ, aMomentumY);
+				float aMomentumLength = (float) Math.sqrt(aMomentumX * aMomentumX + aMomentumY * aMomentumY + aMomentumZ * aMomentumZ);
+				if (aMomentumLength > 0.0f) {
+					Matrix.rotateM(matrix, 0, deltaTime * aMomentumLength, aMomentumX, aMomentumZ, aMomentumY);
+				}
 				lastPositionMatrixTime = worldTime;
 				System.arraycopy(matrix, 0, modelMatrix, 0, matrix.length);
 				// Apply start and stop position limits if any
@@ -950,7 +953,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	 * A newer method to set the position and rotation using a matrix. Velocity and angular momentum are still specified using vectors.
 	 */
 	public final void setOrientation(float[] newMatrix, WWVector newVelocity, WWVector newAMomentum, long newMoveTime) {
-		System.arraycopy(newMatrix,  0,  modelMatrix,  0,  16);
+		System.arraycopy(newMatrix, 0, modelMatrix, 0, 16);
 		lastPositionMatrixTime = newMoveTime;
 		this.lastGetAbsolutePositionTime = -1;
 		if (newVelocity != null) {
