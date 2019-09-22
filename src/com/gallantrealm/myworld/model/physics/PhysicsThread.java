@@ -2,6 +2,7 @@ package com.gallantrealm.myworld.model.physics;
 
 import java.util.ArrayList;
 import com.gallantrealm.myworld.FastMath;
+import com.gallantrealm.myworld.client.model.ClientModel;
 import com.gallantrealm.myworld.model.WWBehavior;
 import com.gallantrealm.myworld.model.WWObject;
 import com.gallantrealm.myworld.model.WWParticleEmitter;
@@ -162,37 +163,41 @@ public class PhysicsThread extends Thread {
 				// and torque are already high.
 				WWVector totalForce = thrust.clone();
 				WWObject.rotate(totalForce, positionMatrix);
-				WWObject.rotate(thrustVelocity, positionMatrix);
-				if (thrustVelocity.x > 0 && velocity.x > thrustVelocity.x) {
-					totalForce.x = 0;
-				} else if (thrustVelocity.x < 0 && velocity.x < thrustVelocity.x) {
-					totalForce.x = 0;
-				}
-				if (thrustVelocity.y > 0 && velocity.y > thrustVelocity.y) {
-					totalForce.y = 0;
-				} else if (thrustVelocity.y < 0 && velocity.y < thrustVelocity.y) {
-					totalForce.y = 0;
-				}
-				if (thrustVelocity.z > 0 && velocity.z > thrustVelocity.z) {
-					totalForce.z = 0;
-				} else if (thrustVelocity.z < 0 && velocity.z < thrustVelocity.z) {
-					totalForce.z = 0;
+				if (thrustVelocity.length() > 0) {
+					WWObject.rotate(thrustVelocity, positionMatrix);
+					if (thrustVelocity.x > 0 && velocity.x > thrustVelocity.x) {
+						totalForce.x = 0;
+					} else if (thrustVelocity.x < 0 && velocity.x < thrustVelocity.x) {
+						totalForce.x = 0;
+					}
+					if (thrustVelocity.y > 0 && velocity.y > thrustVelocity.y) {
+						totalForce.y = 0;
+					} else if (thrustVelocity.y < 0 && velocity.y < thrustVelocity.y) {
+						totalForce.y = 0;
+					}
+					if (thrustVelocity.z > 0 && velocity.z > thrustVelocity.z) {
+						totalForce.z = 0;
+					} else if (thrustVelocity.z < 0 && velocity.z < thrustVelocity.z) {
+						totalForce.z = 0;
+					}
 				}
 				WWVector totalTorque = torque.clone();
-				if (torqueVelocity.x > 0 && aMomentum.x > torqueVelocity.x) {
-					totalTorque.x = 0;
-				} else if (torqueVelocity.x < 0 && aMomentum.x < torqueVelocity.x) {
-					totalTorque.x = 0;
-				}
-				if (torqueVelocity.y > 0 && aMomentum.y > torqueVelocity.y) {
-					totalTorque.y = 0;
-				} else if (torqueVelocity.y < 0 && aMomentum.y < torqueVelocity.y) {
-					totalTorque.y = 0;
-				}
-				if (torqueVelocity.z > 0 && aMomentum.z > torqueVelocity.z) {
-					totalTorque.z = 0;
-				} else if (torqueVelocity.z < 0 && aMomentum.z < torqueVelocity.z) {
-					totalTorque.z = 0;
+				if (torqueVelocity.length() > 0) {
+					if (torqueVelocity.x > 0 && aMomentum.x > torqueVelocity.x) {
+						totalTorque.x = 0;
+					} else if (torqueVelocity.x < 0 && aMomentum.x < torqueVelocity.x) {
+						totalTorque.x = 0;
+					}
+					if (torqueVelocity.y > 0 && aMomentum.y > torqueVelocity.y) {
+						totalTorque.y = 0;
+					} else if (torqueVelocity.y < 0 && aMomentum.y < torqueVelocity.y) {
+						totalTorque.y = 0;
+					}
+					if (torqueVelocity.z > 0 && aMomentum.z > torqueVelocity.z) {
+						totalTorque.z = 0;
+					} else if (torqueVelocity.z < 0 && aMomentum.z < torqueVelocity.z) {
+						totalTorque.z = 0;
+					}
 				}
 
 				// sum in gravitational force only if object has mass
@@ -261,9 +266,11 @@ public class PhysicsThread extends Thread {
 									WWObject.antiRotate(overlapVector, positionMatrix);
 									Matrix.translateM(positionMatrix, 0, -overlapVector.x, -overlapVector.z, -overlapVector.y);
 
-									// Adjust angular momentum based on force on object and point of impact 
-									WWVector position = new WWVector(positionMatrix[12], positionMatrix[14], positionMatrix[13]);
-									totalTorque.add(position.subtract(overlapPoint).cross(totalForce).scale(-10f));
+									// Adjust angular momentum based on force on object and point of impact
+									if (object != ClientModel.getClientModel().getAvatar()) { // avoid avatar falling
+										WWVector position = new WWVector(positionMatrix[12], positionMatrix[14], positionMatrix[13]);
+										totalTorque.add(position.subtract(overlapPoint).cross(totalForce).scale(-100f));
+									}
 
 									// If the object is moving toward object2, stop or repell it (according to elasticity)
 									if (FastMath.avg(object.elasticity, object2.elasticity) > 0.0) { // bounce both objects off of each other
@@ -370,7 +377,7 @@ public class PhysicsThread extends Thread {
 				if (totalTorque.length() > 360) {
 					totalTorque.scale(360 / totalTorque.length());
 				}
-				
+
 				// Apply forces to object's velocity
 				velocity.x += totalForce.x * deltaTime;
 				velocity.y += totalForce.y * deltaTime;
@@ -395,6 +402,7 @@ public class PhysicsThread extends Thread {
 				aMomentum.y += totalTorque.y * deltaTime;
 				aMomentum.z += totalTorque.z * deltaTime;
 
+				// TODO figure out how to apply this with new amomentum as a vector
 				if (!object.freedomRotateX) {
 					aMomentum.x = 0;
 				}
@@ -404,7 +412,7 @@ public class PhysicsThread extends Thread {
 				if (!object.freedomRotateZ) {
 					aMomentum.z = 0;
 				}
-				
+
 				// Update the position, rotation, velocity and angular momentum values on the object if any have changed due to
 				// physical interaction with another object, but only if the object has not been moved by some other thread
 				if (object.lastMoveTime == originalLastMoveTime) {
