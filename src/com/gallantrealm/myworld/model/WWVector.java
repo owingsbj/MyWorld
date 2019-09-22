@@ -86,9 +86,9 @@ public class WWVector implements Cloneable, Serializable, Sendable {
 	 * Cross product another vector with this one.
 	 */
 	public final WWVector cross(WWVector v) {
-		float i = y * v.z - v.y * z;
-		float j = x * v.z - v.x * z;
-		float k = x * v.y - v.x * y;
+		float i = y * v.z - z * v.y;
+		float j = z * v.x - x * v.z;
+		float k = x * v.y - y * v.x;
 		x = i;
 		y = j;
 		z = k;
@@ -96,9 +96,9 @@ public class WWVector implements Cloneable, Serializable, Sendable {
 	}
 
 	public final WWVector cross(float vx, float vy, float vz) {
-		float i = y * vz - vy * z;
-		float j = x * vz - vx * z;
-		float k = x * vy - vx * y;
+		float i = y * vz - z * vy;
+		float j = z * vx - x * vz;
+		float k = x * vy - y * vx;
 		x = i;
 		y = j;
 		z = k;
