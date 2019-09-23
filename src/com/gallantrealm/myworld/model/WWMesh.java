@@ -386,10 +386,10 @@ public class WWMesh extends WWObject {
 		// 1 - determine the normal (penetration == normal after this)
 		if (offsetX + offsetY < 1) {
 			penetration.set(sizeX / cellsX, 0, sizeZ * (p2 - p1));
-			penetration.cross(0, sizeY / cellsY, sizeZ * (p3 - p1));
+			penetration.cross(0, sizeY / cellsY, -sizeZ * (p3 - p1));
 		} else {
 			penetration.set(sizeX / cellsX, 0, sizeZ * (p4 - p3));
-			penetration.cross(0, sizeY / cellsY, sizeZ * (p4 - p2));
+			penetration.cross(0, sizeY / cellsY, -sizeZ * (p4 - p2));
 		}
 		penetration.normalize();
 		penetration.y *= -1;
