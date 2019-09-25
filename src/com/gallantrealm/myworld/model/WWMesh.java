@@ -235,60 +235,6 @@ public class WWMesh extends WWObject {
 	}
 
 	@Override
-	public void getPenetration(WWVector point, WWVector position, WWVector rotation, long worldTime, WWVector tempPoint, WWVector penetration) {
-
-		// Anti-transform
-		tempPoint.x = point.x;
-		tempPoint.y = point.y;
-		tempPoint.z = point.z;
-		antiTransform(tempPoint, position, rotation, worldTime);
-
-		float absTempPointX = tempPoint.x > 0 ? tempPoint.x : -tempPoint.x;
-		float absTempPointY = tempPoint.y > 0 ? tempPoint.y : -tempPoint.y;
-		float absTempPointZ = tempPoint.z > 0 ? tempPoint.z : -tempPoint.z;
-
-		// Get possible penetration in each dimension
-		float penetrationX = sizeX / 2.0f - absTempPointX;
-		float penetrationY = sizeY / 2.0f - absTempPointY;
-		float penetrationZ;
-		if (tempPoint.z > -sizeZ / 2.1f) { // very close to the bottom, so mesh can be very low
-			getMeshPenetration(tempPoint, penetration);
-			penetrationZ = penetration.z;
-		} else {
-			penetrationZ = sizeZ / 2.0f - absTempPointZ;
-		}
-
-		// If penetration is not occuring in all dimensions, then the point is not penetrating
-		if (penetrationX < 0 || penetrationY < 0 || penetrationZ < 0) {
-			penetration.zero();
-			return;
-		}
-
-		// Choose the dimension with the least penetration as the side that is penetrated
-		if (penetrationX < penetrationY && penetrationX < penetrationZ) { // x
-			if (tempPoint.x > 0) {
-				penetration.set(-penetrationX, 0, 0);
-			} else {
-				penetration.set(penetrationX, 0, 0);
-			}
-		} else if (penetrationY < penetrationX && penetrationY < penetrationZ) { // y
-			if (tempPoint.y > 0) {
-				penetration.set(0, -penetrationY, 0);
-			} else {
-				penetration.set(0, penetrationY, 0);
-			}
-		} else { // z
-			if (tempPoint.z > -sizeZ / 2.1f) { // to be very low so mesh points can be near 0
-				penetration.scale(-1);
-			} else {
-				penetration.set(0, 0, penetrationZ);
-			}
-		}
-
-		rotate(penetration, rotation, worldTime);
-	}
-	
-	@Override
 	public void getPenetration(WWVector point, float[] positionMatrix, long worldTime, WWVector tempPoint, WWVector penetration) {
 		// Anti-transform
 		tempPoint.x = point.x;

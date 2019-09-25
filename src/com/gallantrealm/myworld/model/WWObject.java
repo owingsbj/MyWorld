@@ -1202,62 +1202,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	private transient WWVector[] lastTransformedEdgePoints;
-	private transient WWVector lastOverlapPosition;
-	private transient WWVector lastOverlapRotation;
-
-	public final void getOverlap(WWObject object, WWVector position, WWVector rotation, WWVector rotationPoint, WWVector objectPosition, WWVector objectRotation, long worldTime, WWVector tempPoint, WWVector tempPoint2,
-			WWVector overlapPoint, WWVector overlapVector) {
-		// To simplify overlap testing, check several key points. These are the eight corners, twelve
-		// half edge points, and six center side points of the box. Test each of these.
-
-		// First, transform the edge points by current rotation and position. These points are cached just in case
-		// they are needed on the next overlap
-		WWVector[] transformedEdgePoints;
-		int edgePointsLength;
-		if (parentId == 0 && lastTransformedEdgePoints != null && (fixed || (lastOverlapPosition.equals(position) && lastOverlapRotation.equals(rotation)))) {
-			transformedEdgePoints = lastTransformedEdgePoints;
-			edgePointsLength = edgePoints.length;
-		} else {
-			WWVector[] constEdgePoints = getEdgePoints();
-			edgePointsLength = constEdgePoints.length;
-			transformedEdgePoints = lastTransformedEdgePoints;
-			if (transformedEdgePoints == null) {
-				transformedEdgePoints = new WWVector[edgePointsLength];
-			}
-			for (int i = 0; i < edgePointsLength; i++) {
-				WWVector edgePoint = transformedEdgePoints[i];
-				if (edgePoint == null) {
-					edgePoint = constEdgePoints[i].clone();
-				} else {
-					constEdgePoints[i].copyInto(edgePoint);
-				}
-				transform(edgePoint, position, rotation, rotationPoint, worldTime);
-				transformedEdgePoints[i] = edgePoint;
-			}
-			lastTransformedEdgePoints = transformedEdgePoints;
-			lastOverlapPosition = position;
-			lastOverlapRotation = rotation;
-		}
-
-		overlapVector.zero();
-		for (int i = 0; i < edgePointsLength; i++) {
-			WWVector edgePoint = transformedEdgePoints[i];
-			// first test point with extents to avoid a costlier penetration calculation
-			if (object.extentx + objectPosition.x > edgePoint.x && -object.extentx + objectPosition.x < edgePoint.x && //
-					object.extenty + objectPosition.y > edgePoint.y && -object.extenty + objectPosition.y < edgePoint.y && //
-					object.extentz + objectPosition.z > edgePoint.z && -object.extentz + objectPosition.z < edgePoint.z) {
-				object.getPenetration(edgePoint, objectPosition, objectRotation, worldTime, tempPoint, tempPoint2);
-				if (tempPoint2.isLongerThan(overlapVector)) {
-					tempPoint2.copyInto(overlapVector);
-					transformedEdgePoints[i].copyInto(overlapPoint);
-					return; // less accurate but faster
-				}
-			}
-		}
-
-		// Note: If objects still penetrate walls, the only thing to do is to speed up the physics thread and iterate more often.
-		// I've tried just about everything else. Keep in mind that with enough speed, any object can quantum-jump!
-	}
 
 	public float[] lastOverlapPositionMatrix;
 
@@ -1312,11 +1256,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 		// Note: If objects still penetrate walls, the only thing to do is to speed up the physics thread and iterate more often.
 		// I've tried just about everything else. Keep in mind that with enough speed, any object can quantum-jump!
 	}
-
-	/**
-	 * Returns a vector giving the amount of penetration of a point within the object, or null if the point does not penetrate.
-	 */
-	public abstract void getPenetration(WWVector point, WWVector position, WWVector rotation, long worldTime, WWVector tempPoint, WWVector penetrationVector);
 
 	/**
 	 * Returns a vector giving the amount of penetration of a point within the object, or null if the point does not penetrate.

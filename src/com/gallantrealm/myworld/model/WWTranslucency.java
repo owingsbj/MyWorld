@@ -72,48 +72,6 @@ public class WWTranslucency extends WWObject {
 	}
 
 	@Override
-	public void getPenetration(WWVector point, WWVector position, WWVector rotation, long worldTime, WWVector tempPoint, WWVector penetrationVector) {
-
-		// Anti-transform
-		tempPoint = point.clone();
-		antiTransform(tempPoint, position, rotation, worldTime);
-
-		// Get possible penetration in each dimension
-		float penetrationX = sizeX / 2.0f - Math.abs(tempPoint.x);
-		float penetrationY = sizeY / 2.0f - Math.abs(tempPoint.y);
-		float penetrationZ = sizeZ / 2.0f - Math.abs(tempPoint.z);
-
-		// If penetration is not occuring in all dimensions, then the point is not penetrating
-		if (penetrationX < 0 || penetrationY < 0 || penetrationZ < 0) {
-			penetrationVector.zero();
-			return;
-		}
-
-		// Choose the dimension with the least penetration as the side that is penetrated
-		if (penetrationX < penetrationY && penetrationX < penetrationZ) { // x
-			if (tempPoint.x > 0) {
-				penetrationVector.set(-penetrationX, 0, 0);
-			} else {
-				penetrationVector.set(penetrationX, 0, 0);
-			}
-		} else if (penetrationY < penetrationX && penetrationY < penetrationZ) { // y
-			if (tempPoint.y > 0) {
-				penetrationVector.set(0, -penetrationY, 0);
-			} else {
-				penetrationVector.set(0, penetrationY, 0);
-			}
-		} else { // z
-			if (tempPoint.z > 0) {
-				penetrationVector.set(0, 0, -penetrationZ);
-			} else {
-				penetrationVector.set(0, 0, penetrationZ);
-			}
-		}
-
-		rotate(penetrationVector, rotation, worldTime);
-	}
-
-	@Override
 	public void getPenetration(WWVector point, float[] positionMatrix, long worldTime, WWVector tempPoint, WWVector penetrationVector) {
 
 		// Anti-transform
