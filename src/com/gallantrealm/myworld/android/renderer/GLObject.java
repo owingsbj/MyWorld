@@ -113,7 +113,7 @@ public abstract class GLObject extends GLRendering {
 	public void snap(long worldTime) {
 		if (modelMatrix == null || !object.fixed) {
 			modelMatrix = new float[16];
-			object.getPositionMatrix(modelMatrix, worldTime);
+			object.getAnimatedPositionMatrix(modelMatrix, worldTime);
 //			// To snap the object we'll create the model matrix
 //			modelMatrix = new float[16];
 //			Matrix.setIdentityM(modelMatrix, 0);
