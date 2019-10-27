@@ -98,7 +98,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	// Note: the Java3d rendering has a primitive within a transform group within a branch group.
 	public transient IRendering rendering;
 	public boolean renderit;
-	public transient long lastRenderingTime;
+	public transient long modelMatrixTime;
 
 	public boolean alwaysRender;
 
@@ -731,7 +731,8 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			float[] parentMatrix = new float[16];
 			parent.getAbsoluteAnimatedPositionMatrix(parentMatrix, worldTime);
 			// WWVector parentRotationPoint = parent.getRotationPoint();
-			Matrix.multiplyMM(matrix, 0, matrix, 0, parentMatrix, 0);
+			float[] matrixCopy = Arrays.copyOf(matrix,  16);
+			Matrix.multiplyMM(matrix, 0, matrixCopy, 0, parentMatrix, 0);
 		}
 	}
 
@@ -938,7 +939,6 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 
 		// Update the model matrix
 		Matrix.setIdentityM(modelMatrix, 0);
-		Matrix.translateM(modelMatrix, 0, newPosition.x, newPosition.z, newPosition.y);
 		Matrix.translateM(modelMatrix, 0, rotationPoint.x, rotationPoint.z, rotationPoint.y);
 		if (newRotation.z != 0) {
 			Matrix.rotateM(modelMatrix, 0, newRotation.z, 0, 1, 0);
@@ -950,6 +950,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 			Matrix.rotateM(modelMatrix, 0, newRotation.x, 1, 0, 0);
 		}
 		Matrix.translateM(modelMatrix, 0, -rotationPoint.x, -rotationPoint.z, -rotationPoint.y);
+		Matrix.translateM(modelMatrix, 0, newPosition.x, newPosition.z, newPosition.y);
 		lastPositionMatrixTime = newMoveTime;
 
 		// Since extents for fixed objects are tuned to current rotation, recalculate them
@@ -1182,7 +1183,7 @@ public abstract class WWObject extends WWEntity implements IRenderable, Serializ
 	}
 
 	public final long getLastRenderingTime() {
-		return lastRenderingTime;
+		return modelMatrixTime;
 	}
 
 	@Override

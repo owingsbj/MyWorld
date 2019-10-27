@@ -48,7 +48,6 @@ public abstract class WWAnimation extends WWBehavior {
 		WWVector rotation = new WWVector(0, 0, 0);
 		Matrix.translateM(matrix, 0, -position.x, -position.z, -position.y);
 		getAnimatedPosition(object, position, time);
-		Matrix.translateM(matrix, 0, position.x, position.z, position.y);
 		getAnimatedRotation(object, rotation, time);
 		Matrix.translateM(matrix, 0, object.rotationPoint.x, object.rotationPoint.z, object.rotationPoint.y);
 		if (rotation.z != 0.0) {
@@ -61,6 +60,7 @@ public abstract class WWAnimation extends WWBehavior {
 			Matrix.rotateM(matrix, 0, rotation.x, 1, 0, 0);
 		}
 		Matrix.translateM(matrix, 0, -object.rotationPoint.x, -object.rotationPoint.z, -object.rotationPoint.y);
+		Matrix.translateM(matrix, 0, position.x, position.z, position.y);
 	}
 
 }
