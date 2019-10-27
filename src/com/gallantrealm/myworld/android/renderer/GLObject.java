@@ -112,8 +112,11 @@ public abstract class GLObject extends GLRendering {
 
 	public void snap(long worldTime) {
 		if (modelMatrix == null || !object.fixed) {
-			modelMatrix = new float[16];
-			object.getAnimatedPositionMatrix(modelMatrix, worldTime);
+			if (modelMatrix == null) {
+				modelMatrix = new float[16];
+			}
+			if (worldTime != object.modelMatrixTime) {
+				object.getAnimatedPositionMatrix(modelMatrix, worldTime);
 //			// To snap the object we'll create the model matrix
 //			modelMatrix = new float[16];
 //			Matrix.setIdentityM(modelMatrix, 0);
@@ -131,7 +134,8 @@ public abstract class GLObject extends GLRendering {
 //				Matrix.rotateM(modelMatrix, 0, rotation.x, 1, 0, 0);
 //			}
 //			Matrix.translateM(modelMatrix, 0, -object.rotationPoint.x, -object.rotationPoint.z, -object.rotationPoint.y);
-			object.lastRenderingTime = worldTime;
+				object.modelMatrixTime = worldTime;
+			}
 		}
 	}
 
@@ -140,9 +144,7 @@ public abstract class GLObject extends GLRendering {
 	long compositeModelMatrixTime = -1;
 
 	public final float[] getModelMatrix(long worldTime) {
-		if (modelMatrix == null) {
-			snap(worldTime);
-		}
+		snap(worldTime);
 		if (object.parentId == 0) {
 			return modelMatrix;
 		} else {
